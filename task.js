@@ -4,6 +4,8 @@ class TaskList extends HTMLElement {
         const shadowRoot = this.attachShadow({ mode: "open" });
         // const title = this.getAttribute("title");
         // const date = this.getAttribute("date");
+
+        
         const template = `
         <style>
           /* estilos para la lista de tareas */
@@ -12,6 +14,7 @@ class TaskList extends HTMLElement {
             align-items: center;
             gap: .5rem;
             padding: 0 .5rem 0 0.5rem;
+            transition: background-color 0.4s ease;
           }
           
           /* estilos para el texto */
