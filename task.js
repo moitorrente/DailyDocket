@@ -17,6 +17,7 @@ class TaskList extends HTMLElement {
           /* estilos para el texto */
           .task-text {
             color: #6b7280;
+            flex-grow: 1;
             font-size: medium;
             box-shadow: inset 0px 1px 0px #f3f4f6;
             padding: .5rem 0 .5rem 0;

@@ -34,7 +34,7 @@ class InputText extends HTMLElement {
         menu.style.backgroundColor = '#f3f4f6';
         menu.style.display = 'none';
         menu.style.borderRadius = '10px';
-        menu.style.boxShadow = 'rgb(0 0 0 / 5%) 3px 3px 7px 0px';
+        menu.style.boxShadow = 'rgb(0 0 0 / 5%) 10px 10px 10px 0px';
 
         const options = ['/delete', '/complete', '/otro'];
         const descriptions = ['Borra todas las tareas', 'Completa las tareas abiertas', 'Otro']
