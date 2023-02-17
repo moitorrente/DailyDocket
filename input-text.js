@@ -42,6 +42,7 @@ class InputText extends HTMLElement {
             const item = document.createElement('div');
             item.style.display = 'flex';
             item.style.alignItems = 'baseline';
+            item.style.justifyContent = 'space-between';
             const command = document.createElement('div');
             command.style.width = '80px';
             const description = document.createElement('div');
@@ -54,6 +55,7 @@ class InputText extends HTMLElement {
             item.appendChild(description);
             item.style.padding = '6px';
             item.style.paddingLeft = '12px'
+            item.style.paddingRight = '12px'
             item.style.borderRadius = '10px';
             item.style.fontSize = '13px';
 
@@ -95,7 +97,7 @@ class InputText extends HTMLElement {
                 if (input.value == '/delete') {
                     this.deleteAll();
                 } else {
-                    document.querySelector('.open').appendChild(taskList);
+                    document.querySelector('.open').prepend(taskList);
                 }
 
                 input.value = '';

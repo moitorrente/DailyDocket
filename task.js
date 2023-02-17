@@ -94,7 +94,7 @@ class TaskList extends HTMLElement {
         // Escuchar los cambios en el estado del checkbox
         checkbox.addEventListener('change', () => {
             if (checkbox.checked) {
-                closed.appendChild(_this);
+                closed.prepend(_this);
             } else {
                 open.appendChild(_this);
             }
