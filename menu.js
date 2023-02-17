@@ -40,6 +40,11 @@ class CustomMenu extends HTMLElement {
 
     showMenu(event) {
         event.preventDefault();
+        const x = event.clientX;
+        const y = event.clientY;
+        const targetElement = document.elementFromPoint(x, y);
+        const closestCustomMenu = targetElement.closest('task-list');
+
         this.menu.style.left = `${event.pageX}px`;
         this.menu.style.top = `${event.pageY}px`;
         this.menu.style.display = 'block';

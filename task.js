@@ -2,7 +2,8 @@ class TaskList extends HTMLElement {
     constructor() {
         super();
         const shadowRoot = this.attachShadow({ mode: "open" });
-        const title = this.getAttribute("title")
+        // const title = this.getAttribute("title");
+        // const date = this.getAttribute("date");
         const template = `
         <style>
           /* estilos para la lista de tareas */
@@ -83,6 +84,7 @@ class TaskList extends HTMLElement {
         shadowRoot.innerHTML = template;
         const taskId = this.getAttribute("id");
         const checkbox = shadowRoot.querySelector("input[type='checkbox']");
+
 
         const _this = this;
         const open = document.querySelector('#open');
