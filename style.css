@@ -19,7 +19,13 @@ body {
 .container {
     max-width: 650px;
     padding: 0 10px;
-    margin: 100px auto;
+    margin: 30px auto 20px auto;
+}
+
+.header {
+    max-width: 650px;
+    padding: 10px 10px;
+    margin: auto;
 }
 
 
