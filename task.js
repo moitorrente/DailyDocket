@@ -2,10 +2,7 @@ class TaskList extends HTMLElement {
     constructor() {
         super();
         const shadowRoot = this.attachShadow({ mode: "open" });
-        // const title = this.getAttribute("title");
-        // const date = this.getAttribute("date");
 
-        
         const template = `
         <style>
           /* estilos para la lista de tareas */
@@ -84,12 +81,9 @@ class TaskList extends HTMLElement {
           </div>
         </div>
       `;
-
         shadowRoot.innerHTML = template;
-        const taskId = this.getAttribute("id");
+
         const checkbox = shadowRoot.querySelector("input[type='checkbox']");
-
-
         const _this = this;
         const open = document.querySelector('#open');
         const closed = document.querySelector('#closed');
@@ -97,14 +91,23 @@ class TaskList extends HTMLElement {
         // Escuchar los cambios en el estado del checkbox
         checkbox.addEventListener('change', () => {
             if (checkbox.checked) {
-                closed.prepend(_this);
+                removeOpenTask(this.taskId);
+                addClosedTask(this.taskText, this.taskDate, this.taskId);
             } else {
-                open.appendChild(_this);
+                removeClosedTask(this.taskId);
+                addOpenTask(this.taskText, this.taskDate, this.taskId);
             }
         })
     }
-
-
+    connectedCallback() {
+        const slot = this.shadowRoot.querySelector('slot[name="title"]');
+        const assignedNodes = slot.assignedNodes();
+        this.taskText = assignedNodes[0].textContent;
+        const slotDate = this.shadowRoot.querySelector('slot[name="date"]');
+        const assignedNodesDate = slotDate.assignedNodes();
+        this.taskDate = assignedNodesDate[0].textContent;
+        this.taskId = Number(this.getAttribute("id"));
+    }
 }
 
 customElements.define("task-list", TaskList);

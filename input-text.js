@@ -4,6 +4,9 @@ class InputText extends HTMLElement {
         const shadow = this.attachShadow({ mode: 'open' });
 
         const input = document.createElement('input');
+        this.taskId = shadow.querySelectorAll('task-list').length;
+        this.taskId++;
+
         input.type = 'text';
         input.style.border = 'none';
         input.style.backgroundColor = '#f3f4f6';
@@ -84,20 +87,23 @@ class InputText extends HTMLElement {
             menu.style.display = 'none';
             if (event.keyCode === 13 && input.value.length) {
                 const taskList = document.createElement('task-list');
-                taskList.setAttribute('id', 22);
+                taskList.setAttribute('id', this.taskId);
                 const title = document.createElement('span');
                 title.setAttribute('slot', 'title');
                 title.innerHTML = input.value;
                 const date = document.createElement('span');
                 date.setAttribute('slot', 'date');
+                date.setAttribute('rawDate', new Date().toLocaleDateString('es-ES'));
                 date.innerHTML = new Date().toLocaleDateString('es-ES');
                 taskList.appendChild(title);
                 taskList.appendChild(date);
-
+                this.taskId++;
                 if (input.value == '/delete') {
                     this.deleteAll();
                 } else {
-                    document.querySelector('.open').prepend(taskList);
+
+                    addOpenTask(input.value, date.innerHTML, this.taskId)
+                    //document.querySelector('.open').prepend(taskList);
                 }
 
                 input.value = '';
@@ -109,12 +115,15 @@ class InputText extends HTMLElement {
             }
         });
 
+        window.addEventListener('click', () => menu.style.display = 'none');
+
         shadow.appendChild(input);
     }
 
     deleteAll() {
         document.querySelector('.open').innerHTML = '';
         document.querySelector('.closed').innerHTML = '';
+        removeAllTasks();
     }
 }
 
