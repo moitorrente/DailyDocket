@@ -48,3 +48,13 @@ body {
     background-color: #d3d3d3;
 }
 
+
+.counter-container {
+    padding: 6px;
+}
+
+.counter-container:hover {
+    background-color: #f3f4f6;
+    padding: 6px;
+    border-radius: 5px;
+}
