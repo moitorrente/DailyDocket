@@ -58,7 +58,7 @@ class TaskList extends HTMLElement {
             background-color: #f9fafb;
             border-radius: 5px;
             vertical-align: middle;
-            border: 2px solid #d1d5db;
+            border: 1px solid #d1d5db;
             box-shadow: 0px 1px 2px rgb(0 0 0 / 10%);
             appearance: none;
             -webkit-appearance: none;
@@ -69,18 +69,18 @@ class TaskList extends HTMLElement {
         }
 
         label[for="myCheckbox"]:hover {
-            border: 2px solid #9ca3af;
+            border: 1px solid #9ca3af;
         }
         
         input[type="checkbox"]:checked+label {
             background-color: #9ca3af;
-            border: 2px solid #9ca3af;
+            border: 1px solid #9ca3af;
             /* quitar el color de fondo */
             background-image: url("check.svg");
             /* imagen personalizada del tick blanco */
         }
         input[type="checkbox"]:checked:hover+label {
-            border: 2px solid #6b7280;
+            border: 1px solid #6b7280;
             /* quitar el color de fondo */
             background-image: url("check.svg");
             /* imagen personalizada del tick blanco */
