@@ -1,7 +1,7 @@
 {
     "lang": "es",
     "name": "Daily Docket",
-    "short_name": "Daily Dockete",
+    "short_name": "Daily Docket",
     "description": "Task application",
     "scope": "/DailyDocket/",
     "start_url": "/DailyDocket/",

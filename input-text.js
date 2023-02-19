@@ -39,8 +39,8 @@ class InputText extends HTMLElement {
         menu.style.borderRadius = '10px';
         menu.style.boxShadow = 'rgb(0 0 0 / 5%) 10px 10px 10px 0px';
 
-        const options = ['/delete', '/complete', '/otro'];
-        const descriptions = ['Borra todas las tareas', 'Completa las tareas abiertas', 'Otro']
+        const options = ['/delete', '/complete', '/update'];
+        const descriptions = ['Borra todas las tareas', 'Completa las tareas abiertas', 'Actualiza la aplicación']
         options.forEach((option, index) => {
             const item = document.createElement('div');
             item.style.display = 'flex';
