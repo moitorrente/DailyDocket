@@ -17,7 +17,7 @@
 </head>
 
 <body>
-    
+
     <header class="header">
         <img src="icon.svg" width="20px" alt="">
     </header>
@@ -30,8 +30,13 @@
         <input-text></input-text>
         <custom-menu></custom-menu>
         <div id="open" class="open" style="margin-top: 1rem; padding: 0 0rem 1rem;"></div>
-        <element-counter count-id="closed" count-text=" tareas cerradas"></element-counter>
-        <div id="closed" class="closed" style="margin-top: 1rem; padding: 0 0rem 1rem;"></div>
+
+        <details>
+            <summary style="display: flex; align-items: center; justify-content: end; cursor: pointer;"> <element-counter
+                    count-id="closed" count-text=" tareas cerradas"></element-counter></summary>
+            <div id="closed" class="closed" style="margin-top: 1rem; padding: 0 0rem 1rem;"></div>
+        </details>
+
     </div>
 </body>
 

@@ -27,7 +27,7 @@ class InputText extends HTMLElement {
         menu.appendChild(tituloMenu);
         menu.style.position = 'absolute';
         menu.style.fontSize = '13px';
-        menu.style.top = '185px';
+        menu.style.top = '155px';
         menu.style.color = '#6b7280';
         menu.style.padding = '6px';
         menu.style.width = '100%';
@@ -85,7 +85,9 @@ class InputText extends HTMLElement {
         // Agregar evento de teclado al input
         input.addEventListener('keyup', (event) => {
             menu.style.display = 'none';
-            if (event.keyCode === 13 && input.value.length) {
+            const text = event.target.value.trim();
+
+            if (event.keyCode === 13 && text.length) {
                 const taskList = document.createElement('task-list');
                 taskList.setAttribute('id', this.taskId);
                 const title = document.createElement('span');
@@ -107,11 +109,56 @@ class InputText extends HTMLElement {
                 }
 
                 input.value = '';
-            } else if (input.value[0] == "/" && input.value.length === 1) {
-                // Mostrar menú cuando el usuario escriba "/"
+            } else if (text.startsWith('/')) {
+                // Mostrar menú de comandos que coinciden con el texto ingresado
+                const matchedCommands = options.filter(option => option.startsWith(text));
+                console.log(text.substring(1))
+                if (matchedCommands.length > 0) {
+                    menu.innerHTML = '';
+                    matchedCommands.forEach((option, index) => {
+                        const item = document.createElement('div');
+                        item.style.display = 'flex';
+                        item.style.alignItems = 'baseline';
+                        item.style.justifyContent = 'space-between';
+                        const command = document.createElement('div');
+                        command.style.width = '80px';
+                        const description = document.createElement('div');
+                        command.innerHTML = option;
+                        description.style.color = '#9ca3af';
+                        description.innerHTML = descriptions[options.indexOf(option)];
+                        description.style.fontSize = '10px';
+                        item.appendChild(command);
+                        item.appendChild(description);
+                        item.style.padding = '6px';
+                        item.style.paddingLeft = '12px'
+                        item.style.paddingRight = '12px'
+                        item.style.borderRadius = '10px';
+                        item.style.fontSize = '13px';
 
-                menu.style.display = 'block';
-                // input.blur();
+                        item.addEventListener('click', () => {
+                            // Lógica para ejecutar acción según opción seleccionada
+                            if (option === '/delete') {
+                                this.deleteAll();
+                            }
+                            input.value = '';
+                            menu.style.display = 'none';
+                            input.focus();
+                        });
+                        item.addEventListener('mouseenter', () => {
+                            item.style.backgroundColor = '#e5e7eb';
+                            item.style.cursor = 'pointer';
+                        });
+
+                        item.addEventListener('mouseleave', () => {
+                            item.style.backgroundColor = 'transparent';
+                        });
+                        menu.appendChild(item);
+                    });
+                    menu.style.display = 'block';
+                }
+            } else {
+                // Ocultar menú si no hay coincidencias
+                menu.style.display = 'none';
             }
         });
 

@@ -1,17 +1,19 @@
 class ElementCounter extends HTMLElement {
-    constructor() {
-        super();
-        const shadowRoot = this.attachShadow({ mode: "open" });
-        const countId = this.getAttribute("count-id");
-        const countText = this.getAttribute("count-text") || " tareas";
+  constructor() {
+    super();
+    const shadowRoot = this.attachShadow({ mode: "open" });
+    const countId = this.getAttribute("count-id");
+    const countText = this.getAttribute("count-text") || " tareas";
 
-        const observer = new MutationObserver(() => {
-            const count = document.getElementById(countId).querySelectorAll("task-list").length;
-            shadowRoot.querySelector("#count").textContent = count + countText;
-        });
 
-        observer.observe(document.getElementById(countId), { childList: true, subtree: true });
-        const template = `
+
+    const observer = new MutationObserver(() => {
+      const count = document.getElementById(countId).querySelectorAll("task-list").length;
+      shadowRoot.querySelector("#count").textContent = count + countText;
+    });
+
+    observer.observe(document.getElementById(countId), { childList: true, subtree: true });
+    const template = `
         <style>
           div {
             color: #9ca3af;
@@ -26,8 +28,10 @@ class ElementCounter extends HTMLElement {
         </div>
       `;
 
-        shadowRoot.innerHTML = template;
-    }
+    shadowRoot.innerHTML = template;
+    shadowRoot.querySelector("#count").textContent = document.getElementById(countId).querySelectorAll("task-list").length + countText;
+
+  }
 }
 
 customElements.define("element-counter", ElementCounter);

@@ -29,10 +29,6 @@ body {
 }
 
 
-
-
-
-
 #custom-menu {
     display: none;
     position: absolute;
@@ -51,3 +47,4 @@ body {
 #custom-menu a:hover {
     background-color: #d3d3d3;
 }
+
