@@ -10,6 +10,7 @@ class TaskList extends HTMLElement {
             display: flex;
             align-items: center;
             gap: .5rem;
+            border-radius: 10px;
             padding: 0 .5rem 0 0.5rem;
             transition: background-color 0.4s ease;
         }
@@ -27,11 +28,21 @@ class TaskList extends HTMLElement {
         
         /* estilos para la fecha */
         .task-date {
+            opacity: 0;
             font-size: xx-small;
             color: #6b7280;
             width: fit-content;
             white-space: nowrap;
-        }
+            transition: opacity 0.4s ease;
+          }
+          
+          .task:hover {
+            background-color: #f3f4f6;
+          }
+          
+          .task:hover .task-date {
+            opacity: 1;
+          }
         
         input[type="checkbox"] {
             display: none;
@@ -41,46 +52,46 @@ class TaskList extends HTMLElement {
         /* estilo del label que lo sustituye */
         label[for="myCheckbox"] {
             display: inline-block;
-            width: 20px;
-            height: 20px;
+            width: 14px;
+            height: 14px;
             flex-shrink: 0;
-            background-color: white;
-            border-radius: 10px;
+            background-color: #f9fafb;
+            border-radius: 5px;
             vertical-align: middle;
-            border: 1px solid #f3f4f6;
+            border: 2px solid #d1d5db;
             box-shadow: 0px 1px 2px rgb(0 0 0 / 10%);
             appearance: none;
             -webkit-appearance: none;
             outline: none;
             cursor: pointer;
             background-size: cover;
+            transition: border 0.2s ease;
+        }
+
+        label[for="myCheckbox"]:hover {
+            border: 2px solid #9ca3af;
         }
         
         input[type="checkbox"]:checked+label {
             background-color: #9ca3af;
+            border: 2px solid #9ca3af;
+            /* quitar el color de fondo */
+            background-image: url("check.svg");
+            /* imagen personalizada del tick blanco */
+        }
+        input[type="checkbox"]:checked:hover+label {
+            border: 2px solid #6b7280;
             /* quitar el color de fondo */
             background-image: url("check.svg");
             /* imagen personalizada del tick blanco */
         }
         
-        .task:hover {
-            background-color: #f3f4f6;
-            border-radius: 10px;
-        }
-        
-        .task:hover .task-date {
-            display: block;
-        }
-        
-        .task-date {
-            display: none;
-        }
+
         </style>
   
         <div class="task" id="">
-        <input type="checkbox" id="myCheckbox">
-<label for="myCheckbox"></label>
-          <input type="checkbox" name="" id="">
+            <input type="checkbox" id="myCheckbox">
+            <label for="myCheckbox"></label>
           <div class="task-text">
             <slot name="title"></slot>
           </div>
