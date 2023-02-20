@@ -27,7 +27,7 @@ class InputText extends HTMLElement {
         menu.appendChild(tituloMenu);
         menu.style.position = 'absolute';
         menu.style.fontSize = '13px';
-        menu.style.top = '155px';
+        menu.style.top = '160px';
         menu.style.color = '#6b7280';
         menu.style.padding = '6px';
         menu.style.width = '100%';
@@ -37,7 +37,7 @@ class InputText extends HTMLElement {
         menu.style.backgroundColor = '#f3f4f6';
         menu.style.display = 'none';
         menu.style.borderRadius = '10px';
-        menu.style.boxShadow = 'rgb(0 0 0 / 5%) 10px 10px 10px 0px';
+        menu.style.boxShadow = 'rgb(0 0 0 / 7%) 10px 10px 10px 0px';
 
         const options = ['/delete', '/deletecompleted', '/complete', '/update', '/version'];
         const descriptions = ['Borra todas las tareas', 'Borra las tareas completadas', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación']
