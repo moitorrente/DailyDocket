@@ -104,6 +104,33 @@ class InputText extends HTMLElement {
                     this.deleteAll();
                 } else {
 
+                    const boldRegex = /\*\*([^*]+)\*\*/g;
+
+                    // Expresión regular para buscar el formato de cursiva
+                    const italicRegex = /\*([^*]+)\*/g;
+
+                    // Expresión regular para buscar el formato de negrita y cursiva combinados
+                    const boldItalicRegex = /\*\*_(.+?)_\*\*/g;
+
+                    // Reemplazar el texto en negrita con tags HTML
+                    input.value = input.value
+                        .replace(boldItalicRegex, '<strong><i>$1</i></strong>')
+                        .replace(boldRegex, '<strong>$1</strong>')
+                        .replace(italicRegex, '<i>$1</i>');
+
+
+
+                    const linkWithTitleRegex = /\[([^\]]+)\]\((https?:\/\/[^\s]+)\s+\"([^"]+)\"\)/g;
+
+                    // Expresión regular para buscar enlaces sin título
+                    const linkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g;
+
+                    // Reemplazar los enlaces con tags HTML
+                    input.value = input.value
+                        .replace(linkWithTitleRegex, '<a href="$2" title="$3">$1</a>')
+                        .replace(linkRegex, '<a href="$2">$1</a>');
+
+
                     addOpenTask(input.value, date.innerHTML, this.taskId)
                     //document.querySelector('.open').prepend(taskList);
                 }
