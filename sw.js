@@ -5,7 +5,7 @@ const RUNTIME = 'runtime';
 
 const URLS = [
   `${GHPATH}/`
-]
+];
 
 const CACHE_NAME = APP_PREFIX + VERSION;
 

@@ -95,6 +95,7 @@ class InputText extends HTMLElement {
         });
         shadow.appendChild(menu);
         // Agregar evento de teclado al input
+
         input.addEventListener('keyup', (event) => {
             menu.style.display = 'none';
             const text = event.target.value.trim();
