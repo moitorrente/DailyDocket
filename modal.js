@@ -6,7 +6,6 @@ class Modal extends HTMLElement {
         <style>
           .modal {
             display: none;
-
             position: fixed;
             z-index: 1;
             left: 0;
@@ -23,7 +22,7 @@ class Modal extends HTMLElement {
             padding: 20px;
             border-radius: 10px;
             width: 80%;
-            max-width: 600px;
+            max-width: 550px;
           }
   
           .close {
