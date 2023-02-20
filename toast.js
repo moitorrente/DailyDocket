@@ -35,7 +35,9 @@ class ToastComponent extends HTMLElement {
             background-color: #e5e7eb;
             border-radius: 10px;
             color: #6b7280;
-            padding: 12px;
+            padding: 8px;
+            padding-right: 12px;
+            padding-left: 12px;
             align-items: center;
             display: flex;
             gap: 20px;
@@ -48,8 +50,16 @@ class ToastComponent extends HTMLElement {
         .toast_close {
             margin-left: 0.5rem;
             cursor: pointer;
-            color: #6b7280;
+            color: #9ca3af;
+            padding: 2px;
+            border-radius: 5px;
+            transition: background-color .4s ease, color .4s ease;
         }
+
+        .toast_close:hover {
+            color: #6b7280;
+            background-color: #d1d5db;
+          }
     
         .hidden {
             animation: slide-down .5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -103,7 +113,10 @@ class ToastComponent extends HTMLElement {
 
     show() {
         this.toastEl.classList.remove('hidden', 'hide');
-        setTimeout(() => {
+        this.toastEl.addEventListener('mouseover', () => {
+            clearTimeout(this.timeout);
+        });
+        this.timeout = setTimeout(() => {
             this.hide();
         }, 3500);
     }
@@ -118,6 +131,16 @@ class ToastComponent extends HTMLElement {
     connectedCallback() {
         document.addEventListener('toast-message', (event) => {
             this.setAttribute('text', event.detail);
+        });
+
+        this.toastEl.addEventListener('mouseover', () => {
+            clearTimeout(this.timeout);
+        });
+
+        this.toastEl.addEventListener('mouseleave', () => {
+            this.timeout = setTimeout(() => {
+                this.hide();
+            }, 3500);
         });
     }
 }

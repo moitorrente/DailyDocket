@@ -71,6 +71,10 @@ class InputText extends HTMLElement {
                 if (option === '/test') {
                     this.toastTest();
                 }
+
+                if (option === '/version') {
+                    this.showModal('Version', '1');
+                }
                 input.value = '';
                 menu.style.display = 'none';
                 input.focus();
@@ -104,13 +108,14 @@ class InputText extends HTMLElement {
                 taskList.appendChild(title);
                 taskList.appendChild(date);
                 this.taskId++;
-                if (input.value === '/delete') {
+                if (input.value == '/delete') {
                     this.deleteAll();
-                } if (input.value.startsWith('/test')) {
+                } else if (input.value.startsWith('/test')) {
                     const indice = input.value.indexOf("/test");
                     const nuevoTexto = input.value.substring(indice + "/test".length);
-                    console.log(nuevoTexto); // "Hola Mundo"
                     this.toastTest(nuevoTexto);
+                } else if (input.value.startsWith('/version')) {
+                    this.showModal('Version', '1');
                 }
 
                 else {
@@ -187,6 +192,9 @@ class InputText extends HTMLElement {
                             if (option === '/test') {
                                 this.toastTest();
                             }
+                            if (option === '/versio') {
+                                this.showModal('Version', '1');
+                            }
                             input.value = '';
                             menu.style.display = 'none';
                             input.focus();
@@ -226,11 +234,18 @@ class InputText extends HTMLElement {
     }
 
     toastTest(text) {
-        if(!text){
+        if (!text) {
             text = 'Test de toast'
         }
         const event = new CustomEvent('toast-message', {
             detail: text
+        });
+        document.dispatchEvent(event);
+    }
+
+    showModal(title, body) {
+        const event = new CustomEvent('modal-message', {
+            detail: [title, body]
         });
         document.dispatchEvent(event);
     }
