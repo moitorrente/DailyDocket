@@ -106,8 +106,11 @@ class InputText extends HTMLElement {
                 this.taskId++;
                 if (input.value === '/delete') {
                     this.deleteAll();
-                } if (input.value === '/test') {
-                    this.toastTest();
+                } if (input.value.startsWith('/test')) {
+                    const indice = input.value.indexOf("/test");
+                    const nuevoTexto = input.value.substring(indice + "/test".length);
+                    console.log(nuevoTexto); // "Hola Mundo"
+                    this.toastTest(nuevoTexto);
                 }
 
                 else {
@@ -181,7 +184,7 @@ class InputText extends HTMLElement {
                             if (option === '/delete') {
                                 this.deleteAll();
                             }
-                            if(option === '/test'){
+                            if (option === '/test') {
                                 this.toastTest();
                             }
                             input.value = '';
@@ -222,9 +225,12 @@ class InputText extends HTMLElement {
         removeAllTasks();
     }
 
-    toastTest() {
+    toastTest(text) {
+        if(!text){
+            text = 'Test de toast'
+        }
         const event = new CustomEvent('toast-message', {
-            detail: 'Texto de ejemplo de toast más largo aun para ver como se ve completo y ver si salta de linea'
+            detail: text
         });
         document.dispatchEvent(event);
     }

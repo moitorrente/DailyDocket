@@ -12,7 +12,7 @@ class ToastComponent extends HTMLElement {
             top: 0px;
             left: 50%;
             transform: translateX(-50%);
-            max-width: 650px;
+            max-width: 450px;
             width: 100%; /* Esto hace que el div ocupe todo el ancho horizontal disponible */
             text-align: center;
             margin: auto;
