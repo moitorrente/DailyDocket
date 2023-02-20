@@ -77,7 +77,7 @@ class InputText extends HTMLElement {
                 }
 
                 if (option === '/version') {
-                    this.toastTest('Version: 1');
+                    this.toastTest('Version: 1.1');
                 }
                 input.value = '';
                 menu.style.display = 'none';
@@ -120,7 +120,7 @@ class InputText extends HTMLElement {
                     const nuevoTexto = input.value.substring(indice + "/test".length);
                     this.toastTest(nuevoTexto);
                 } else if (input.value.startsWith('/version')) {
-                    this.toastTest('Version: 1');
+                    this.toastTest('Version: 1.1');
 
                 } else if (input.value.startsWith('/update')) {
                     this.update();
@@ -204,7 +204,7 @@ class InputText extends HTMLElement {
                                 this.update();
                             }
                             if (option === '/version') {
-                                this.toastTest('Version: 1');
+                                this.toastTest('Version: 1.1');
                             }
                             input.value = '';
                             menu.style.display = 'none';
