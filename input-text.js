@@ -72,6 +72,10 @@ class InputText extends HTMLElement {
                     this.toastTest();
                 }
 
+                if (option === '/update') {
+                    this.update();
+                }
+
                 if (option === '/version') {
                     this.toastTest('Version: 1');
                 }
@@ -116,6 +120,9 @@ class InputText extends HTMLElement {
                     this.toastTest(nuevoTexto);
                 } else if (input.value.startsWith('/version')) {
                     this.toastTest('Version: 1');
+
+                } else if (input.value.startsWith('/update')) {
+                    this.update();
                 }
 
                 else {
@@ -192,6 +199,9 @@ class InputText extends HTMLElement {
                             if (option === '/test') {
                                 this.toastTest();
                             }
+                            if (option === '/update') {
+                                this.update();
+                            }
                             if (option === '/version') {
                                 this.toastTest('Version: 1');
                             }
@@ -249,6 +259,22 @@ class InputText extends HTMLElement {
         });
         document.dispatchEvent(event);
     }
+
+    update() {
+        forceReload();
+    }
+}
+
+async function forceReload() {
+    (await caches.keys()).forEach(c => caches.delete(c))
+    navigator.serviceWorker
+        .getRegistrations()
+        .then((registrations) =>
+            Promise.all(registrations.map((r) => r.unregister())),
+        )
+        .then(() => {
+            window.location.reload(true);
+        });
 }
 
 customElements.define('input-text', InputText);
