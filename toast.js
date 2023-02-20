@@ -8,65 +8,69 @@ class ToastComponent extends HTMLElement {
         template.innerHTML = `
         <style>
         .toast {
-          position: fixed;
-          bottom: 20px;
-          left: 50%;
-          transform: translateX(-50%);
-          max-width: 700px;
-          text-align: center;
-          margin: auto;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          animation: slide-up .2s ease-in-out;
+            position: fixed;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 650px;
+            width: 100%; /* Esto hace que el div ocupe todo el ancho horizontal disponible */
+            text-align: center;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: slide-up .5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
-
+    
         @keyframes slide-up {
-          0% {
-            transform: translate(-50%, 100%);
-          }
-          100% {
-            transform: translate(-50%, 0);
-          }
+            0% {
+                transform: translate(-50%, -100%);
+            }
+            100% {
+                transform: translate(-50%, 0);
+            }
         }
-
+    
         .toast_message {
-          background-color: #e5e7eb;
-          border-radius: 10px;
-          color: #6b7280;
-          padding: 12px;
-          align-items: center;
-          display: flex;
-          gap: 1rem;
+            background-color: #e5e7eb;
+            border-radius: 10px;
+            color: #6b7280;
+            padding: 12px;
+            align-items: center;
+            display: flex;
+            gap: 20px;
         }
-
+    
         .toast_text {
-          font-size: small;
+            font-size: small;
         }
-
+    
         .toast_close {
-          margin-left: 0.5rem;
-          cursor: pointer;
-          color: #6b7280;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            color: #6b7280;
         }
-
+    
         .hidden {
-          animation: slide-down .5s ease-in-out;
+            animation: slide-down .5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
-
-        .hide{
+    
+        .hide {
             display: none;
         }
-
+    
         @keyframes slide-down {
-          0% {
-            transform: translate(-50%, 0);
-          }
-          100% {
-            transform: translate(-50%, 150%);
-          }
+            0% {
+                transform: translate(-50%, 0);
+            }
+            100% {
+                transform: translate(-50%, -100%);
+            }
         }
-      </style>
+    </style>
+    
+
+
         <div class="toast hidden hide">
           <div class="toast_message">
             <span class="toast_text"></span>
@@ -91,8 +95,7 @@ class ToastComponent extends HTMLElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        console.log('llegar por aqui', {newValue})
-        if (name === 'text' && newValue !=='') {
+        if (name === 'text' && newValue !== '') {
             this.textEl.textContent = newValue;
             this.show();
         }
@@ -102,7 +105,7 @@ class ToastComponent extends HTMLElement {
         this.toastEl.classList.remove('hidden', 'hide');
         setTimeout(() => {
             this.hide();
-        }, 3000);
+        }, 3500);
     }
 
     hide() {
@@ -113,7 +116,6 @@ class ToastComponent extends HTMLElement {
     }
 
     connectedCallback() {
-        console.log('pasa')
         document.addEventListener('toast-message', (event) => {
             this.setAttribute('text', event.detail);
         });

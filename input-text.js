@@ -39,8 +39,8 @@ class InputText extends HTMLElement {
         menu.style.borderRadius = '10px';
         menu.style.boxShadow = 'rgb(0 0 0 / 7%) 10px 10px 10px 0px';
 
-        const options = ['/delete', '/deletecompleted', '/complete', '/update', '/version'];
-        const descriptions = ['Borra todas las tareas', 'Borra las tareas completadas', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación']
+        const options = ['/delete', '/deletecompleted', '/complete', '/update', '/version', '/test'];
+        const descriptions = ['Borra todas las tareas', 'Borra las tareas completadas', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast']
         options.forEach((option, index) => {
             const item = document.createElement('div');
             item.style.display = 'flex';
@@ -66,6 +66,10 @@ class InputText extends HTMLElement {
                 // Lógica para ejecutar acción según opción seleccionada
                 if (option === '/delete') {
                     this.deleteAll();
+                }
+
+                if (option === '/test') {
+                    this.toastTest();
                 }
                 input.value = '';
                 menu.style.display = 'none';
@@ -100,9 +104,13 @@ class InputText extends HTMLElement {
                 taskList.appendChild(title);
                 taskList.appendChild(date);
                 this.taskId++;
-                if (input.value == '/delete') {
+                if (input.value === '/delete') {
                     this.deleteAll();
-                } else {
+                } if (input.value === '/test') {
+                    this.toastTest();
+                }
+
+                else {
 
                     const boldRegex = /\*\*([^*]+)\*\*/g;
 
@@ -131,6 +139,13 @@ class InputText extends HTMLElement {
                         .replace(linkRegex, '<a href="$2">$1</a>');
 
 
+
+                    const codeRegex = /`([^`]+)`/g;
+
+                    // Reemplazar el formato de código con tags HTML
+                    input.value = input.value.replace(codeRegex, '<code>$1</code>');
+
+
                     addOpenTask(input.value, date.innerHTML, this.taskId)
                     //document.querySelector('.open').prepend(taskList);
                 }
@@ -139,7 +154,6 @@ class InputText extends HTMLElement {
             } else if (text.startsWith('/')) {
                 // Mostrar menú de comandos que coinciden con el texto ingresado
                 const matchedCommands = options.filter(option => option.startsWith(text));
-                console.log(text.substring(1))
                 if (matchedCommands.length > 0) {
                     menu.innerHTML = '';
                     matchedCommands.forEach((option, index) => {
@@ -166,6 +180,9 @@ class InputText extends HTMLElement {
                             // Lógica para ejecutar acción según opción seleccionada
                             if (option === '/delete') {
                                 this.deleteAll();
+                            }
+                            if(option === '/test'){
+                                this.toastTest();
                             }
                             input.value = '';
                             menu.style.display = 'none';
@@ -203,6 +220,13 @@ class InputText extends HTMLElement {
         document.dispatchEvent(event);
 
         removeAllTasks();
+    }
+
+    toastTest() {
+        const event = new CustomEvent('toast-message', {
+            detail: 'Texto de ejemplo de toast más largo aun para ver como se ve completo y ver si salta de linea'
+        });
+        document.dispatchEvent(event);
     }
 }
 
