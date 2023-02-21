@@ -9,7 +9,7 @@ class ToastComponent extends HTMLElement {
         <style>
         .toast {
             position: fixed;
-            top: 2px;
+            top: 0px;
             left: 50%;
             transform: translateX(-50%);
             max-width: 450px;
@@ -40,7 +40,8 @@ class ToastComponent extends HTMLElement {
             padding-left: 12px;
             align-items: center;
             display: flex;
-            gap: 20px;
+            gap: 10px;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
         }
     
         .toast_text {
@@ -48,7 +49,6 @@ class ToastComponent extends HTMLElement {
         }
     
         .toast_close {
-            margin-left: 0.5rem;
             cursor: pointer;
             color: #9ca3af;
             padding: 2px;
@@ -78,9 +78,6 @@ class ToastComponent extends HTMLElement {
             }
         }
     </style>
-    
-
-
         <div class="toast hidden hide">
           <div class="toast_message">
             <span class="toast_text"></span>

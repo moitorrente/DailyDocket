@@ -36,11 +36,11 @@ class InputText extends HTMLElement {
         menu.style.boxSizing = 'border-box';
         menu.style.backgroundColor = '#f3f4f6';
         menu.style.display = 'none';
-        menu.style.borderRadius = '10px';
+        menu.style.borderRadius = '8px';
         menu.style.boxShadow = 'rgb(0 0 0 / 7%) 10px 10px 10px 0px';
 
-        const options = ['/delete', '/deletecompleted', '/complete', '/update', '/version', '/test', '/export'];
-        const descriptions = ['Borra todas las tareas', 'Borra las tareas completadas', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta las listas de tareas']
+        const options = ['/delete', '/deletecompleted', '/complete', '/update', '/version', '/test', '/export', '/md'];
+        const descriptions = ['Borra todas las tareas', 'Borra las tareas completadas', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md']
         options.forEach((option, index) => {
             const item = document.createElement('div');
             item.style.display = 'flex';
@@ -59,7 +59,7 @@ class InputText extends HTMLElement {
             item.style.padding = '6px';
             item.style.paddingLeft = '12px'
             item.style.paddingRight = '12px'
-            item.style.borderRadius = '10px';
+            item.style.borderRadius = '8px';
             item.style.fontSize = '13px';
 
             item.addEventListener('click', () => {
@@ -78,6 +78,12 @@ class InputText extends HTMLElement {
 
                 if (option === '/version') {
                     this.toastTest('Version: 1.1');
+                }
+                if (option === '/export') {
+                    this.exportText();
+                }
+                if (option === '/md') {
+                    this.exportMD();
                 }
                 input.value = '';
                 menu.style.display = 'none';
@@ -126,7 +132,10 @@ class InputText extends HTMLElement {
                     this.update();
                 }
                 else if (input.value.startsWith('/export')) {
-                    this.export();
+                    this.exportText();
+                }
+                else if (input.value.startsWith('/md')) {
+                    this.exportMD();
                 }
                 else {
                     const boldRegex = /\*\*([^*]+)\*\*/g;
@@ -183,7 +192,7 @@ class InputText extends HTMLElement {
                         item.style.padding = '6px';
                         item.style.paddingLeft = '12px'
                         item.style.paddingRight = '12px'
-                        item.style.borderRadius = '10px';
+                        item.style.borderRadius = '8px';
                         item.style.fontSize = '13px';
 
                         item.addEventListener('click', () => {
@@ -201,7 +210,10 @@ class InputText extends HTMLElement {
                                 this.toastTest('Version: 1.1');
                             }
                             if (option === '/export') {
-                                this.export();
+                                this.exportText();
+                            }
+                            if (option === '/md') {
+                                this.exportMD();
                             }
                             input.value = '';
                             menu.style.display = 'none';
@@ -234,7 +246,7 @@ class InputText extends HTMLElement {
         document.querySelector('.open').innerHTML = '';
         document.querySelector('.closed').innerHTML = '';
         const event = new CustomEvent('toast-message', {
-            detail: 'Todas las tareas han sido borradas'
+            detail: ' Todas las tareas han sido borradas'
         });
         document.dispatchEvent(event);
 
@@ -262,14 +274,22 @@ class InputText extends HTMLElement {
         forceReload();
     }
 
-    export() {
+    exportText() {
+        const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
+        const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
+        const openTasksText = openTasks.map(task => `- ${task.description}`).join('\r\n');
+        const closedasksText = closedTasks.map(task => `- ${task.description}`).join('\r\n');
+        const exporText = `Tareas abiertas \r\n${openTasksText} \r\n\r\nTareas cerradas \r\n${closedasksText}`;
+        downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.txt`)
+    }
+
+    exportMD() {
         const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
         const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
         const openTasksText = openTasks.map(task => `   - ${task.description}`).join('\r\n');
         const closedasksText = closedTasks.map(task => `   - ${task.description}`).join('\r\n');
-        const exporText = `Tareas abiertas \r\n${openTasksText} \r\n\r\nTareas cerradas \r\n${closedasksText}`;
-
-        downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.txt`)
+        const exporText = `\r\n# Tareas abiertas \r\n${openTasksText} \r\n\r\n# Tareas cerradas \r\n${closedasksText}`;
+        downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.md`)
     }
 }
 
