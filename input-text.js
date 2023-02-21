@@ -39,8 +39,8 @@ class InputText extends HTMLElement {
         menu.style.borderRadius = '10px';
         menu.style.boxShadow = 'rgb(0 0 0 / 7%) 10px 10px 10px 0px';
 
-        const options = ['/delete', '/deletecompleted', '/complete', '/update', '/version', '/test'];
-        const descriptions = ['Borra todas las tareas', 'Borra las tareas completadas', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast']
+        const options = ['/delete', '/deletecompleted', '/complete', '/update', '/version', '/test', '/export'];
+        const descriptions = ['Borra todas las tareas', 'Borra las tareas completadas', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta las listas de tareas']
         options.forEach((option, index) => {
             const item = document.createElement('div');
             item.style.display = 'flex';
@@ -125,9 +125,10 @@ class InputText extends HTMLElement {
                 } else if (input.value.startsWith('/update')) {
                     this.update();
                 }
-
+                else if (input.value.startsWith('/export')) {
+                    this.export();
+                }
                 else {
-
                     const boldRegex = /\*\*([^*]+)\*\*/g;
 
                     // Expresión regular para buscar el formato de cursiva
@@ -142,8 +143,6 @@ class InputText extends HTMLElement {
                         .replace(boldRegex, '<strong>$1</strong>')
                         .replace(italicRegex, '<i>$1</i>');
 
-
-
                     const linkWithTitleRegex = /\[([^\]]+)\]\((https?:\/\/[^\s]+)\s+\"([^"]+)\"\)/g;
 
                     // Expresión regular para buscar enlaces sin título
@@ -153,15 +152,10 @@ class InputText extends HTMLElement {
                     input.value = input.value
                         .replace(linkWithTitleRegex, '<a href="$2" title="$3">$1</a>')
                         .replace(linkRegex, '<a href="$2">$1</a>');
-
-
-
                     const codeRegex = /`([^`]+)`/g;
 
                     // Reemplazar el formato de código con tags HTML
                     input.value = input.value.replace(codeRegex, '<code>$1</code>');
-
-
                     addOpenTask(input.value, date.innerHTML, this.taskId)
                     //document.querySelector('.open').prepend(taskList);
                 }
@@ -205,6 +199,9 @@ class InputText extends HTMLElement {
                             }
                             if (option === '/version') {
                                 this.toastTest('Version: 1.1');
+                            }
+                            if (option === '/export') {
+                                this.export();
                             }
                             input.value = '';
                             menu.style.display = 'none';
@@ -264,6 +261,28 @@ class InputText extends HTMLElement {
     update() {
         forceReload();
     }
+
+    export() {
+        const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
+        const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
+        const openTasksText = openTasks.map(task => `   - ${task.description}`).join('\r\n');
+        const closedasksText = closedTasks.map(task => `   - ${task.description}`).join('\r\n');
+        const exporText = `Tareas abiertas \r\n${openTasksText} \r\n\r\nTareas cerradas \r\n${closedasksText}`;
+
+        downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.txt`)
+    }
+}
+
+function downloadFile(texto, nombreArchivo) {
+    const archivo = new Blob([texto], { type: 'text/plain' });
+    const enlaceDescarga = document.createElement('a');
+    enlaceDescarga.href = window.URL.createObjectURL(archivo);
+    enlaceDescarga.download = nombreArchivo;
+    enlaceDescarga.click();
+    const event = new CustomEvent('toast-message', {
+        detail: 'Tareas descargadas'
+    });
+    document.dispatchEvent(event);
 }
 
 async function forceReload() {
