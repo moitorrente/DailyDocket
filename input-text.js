@@ -4,8 +4,7 @@ class InputText extends HTMLElement {
         const shadow = this.attachShadow({ mode: 'open' });
 
         const input = document.createElement('input');
-        this.taskId = shadow.querySelectorAll('task-list').length;
-        this.taskId++;
+        this.taskId = localStorage.getItem('maxId') || 0;
 
         input.type = 'text';
         input.style.border = 'none';
@@ -87,6 +86,7 @@ class InputText extends HTMLElement {
             const text = event.target.value.trim();
 
             if (event.keyCode === 13 && text.length) {
+                this.taskId++;
                 const taskList = document.createElement('task-list');
                 taskList.setAttribute('id', this.taskId);
                 const title = document.createElement('span');
@@ -98,7 +98,7 @@ class InputText extends HTMLElement {
                 date.innerHTML = new Date().toLocaleDateString('es-ES');
                 taskList.appendChild(title);
                 taskList.appendChild(date);
-                this.taskId++;
+                localStorage.setItem('maxId', this.taskId)
 
                 const [command, param] = input.value.split(' ').filter(Boolean);
                 if (command.startsWith('/')) {
@@ -183,6 +183,10 @@ class InputText extends HTMLElement {
     }
 
     deleteAll() {
+        removeAllTasks();
+        localStorage.setItem('maxId', 0);
+        this.taskId = 0;
+
         document.querySelector('.open').innerHTML = '';
         document.querySelector('.closed').innerHTML = '';
         const event = new CustomEvent('toast-message', {
@@ -190,7 +194,7 @@ class InputText extends HTMLElement {
         });
         document.dispatchEvent(event);
 
-        removeAllTasks();
+
     }
 
     toastTest(text = 'Test de toast') {
