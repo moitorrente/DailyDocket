@@ -18,7 +18,7 @@ class Modal extends HTMLElement {
   
           .modal-content {
             background-color: #f3f4f6;
-            margin: 30% auto;
+            margin: 20% auto;
             padding: 20px;
             border-radius: 10px;
             width: 80%;

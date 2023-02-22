@@ -168,7 +168,7 @@ class InputText extends HTMLElement {
             '/delete': () => this.deleteAll(),
             '/test': () => this.toastTest(param),
             '/update': () => this.update(),
-            '/version': () => this.toastTest('Version: 1.2'),
+            '/version': () => this.toastTest('Version: 1.3'),
             '/export': () => this.exportText(),
             '/md': () => this.transformMDtoHTML(),
             '/modal': () => this.showModal('Título', 'Contenido'),
