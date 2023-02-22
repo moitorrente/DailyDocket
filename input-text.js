@@ -64,27 +64,7 @@ class InputText extends HTMLElement {
 
             item.addEventListener('click', () => {
                 // Lógica para ejecutar acción según opción seleccionada
-                if (option === '/delete') {
-                    this.deleteAll();
-                }
-
-                if (option === '/test') {
-                    this.toastTest();
-                }
-
-                if (option === '/update') {
-                    this.update();
-                }
-
-                if (option === '/version') {
-                    this.toastTest('Version: 1.1');
-                }
-                if (option === '/export') {
-                    this.exportText();
-                }
-                if (option === '/md') {
-                    this.exportMD();
-                }
+                this.executeOption(option)
                 input.value = '';
                 menu.style.display = 'none';
                 input.focus();
@@ -119,56 +99,14 @@ class InputText extends HTMLElement {
                 taskList.appendChild(title);
                 taskList.appendChild(date);
                 this.taskId++;
-                if (input.value == '/delete') {
-                    this.deleteAll();
-                } else if (input.value.startsWith('/test')) {
-                    const indice = input.value.indexOf("/test");
-                    const nuevoTexto = input.value.substring(indice + "/test".length);
-                    this.toastTest(nuevoTexto);
-                } else if (input.value.startsWith('/version')) {
-                    this.toastTest('Version: 1.1');
 
-                } else if (input.value.startsWith('/update')) {
-                    this.update();
+                const [command, param] = input.value.split(' ').filter(Boolean);
+                if (command.startsWith('/')) {
+                    this.executeOption(command, param);
+                } else {
+                    const text = this.transformMDtoHTML(input.value);
+                    addOpenTask(text, date.innerHTML, this.taskId);
                 }
-                else if (input.value.startsWith('/export')) {
-                    this.exportText();
-                }
-                else if (input.value.startsWith('/md')) {
-                    this.exportMD();
-                }
-                else {
-                    const boldRegex = /\*\*([^*]+)\*\*/g;
-
-                    // Expresión regular para buscar el formato de cursiva
-                    const italicRegex = /\*([^*]+)\*/g;
-
-                    // Expresión regular para buscar el formato de negrita y cursiva combinados
-                    const boldItalicRegex = /\*\*_(.+?)_\*\*/g;
-
-                    // Reemplazar el texto en negrita con tags HTML
-                    input.value = input.value
-                        .replace(boldItalicRegex, '<strong><i>$1</i></strong>')
-                        .replace(boldRegex, '<strong>$1</strong>')
-                        .replace(italicRegex, '<i>$1</i>');
-
-                    const linkWithTitleRegex = /\[([^\]]+)\]\((https?:\/\/[^\s]+)\s+\"([^"]+)\"\)/g;
-
-                    // Expresión regular para buscar enlaces sin título
-                    const linkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g;
-
-                    // Reemplazar los enlaces con tags HTML
-                    input.value = input.value
-                        .replace(linkWithTitleRegex, '<a href="$2" title="$3">$1</a>')
-                        .replace(linkRegex, '<a href="$2">$1</a>');
-                    const codeRegex = /`([^`]+)`/g;
-
-                    // Reemplazar el formato de código con tags HTML
-                    input.value = input.value.replace(codeRegex, '<code>$1</code>');
-                    addOpenTask(input.value, date.innerHTML, this.taskId)
-                    //document.querySelector('.open').prepend(taskList);
-                }
-
                 input.value = '';
             } else if (text.startsWith('/')) {
                 // Mostrar menú de comandos que coinciden con el texto ingresado
@@ -197,24 +135,7 @@ class InputText extends HTMLElement {
 
                         item.addEventListener('click', () => {
                             // Lógica para ejecutar acción según opción seleccionada
-                            if (option === '/delete') {
-                                this.deleteAll();
-                            }
-                            if (option === '/test') {
-                                this.toastTest();
-                            }
-                            if (option === '/update') {
-                                this.update();
-                            }
-                            if (option === '/version') {
-                                this.toastTest('Version: 1.1');
-                            }
-                            if (option === '/export') {
-                                this.exportText();
-                            }
-                            if (option === '/md') {
-                                this.exportMD();
-                            }
+                            this.executeOption(option)
                             input.value = '';
                             menu.style.display = 'none';
                             input.focus();
@@ -240,6 +161,24 @@ class InputText extends HTMLElement {
         window.addEventListener('click', () => menu.style.display = 'none');
 
         shadow.appendChild(input);
+    }
+
+    executeOption(option, param) {
+        const options = {
+            '/delete': () => this.deleteAll(),
+            '/test': () => this.toastTest(param),
+            '/update': () => this.update(),
+            '/version': () => this.toastTest('Version: 1.2'),
+            '/export': () => this.exportText(),
+            '/md': () => this.exportMD(),
+        };
+
+        const selectedOption = options[option];
+        if (selectedOption) {
+            selectedOption();
+        } else {
+            this.toastTest('Comando no válido');
+        }
     }
 
     deleteAll() {
@@ -290,6 +229,18 @@ class InputText extends HTMLElement {
         const closedasksText = closedTasks.map(task => `   - ${task.description}`).join('\r\n');
         const exporText = `\r\n# Tareas abiertas \r\n${openTasksText} \r\n\r\n# Tareas cerradas \r\n${closedasksText}`;
         downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.md`)
+    }
+
+    transformMDtoHTML(input) {
+        return input
+            .replace(/\*\*_(.+?)_\*\*/g, '<strong><i>$1</i></strong>')
+            .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*([^*]+)\*/g, '<i>$1</i>')
+            .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\s+\"([^"]+)\"\)/g, '<a href="$2" title="$3">$1</a>')
+            .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g, '<a href="$2">$1</a>')
+            .replace(/(#+) (.+)/g, (match, level, title) => `<h${level.length}>${title}</h${level.length}>`)
+            .replace(/```(.+?)\n([\s\S]+?)\n```/g, '<pre><code>$2</code></pre>')
+            .replace(/`([^`]+)`/g, '<code>$1</code>');
     }
 }
 
