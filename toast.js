@@ -77,7 +77,7 @@ class ToastComponent extends HTMLElement {
                 transform: translate(-50%, -100%);
             }
         }
-    </style>
+        </style>
         <div class="toast hidden hide">
           <div class="toast_message">
             <span class="toast_text"></span>

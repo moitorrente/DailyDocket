@@ -75,28 +75,23 @@ class TaskList extends HTMLElement {
         input[type="checkbox"]:checked+label {
             background-color: #9ca3af;
             border: 1px solid #9ca3af;
-            /* quitar el color de fondo */
             background-image: url("check.svg");
-            /* imagen personalizada del tick blanco */
         }
         input[type="checkbox"]:checked:hover+label {
             border: 1px solid #6b7280;
-            /* quitar el color de fondo */
             background-image: url("check.svg");
-            /* imagen personalizada del tick blanco */
         }
-        
 
         </style>
   
         <div class="task" id="">
-            <input type="checkbox" id="myCheckbox">
-            <label for="myCheckbox"></label>
+          <input type="checkbox" id="myCheckbox">
+          <label for="myCheckbox"></label>
           <div class="task-text">
             <slot name="title"></slot>
           </div>
           <div class="task-date">
-            <slot name="date"></slot>
+          <slot name="date"></slot>
           </div>
         </div>
       `;

@@ -17,8 +17,8 @@ class Modal extends HTMLElement {
           }
   
           .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
+            background-color: #f3f4f6;
+            margin: 30% auto;
             padding: 20px;
             border-radius: 10px;
             width: 80%;
@@ -27,22 +27,29 @@ class Modal extends HTMLElement {
   
           .close {
             color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
             cursor: pointer;
+            padding: 3px;
+            border-radius: 4px;
+            width: 21px;
+            height: 21px;
           }
   
           .close:hover,
           .close:focus {
             color: black;
+            background-color: #d1d5db;
             text-decoration: none;
             cursor: pointer;
           }
   
           .modal-title {
-            font-size: 24px;
-            margin-bottom: 10px;
+            flex-grow: 1;
+            font-size: x-large;
+          }
+
+          .modal-title-2 {
+            display: flex;
+            align-items: center;
           }
   
           .modal-body {
@@ -53,8 +60,12 @@ class Modal extends HTMLElement {
         </style>
         <div class="modal">
           <div class="modal-content">
-            <span class="close"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.8536 2.85355C13.0488 2.65829 13.0488 2.34171 12.8536 2.14645C12.6583 1.95118 12.3417 1.95118 12.1464 2.14645L7.5 6.79289L2.85355 2.14645C2.65829 1.95118 2.34171 1.95118 2.14645 2.14645C1.95118 2.34171 1.95118 2.65829 2.14645 2.85355L6.79289 7.5L2.14645 12.1464C1.95118 12.3417 1.95118 12.6583 2.14645 12.8536C2.34171 13.0488 2.65829 13.0488 2.85355 12.8536L7.5 8.20711L12.1464 12.8536C12.3417 13.0488 12.6583 13.0488 12.8536 12.8536C13.0488 12.6583 13.0488 12.3417 12.8536 12.1464L8.20711 7.5L12.8536 2.85355Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></span>
-            <h2 class="modal-title"></h2>
+            <div class="modal-title-2">
+            <div class="modal-title"></div>
+            <div class="close"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.8536 2.85355C13.0488 2.65829 13.0488 2.34171 12.8536 2.14645C12.6583 1.95118 12.3417 1.95118 12.1464 2.14645L7.5 6.79289L2.85355 2.14645C2.65829 1.95118 2.34171 1.95118 2.14645 2.14645C1.95118 2.34171 1.95118 2.65829 2.14645 2.85355L6.79289 7.5L2.14645 12.1464C1.95118 12.3417 1.95118 12.6583 2.14645 12.8536C2.34171 13.0488 2.65829 13.0488 2.85355 12.8536L7.5 8.20711L12.1464 12.8536C12.3417 13.0488 12.6583 13.0488 12.8536 12.8536C13.0488 12.6583 13.0488 12.3417 12.8536 12.1464L8.20711 7.5L12.8536 2.85355Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div>
+            
+            </div>
+
             <p class="modal-body"></p>
           </div>
         </div>

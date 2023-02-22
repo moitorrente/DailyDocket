@@ -2,7 +2,6 @@ class MyDate extends HTMLElement {
     constructor() {
         super();
         const shadowRoot = this.attachShadow({ mode: 'open' });
-
         const template = `
         <style>
           div {

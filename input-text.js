@@ -39,8 +39,8 @@ class InputText extends HTMLElement {
         menu.style.borderRadius = '8px';
         menu.style.boxShadow = 'rgb(0 0 0 / 7%) 10px 10px 10px 0px';
 
-        const options = ['/delete', '/deletecompleted', '/complete', '/update', '/version', '/test', '/export', '/md'];
-        const descriptions = ['Borra todas las tareas', 'Borra las tareas completadas', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md']
+        const options = ['/delete', '/deletecompleted', '/complete', '/update', '/version', '/test', '/export', '/md', '/modal'];
+        const descriptions = ['Borra todas las tareas', 'Borra las tareas completadas', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Prueba de modal']
         options.forEach((option, index) => {
             const item = document.createElement('div');
             item.style.display = 'flex';
@@ -171,6 +171,7 @@ class InputText extends HTMLElement {
             '/version': () => this.toastTest('Version: 1.2'),
             '/export': () => this.exportText(),
             '/md': () => this.exportMD(),
+            '/modal': () => this.showModal('Título', 'Contenido'),
         };
 
         const selectedOption = options[option];
@@ -192,10 +193,7 @@ class InputText extends HTMLElement {
         removeAllTasks();
     }
 
-    toastTest(text) {
-        if (!text) {
-            text = 'Test de toast'
-        }
+    toastTest(text = 'Test de toast') {
         const event = new CustomEvent('toast-message', {
             detail: text
         });
@@ -217,8 +215,8 @@ class InputText extends HTMLElement {
         const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
         const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
         const openTasksText = openTasks.map(task => `- ${task.description}`).join('\r\n');
-        const closedasksText = closedTasks.map(task => `- ${task.description}`).join('\r\n');
-        const exporText = `Tareas abiertas \r\n${openTasksText} \r\n\r\nTareas cerradas \r\n${closedasksText}`;
+        const closedTasksText = closedTasks.map(task => `- ${task.description}`).join('\r\n');
+        const exporText = `Tareas abiertas \r\n${openTasksText} \r\n\r\nTareas cerradas \r\n${closedTasksText}`;
         downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.txt`)
     }
 
@@ -226,8 +224,8 @@ class InputText extends HTMLElement {
         const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
         const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
         const openTasksText = openTasks.map(task => `   - ${task.description}`).join('\r\n');
-        const closedasksText = closedTasks.map(task => `   - ${task.description}`).join('\r\n');
-        const exporText = `\r\n# Tareas abiertas \r\n${openTasksText} \r\n\r\n# Tareas cerradas \r\n${closedasksText}`;
+        const closedTasksText = closedTasks.map(task => `   - ${task.description}`).join('\r\n');
+        const exporText = `\r\n# Tareas abiertas \r\n${openTasksText} \r\n\r\n# Tareas cerradas \r\n${closedTasksText}`;
         downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.md`)
     }
 
