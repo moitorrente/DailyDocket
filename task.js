@@ -1,9 +1,9 @@
 class TaskList extends HTMLElement {
-    constructor() {
-        super();
-        const shadowRoot = this.attachShadow({ mode: "open" });
+  constructor() {
+    super();
+    const shadowRoot = this.attachShadow({ mode: "open" });
 
-        const template = `
+    const template = `
         <style>
 
         .task {
@@ -95,33 +95,34 @@ class TaskList extends HTMLElement {
           </div>
         </div>
       `;
-        shadowRoot.innerHTML = template;
+    shadowRoot.innerHTML = template;
 
-        const checkbox = shadowRoot.querySelector("input[type='checkbox']");
-        const _this = this;
-        const open = document.querySelector('#open');
-        const closed = document.querySelector('#closed');
+    const checkbox = shadowRoot.querySelector("input[type='checkbox']");
+    const _this = this;
+    const open = document.querySelector('#open');
+    const closed = document.querySelector('#closed');
 
-        // Escuchar los cambios en el estado del checkbox
-        checkbox.addEventListener('change', () => {
-            if (checkbox.checked) {
-                removeOpenTask(this.taskId);
-                addClosedTask(this.taskText, this.taskDate, this.taskId);
-            } else {
-                removeClosedTask(this.taskId);
-                addOpenTask(this.taskText, this.taskDate, this.taskId);
-            }
-        })
-    }
-    connectedCallback() {
-        const slot = this.shadowRoot.querySelector('slot[name="title"]');
-        const assignedNodes = slot.assignedNodes();
-        this.taskText = assignedNodes[0].textContent;
-        const slotDate = this.shadowRoot.querySelector('slot[name="date"]');
-        const assignedNodesDate = slotDate.assignedNodes();
-        this.taskDate = assignedNodesDate[0].textContent;
-        this.taskId = Number(this.getAttribute("id"));
-    }
+    // Escuchar los cambios en el estado del checkbox
+    checkbox.addEventListener('change', () => {
+      const { taskId, taskText, taskDate } = this;
+      if (checkbox.checked) {
+        removeOpenTask(taskId);
+        addClosedTask(taskText, taskDate, taskId);
+      } else {
+        removeClosedTask(taskId);
+        addOpenTask(taskText, taskDate, taskId);
+      }
+    })
+  }
+  connectedCallback() {
+    const slot = this.shadowRoot.querySelector('slot[name="title"]');
+    const assignedNodes = slot.assignedNodes();
+    this.taskText = assignedNodes[0].textContent;
+    const slotDate = this.shadowRoot.querySelector('slot[name="date"]');
+    const assignedNodesDate = slotDate.assignedNodes();
+    this.taskDate = assignedNodesDate[0].textContent;
+    this.taskId = Number(this.getAttribute("id"));
+  }
 }
 
 customElements.define("task-list", TaskList);

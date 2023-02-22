@@ -4,6 +4,7 @@ class ElementCounter extends HTMLElement {
     const shadowRoot = this.attachShadow({ mode: "open" });
     const countId = this.getAttribute("count-id");
     const countText = this.getAttribute("count-text") || " tareas";
+
     const observer = new MutationObserver(() => {
       const count = document.getElementById(countId).querySelectorAll("task-list").length;
       shadowRoot.querySelector("#count").textContent = count + countText;
@@ -27,7 +28,6 @@ class ElementCounter extends HTMLElement {
 
     shadowRoot.innerHTML = template;
     shadowRoot.querySelector("#count").textContent = document.getElementById(countId).querySelectorAll("task-list").length + countText;
-
   }
 }
 

@@ -170,7 +170,7 @@ class InputText extends HTMLElement {
             '/update': () => this.update(),
             '/version': () => this.toastTest('Version: 1.2'),
             '/export': () => this.exportText(),
-            '/md': () => this.exportMD(),
+            '/md': () => this.transformMDtoHTML(),
             '/modal': () => this.showModal('Título', 'Contenido'),
         };
 
@@ -214,19 +214,10 @@ class InputText extends HTMLElement {
     exportText() {
         const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
         const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
-        const openTasksText = openTasks.map(task => `- ${task.description}`).join('\r\n');
-        const closedTasksText = closedTasks.map(task => `- ${task.description}`).join('\r\n');
-        const exporText = `Tareas abiertas \r\n${openTasksText} \r\n\r\nTareas cerradas \r\n${closedTasksText}`;
-        downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.txt`)
-    }
-
-    exportMD() {
-        const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
-        const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
         const openTasksText = openTasks.map(task => `   - ${task.description}`).join('\r\n');
         const closedTasksText = closedTasks.map(task => `   - ${task.description}`).join('\r\n');
-        const exporText = `\r\n# Tareas abiertas \r\n${openTasksText} \r\n\r\n# Tareas cerradas \r\n${closedTasksText}`;
-        downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.md`)
+        const exporText = `Tareas abiertas \r\n${openTasksText} \r\n\r\nTareas cerradas \r\n${closedTasksText}`;
+        downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.txt`)
     }
 
     transformMDtoHTML(input) {
