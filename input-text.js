@@ -3,14 +3,15 @@ class InputText extends HTMLElement {
         super();
         const shadow = this.attachShadow({ mode: 'open' });
 
+        const container = document.createElement('div');
         const input = document.createElement('input');
         this.input = input;
         this.taskId = localStorage.getItem('maxId') || 0;
 
         input.type = 'text';
         input.style.border = 'none';
-        input.style.backgroundColor = '#f3f4f6';
-        input.style.color = '#6b7280';
+        input.style.backgroundColor = '#e5e7eb';
+        input.style.color = '#4b5563';
         input.style.borderRadius = '10px';
         input.style.padding = '12px';
         input.style.width = '100%';
@@ -27,11 +28,11 @@ class InputText extends HTMLElement {
         menu.appendChild(tituloMenu);
         menu.style.position = 'absolute';
         menu.style.fontSize = '13px';
-        menu.style.top = '160px';
+        menu.style.top = '170px';
         menu.style.color = '#6b7280';
         menu.style.padding = '6px';
         menu.style.width = '100%';
-        menu.style.maxWidth = '350px';
+        menu.style.maxWidth = '300px';
         menu.style.outline = 'none';
         menu.style.boxSizing = 'border-box';
         menu.style.backgroundColor = '#f3f4f6';
@@ -39,8 +40,8 @@ class InputText extends HTMLElement {
         menu.style.borderRadius = '8px';
         menu.style.boxShadow = 'rgb(0 0 0 / 7%) 10px 10px 10px 0px';
 
-        const options = ['/delete', '/deletecompleted', '/complete', '/update', '/version', '/test', '/export', '/md', '/modal'];
-        const descriptions = ['Borra todas las tareas', 'Borra las tareas completadas', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Prueba de modal']
+        const options = ['/delete', '/log', '/complete', '/update', '/version', '/test', '/export', '/md', '/modal'];
+        const descriptions = ['Borra todas las tareas', 'Muestra el log de acciones', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Prueba de modal']
         options.forEach((option, index) => {
             const item = document.createElement('div');
             item.style.display = 'flex';
@@ -110,7 +111,7 @@ class InputText extends HTMLElement {
                 } else {
                     const htmlToShow = this.transformMDtoHTML(input.value);
                     const onlyText = this.removeMarkdown(input.value);
-                    addOpenTask(htmlToShow, input.value, onlyText, date.innerHTML, this.taskId);
+                    createOpenTask(htmlToShow, input.value, onlyText, date.innerHTML, this.taskId);
                 }
                 input.value = '';
             } else if (text.startsWith('/')) {
@@ -164,10 +165,9 @@ class InputText extends HTMLElement {
         });
 
         window.addEventListener('click', () => menu.style.display = 'none');
-
-
-
-        shadow.appendChild(input);
+        container.appendChild(input);
+        container.appendChild(menu);
+        shadow.appendChild(container);
     }
 
     connectedCallback() {
@@ -185,6 +185,7 @@ class InputText extends HTMLElement {
             '/export': () => this.exportText(),
             '/md': () => this.exportMD(),
             '/modal': () => this.showModal('Título', 'Contenido'),
+            '/log': () => this.log(),
         };
 
         const selectedOption = options[option];
@@ -220,6 +221,32 @@ class InputText extends HTMLElement {
     showModal(title, body) {
         const event = new CustomEvent('modal-message', {
             detail: [title, body]
+        });
+        document.dispatchEvent(event);
+
+    }
+
+    log() {
+        const title = 'Log';
+        const taskEvents = JSON.parse(localStorage.getItem('taskEvents')) || [];
+
+        function generateHTMLFromArray(data) {
+            const headerRow = "<tr><th>Tipo</th><th>Tarea</th><th>Timestamp</th></tr>";
+
+            const bodyRows = data.map(item => {
+                const { type, task, timestamp } = item;
+                return `<tr><td>${type}</td><td>${task}</td><td style="width: fit-content;">${timestamp}</td></tr>`;
+            }).join("");
+
+            return `<table style="border-collapse: collapse; width: 100%; margin-top: 20px; text-align: left;">
+                        <thead>${headerRow}</thead>
+                        <tbody style="font-size: small;">${bodyRows}</tbody>
+                        <tfoot></tfoot>
+                    </table>`;
+        }
+
+        const event = new CustomEvent('modal-message', {
+            detail: [title, generateHTMLFromArray(taskEvents)]
         });
         document.dispatchEvent(event);
     }

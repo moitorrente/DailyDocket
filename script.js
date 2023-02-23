@@ -52,12 +52,22 @@ const saveTasksToLocalStorage = () => {
 // Función para agregar una nueva tarea abierta
 const addOpenTask = (description, raw, text, date, id) => {
     openTasks.push({ description, raw, text, date, id, completed: false });
+    console.log(id)
+    logTaskEvent('TO_OPEN', id)
+    saveTasksToLocalStorage();
+};
+
+const createOpenTask = (description, raw, text, date, id) => {
+    openTasks.push({ description, raw, text, date, id, completed: false });
+    console.log(id)
+    logTaskEvent('CREATE', id)
     saveTasksToLocalStorage();
 };
 
 // Función para agregar una nueva tarea cerrada
 const addClosedTask = (description, raw, text, date, id) => {
     closedTasks.push({ description, raw, text, date, id, completed: true });
+    logTaskEvent('TO_CLOSE', id)
     saveTasksToLocalStorage();
 };
 
@@ -95,9 +105,25 @@ const removeAllTasks = () => {
 function getText(id) {
     const task = openTasks.find(task => task.id === id) || closedTasks.find(task => task.id === id);
     return task.text;
-  }
-  
-  function getRaw(id) {
+}
+
+function getRaw(id) {
     const task = openTasks.find(task => task.id === id) || closedTasks.find(task => task.id === id);
     return task.raw;
-  }
+}
+
+
+function Event(type, task, timestamp) {
+    this.type = type;
+    this.task = task;
+    this.timestamp = timestamp;
+}
+
+// Define una función para registrar eventos de las tareas
+function logTaskEvent(eventType, task) {
+    const timestamp = new Date().toISOString();
+    const event = new Event(eventType, task, timestamp);
+    const events = JSON.parse(localStorage.getItem('taskEvents')) || [];
+    events.push(event);
+    localStorage.setItem('taskEvents', JSON.stringify(events));
+}

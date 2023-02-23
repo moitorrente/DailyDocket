@@ -14,7 +14,7 @@ class ElementCounter extends HTMLElement {
     const template = `
         <style>
           div {
-            color: #9ca3af;
+            color: #6b7280;
             font-weight: 300;
             font-size: .8rem;
             text-align: right;

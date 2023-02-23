@@ -12,7 +12,7 @@ class Modal extends HTMLElement {
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
+            overflow: hidden;
             background-color: rgba(0, 0, 0, 0.4);
           }
   
@@ -56,6 +56,11 @@ class Modal extends HTMLElement {
             font-size: 16px;
             line-height: 1.5;
             margin-bottom: 20px;
+            margin: auto;
+            overflow: auto;
+            max-height: 40vh;
+            display: flex;
+            justify-content: center;
           }
         </style>
         <div class="modal">
@@ -87,7 +92,7 @@ class Modal extends HTMLElement {
         document.addEventListener('modal-message', (event) => {
             let [title, body] = event.detail;
             this.shadowRoot.querySelector('.modal-title').textContent = title;
-            this.shadowRoot.querySelector('.modal-body').textContent = body;
+            this.shadowRoot.querySelector('.modal-body').innerHTML = body;
             this.show();
         });
     }
