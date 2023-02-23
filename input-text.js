@@ -170,7 +170,7 @@ class InputText extends HTMLElement {
             '/update': () => this.update(),
             '/version': () => this.toastTest('Version: 1.3'),
             '/export': () => this.exportText(),
-            '/md': () => this.transformMDtoHTML(),
+            '/md': () => this.exportMD(),
             '/modal': () => this.showModal('Título', 'Contenido'),
         };
 
@@ -222,6 +222,15 @@ class InputText extends HTMLElement {
         const closedTasksText = closedTasks.map(task => `   - ${task.description}`).join('\r\n');
         const exporText = `Tareas abiertas \r\n${openTasksText} \r\n\r\nTareas cerradas \r\n${closedTasksText}`;
         downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.txt`)
+    }
+
+    exportMD() {
+        const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
+        const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
+        const openTasksText = openTasks.map(task => `- [ ] ${task.description}`).join('\n');
+        const closedTasksText = closedTasks.map(task => `- [x] ${task.description}`).join('\n');
+        const exportText = `## Tareas abiertas\n\n${openTasksText}\n\n## Tareas cerradas\n\n${closedTasksText}`;
+        downloadFile(exportText, `Tareas ${new Date().toLocaleString()}.md`);
     }
 
     transformMDtoHTML(input) {
