@@ -91,3 +91,13 @@ const removeAllTasks = () => {
     closedTasks = [];
     saveTasksToLocalStorage();
 }
+
+function getText(id) {
+    const task = openTasks.find(task => task.id === id) || closedTasks.find(task => task.id === id);
+    return task.text;
+  }
+  
+  function getRaw(id) {
+    const task = openTasks.find(task => task.id === id) || closedTasks.find(task => task.id === id);
+    return task.raw;
+  }

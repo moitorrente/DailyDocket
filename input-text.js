@@ -4,6 +4,7 @@ class InputText extends HTMLElement {
         const shadow = this.attachShadow({ mode: 'open' });
 
         const input = document.createElement('input');
+        this.input = input;
         this.taskId = localStorage.getItem('maxId') || 0;
 
         input.type = 'text';
@@ -164,7 +165,15 @@ class InputText extends HTMLElement {
 
         window.addEventListener('click', () => menu.style.display = 'none');
 
+
+
         shadow.appendChild(input);
+    }
+
+    connectedCallback() {
+        document.addEventListener('input-edit', (event) => {
+            this.input.value = event.detail;
+        });
     }
 
     executeOption(option, param) {
@@ -251,14 +260,14 @@ class InputText extends HTMLElement {
 
     removeMarkdown(input) {
         return input
-          .replace(/\*\*_(.+?)_\*\*/g, '$1')
-          .replace(/\*\*([^*]+)\*\*/g, '$1')
-          .replace(/\*([^*]+)\*/g, '$1')
-          .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\s+\"([^"]+)\"\)/g, '$1')
-          .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g, '$1')
-          .replace(/```(.+?)\n([\s\S]+?)\n```/g, '$2')
-          .replace(/`([^`]+)`/g, '$1');
-      }
+            .replace(/\*\*_(.+?)_\*\*/g, '$1')
+            .replace(/\*\*([^*]+)\*\*/g, '$1')
+            .replace(/\*([^*]+)\*/g, '$1')
+            .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\s+\"([^"]+)\"\)/g, '$1')
+            .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g, '$1')
+            .replace(/```(.+?)\n([\s\S]+?)\n```/g, '$2')
+            .replace(/`([^`]+)`/g, '$1');
+    }
 
 
 }
