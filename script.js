@@ -9,6 +9,8 @@ const createTasks = () => {
         const taskList = document.createElement('task-list');
         taskList.shadowRoot.querySelector('input').checked = task.completed;
         taskList.setAttribute('id', task.id);
+        taskList.setAttribute('raw', task.raw);
+        taskList.setAttribute('text', task.text);
         const title = document.createElement('span');
         title.setAttribute('slot', 'title');
         title.innerHTML = task.description;
@@ -25,6 +27,8 @@ const createTasks = () => {
         const taskList = document.createElement('task-list');
         taskList.shadowRoot.querySelector('input').checked = task.completed
         taskList.setAttribute('id', task.id);
+        taskList.setAttribute('raw', task.raw);
+        taskList.setAttribute('text', task.text);
         const title = document.createElement('span');
         title.setAttribute('slot', 'title');
         title.innerHTML = task.description;
@@ -46,14 +50,14 @@ const saveTasksToLocalStorage = () => {
 };
 
 // Función para agregar una nueva tarea abierta
-const addOpenTask = (description, date, id) => {
-    openTasks.push({ description, date, id, completed: false });
+const addOpenTask = (description, raw, text, date, id) => {
+    openTasks.push({ description, raw, text, date, id, completed: false });
     saveTasksToLocalStorage();
 };
 
 // Función para agregar una nueva tarea cerrada
-const addClosedTask = (description, date, id) => {
-    closedTasks.push({ description, date, id, completed: true });
+const addClosedTask = (description, raw, text, date, id) => {
+    closedTasks.push({ description, raw, text, date, id, completed: true });
     saveTasksToLocalStorage();
 };
 

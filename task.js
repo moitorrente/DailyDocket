@@ -98,30 +98,29 @@ class TaskList extends HTMLElement {
     shadowRoot.innerHTML = template;
 
     const checkbox = shadowRoot.querySelector("input[type='checkbox']");
-    const _this = this;
-    const open = document.querySelector('#open');
-    const closed = document.querySelector('#closed');
 
     // Escuchar los cambios en el estado del checkbox
     checkbox.addEventListener('change', () => {
-      const { taskId, taskText, taskDate } = this;
+      const { taskTitle, taskRaw, taskText, taskDate, taskId } = this;
       if (checkbox.checked) {
         removeOpenTask(taskId);
-        addClosedTask(taskText, taskDate, taskId);
+        addClosedTask(taskTitle, taskRaw, taskText, taskDate, taskId);
       } else {
         removeClosedTask(taskId);
-        addOpenTask(taskText, taskDate, taskId);
+        addOpenTask(taskTitle, taskRaw, taskText, taskDate, taskId);
       }
     })
   }
   connectedCallback() {
     const slot = this.shadowRoot.querySelector('slot[name="title"]');
     const assignedNodes = slot.assignedNodes();
-    this.taskText = assignedNodes[0].textContent;
+    this.taskTitle = assignedNodes[0].outerHTML;
     const slotDate = this.shadowRoot.querySelector('slot[name="date"]');
     const assignedNodesDate = slotDate.assignedNodes();
     this.taskDate = assignedNodesDate[0].textContent;
     this.taskId = Number(this.getAttribute("id"));
+    this.taskRaw = this.getAttribute("raw");
+    this.taskText = this.getAttribute("text");
   }
 }
 

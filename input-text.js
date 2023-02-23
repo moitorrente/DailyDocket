@@ -105,11 +105,11 @@ class InputText extends HTMLElement {
                 const command = spaceIndex === -1 ? inputText : inputText.slice(0, spaceIndex);
                 const param = spaceIndex === -1 ? '' : inputText.slice(spaceIndex + 1);
                 if (command.startsWith('/')) {
-                    console.log(command, param)
                     this.executeOption(command, param);
                 } else {
-                    const text = this.transformMDtoHTML(input.value);
-                    addOpenTask(text, date.innerHTML, this.taskId);
+                    const htmlToShow = this.transformMDtoHTML(input.value);
+                    const onlyText = this.removeMarkdown(input.value);
+                    addOpenTask(htmlToShow, input.value, onlyText, date.innerHTML, this.taskId);
                 }
                 input.value = '';
             } else if (text.startsWith('/')) {
@@ -248,6 +248,19 @@ class InputText extends HTMLElement {
             .replace(/```(.+?)\n([\s\S]+?)\n```/g, '<pre><code>$2</code></pre>')
             .replace(/`([^`]+)`/g, '<code>$1</code>');
     }
+
+    removeMarkdown(input) {
+        return input
+          .replace(/\*\*_(.+?)_\*\*/g, '$1')
+          .replace(/\*\*([^*]+)\*\*/g, '$1')
+          .replace(/\*([^*]+)\*/g, '$1')
+          .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\s+\"([^"]+)\"\)/g, '$1')
+          .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g, '$1')
+          .replace(/```(.+?)\n([\s\S]+?)\n```/g, '$2')
+          .replace(/`([^`]+)`/g, '$1');
+      }
+
+
 }
 
 function downloadFile(texto, nombreArchivo) {

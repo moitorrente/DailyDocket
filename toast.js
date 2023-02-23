@@ -32,8 +32,6 @@ class ToastComponent extends HTMLElement {
         }
     
         .toast_message {
-            background-color: #e5e7eb;
-            border-radius: 10px;
             color: #6b7280;
             padding: 8px;
             padding-right: 12px;
@@ -41,7 +39,13 @@ class ToastComponent extends HTMLElement {
             align-items: center;
             display: flex;
             gap: 10px;
-            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+
+
+            background-color: #f9fafb;
+            border: 1px solid #d1d5db;
+            font-size: small;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
         }
     
         .toast_text {

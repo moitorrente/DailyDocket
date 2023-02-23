@@ -12,7 +12,7 @@ class CustomMenu extends HTMLElement {
           border: 1px solid #d1d5db;
           font-size: small;
           padding: 2px;
-          border-radius: 10px;
+          border-radius: 8px;
           box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
           z-index: 1;
         }
@@ -47,9 +47,20 @@ class CustomMenu extends HTMLElement {
           removeClosedTask(Number(this.lastTaskClicked));
           const event = new CustomEvent('toast-message', {
             detail: 'Tarea eliminada'
-        });
-        document.dispatchEvent(event);
+          });
+          document.dispatchEvent(event);
         }
+
+        if (index === 1) {
+          // removeOpenTask(Number(this.lastTaskClicked));
+          // removeClosedTask(Number(this.lastTaskClicked));
+          const event = new CustomEvent('toast-message', {
+            detail: 'Copiado a portapapeles'
+          });
+          document.dispatchEvent(event);
+        }
+
+
         this.hideMenu();
       });
     });
