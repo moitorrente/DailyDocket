@@ -19,7 +19,7 @@ class ToastComponent extends HTMLElement {
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: slide-up .5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            animation: slide-up .3s ease-in;
         }
     
         @keyframes slide-up {
@@ -62,7 +62,7 @@ class ToastComponent extends HTMLElement {
           }
     
         .hidden {
-            animation: slide-down .5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            animation: slide-down .5s ease-out;
         }
     
         .hide {
@@ -77,7 +77,7 @@ class ToastComponent extends HTMLElement {
                 transform: translate(-50%, -100%);
             }
         }
-        </style>
+    </style>
         <div class="toast hidden hide">
           <div class="toast_message">
             <span class="toast_text"></span>

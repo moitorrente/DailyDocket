@@ -45,6 +45,10 @@ class CustomMenu extends HTMLElement {
         if (index === 0) {
           removeOpenTask(Number(this.lastTaskClicked));
           removeClosedTask(Number(this.lastTaskClicked));
+          const event = new CustomEvent('toast-message', {
+            detail: 'Tarea eliminada'
+        });
+        document.dispatchEvent(event);
         }
         this.hideMenu();
       });

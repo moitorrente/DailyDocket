@@ -100,8 +100,12 @@ class InputText extends HTMLElement {
                 taskList.appendChild(date);
                 localStorage.setItem('maxId', this.taskId)
 
-                const [command, param] = input.value.split(' ').filter(Boolean);
+                const inputText = input.value.trim();
+                const spaceIndex = inputText.indexOf(' ');
+                const command = spaceIndex === -1 ? inputText : inputText.slice(0, spaceIndex);
+                const param = spaceIndex === -1 ? '' : inputText.slice(spaceIndex + 1);
                 if (command.startsWith('/')) {
+                    console.log(command, param)
                     this.executeOption(command, param);
                 } else {
                     const text = this.transformMDtoHTML(input.value);
