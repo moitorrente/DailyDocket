@@ -81,6 +81,24 @@ class ToastComponent extends HTMLElement {
                 transform: translate(-50%, -100%);
             }
         }
+
+        @media (prefers-color-scheme: dark) {
+            .toast_message {
+                color: #f9fafb;    
+                background-color: #374151;
+                border: 1px solid #4b5563;
+            }
+
+            .toast_close {
+                color: #9ca3af;
+                transition: background-color .4s ease, color .4s ease;
+            }
+    
+            .toast_close:hover {
+                color: #9ca3af;
+                background-color: #6b7280;
+              }
+        }
     </style>
         <div class="toast hidden hide">
           <div class="toast_message">

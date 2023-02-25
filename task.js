@@ -5,60 +5,74 @@ class TaskList extends HTMLElement {
 
     const template = `
         <style>
+        :host {
+          --bg-color: #f8fafc;
+          --gray-50: #f9fafb;
+          --gray-100: #f3f4f6;
+          --gray-200: #e5e7eb;
+          --gray-300: #d1d5db;
+          --gray-400: #9ca3af;
+          --gray-500: #6b7280;
+          --gray-600: #4b5563;
+          --gray-700: #374151;
+          --gray-800: #1f2937;
+          --gray-900: #111827;
+        }
 
         .task {
             display: flex;
             align-items: center;
             gap: .5rem;
             border-radius: 10px;
-            padding: 0 .5rem 0 0.5rem;
+            padding: 0 .5rem 0 .5rem;
             transition: background-color 0.4s ease;
+            background-color: var(--bg-color);
         }
-        
+
         /* estilos para el texto */
         .task-text {
-            color: #6b7280;
+            color: var(--gray-500);
             flex-grow: 1;
             font-size: medium;
-            box-shadow: inset 0px 1px 0px #f3f4f6;
-            padding: .5rem 0 .5rem 0;
+            box-shadow: inset 0px 1px 0px var(--gray-100);
+            padding: .8rem 0 .8rem 0;
             word-wrap: break-word;
             width: 82%;
         }
-        
+
         /* estilos para la fecha */
         .task-date {
             opacity: 0;
             font-size: xx-small;
-            color: #6b7280;
+            color: var(--gray-500);
             width: fit-content;
             white-space: nowrap;
             transition: opacity 0.4s ease;
-          }
-          
-          .task:hover {
-            background-color: #f3f4f6;
-          }
-          
-          .task:hover .task-date {
+        }
+
+        .task:hover {
+            background-color: var(--gray-100);
+        }
+
+        .task:hover .task-date {
             opacity: 1;
-          }
-        
+        }
+
         input[type="checkbox"] {
             display: none;
             /* ocultar el checkbox real */
         }
-        
+
         /* estilo del label que lo sustituye */
         label[for="myCheckbox"] {
             display: inline-block;
             width: 14px;
             height: 14px;
             flex-shrink: 0;
-            background-color: #f9fafb;
+            background-color: var(--gray-50);
             border-radius: 5px;
             vertical-align: middle;
-            border: 1px solid #d1d5db;
+            border: 1px solid var(--gray-300);
             box-shadow: 0px 1px 2px rgb(0 0 0 / 10%);
             appearance: none;
             -webkit-appearance: none;
@@ -69,19 +83,67 @@ class TaskList extends HTMLElement {
         }
 
         label[for="myCheckbox"]:hover {
-            border: 1px solid #9ca3af;
+            border: 1px solid var(--gray-400);
         }
-        
+
         input[type="checkbox"]:checked+label {
-            background-color: #9ca3af;
-            border: 1px solid #9ca3af;
-            background-image: url("check.svg");
-        }
-        input[type="checkbox"]:checked:hover+label {
-            border: 1px solid #6b7280;
+            background-color: var(--gray-400);
+            border: 1px solid var(--gray-400);
             background-image: url("check.svg");
         }
 
+        input[type="checkbox"]:checked:hover+label {
+            border: 1px solid var(--gray-500);
+            background-image: url("check.svg");
+        }
+
+        @media (prefers-color-scheme: dark) {
+          :host {
+            --bg-color: #f8fafc;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+          }
+          
+          .task {
+            background-color: var(--gray-900);
+          }
+          
+          .task:hover {
+            background-color: var(--gray-800);
+          }
+          
+          .task-text {
+            box-shadow: inset 0px 1px 0px var(--gray-800);
+            color: var(--gray-100);
+          }
+          
+          .task-date {
+            color: var(--gray-100);
+          }
+          
+          input[type="checkbox"] + label {
+            background-color: var(--gray-600);
+            border: 1px solid var(--gray-600);
+          }
+          
+          input[type="checkbox"]:checked + label {
+            background-color: var(--gray-600);
+            border: 1px solid var(--gray-600);
+          }
+          
+          input[type="checkbox"]:checked:hover + label {
+            border: 1px solid var(--gray-500);
+          }
+        }
+        
         </style>
   
         <div class="task" id="">

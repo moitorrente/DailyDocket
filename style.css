@@ -14,12 +14,21 @@ body {
     -webkit-font-smoothing: antialiased;
     background-color: #f8fafc;
     margin: 0;
+
+
+}
+
+@media (prefers-color-scheme: dark) {
+    body{
+        background-color: #111827;
+
+    }
 }
 
 .container {
     max-width: 650px;
     padding: 0 10px;
-    margin: 30px auto 20px auto;
+    margin: 1px auto 20px auto;
 }
 
 .header {
@@ -46,15 +55,4 @@ body {
 
 #custom-menu a:hover {
     background-color: #d3d3d3;
-}
-
-
-.counter-container {
-    padding: 6px;
-}
-
-.counter-container:hover {
-    background-color: #f3f4f6;
-    padding: 6px;
-    border-radius: 5px;
 }

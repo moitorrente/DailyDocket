@@ -8,27 +8,31 @@ class InputText extends HTMLElement {
         this.input = input;
         this.taskId = localStorage.getItem('maxId') || 0;
 
+        localStorage.setItem('mode', 'dark')
+
         input.type = 'text';
         input.style.border = 'none';
         input.style.backgroundColor = '#e5e7eb';
         input.style.color = '#4b5563';
         input.style.borderRadius = '10px';
         input.style.padding = '12px';
+        input.style.fontWeight = '400';
+        input.style.fontSize = '18px';
+
+
+        const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+
+
         input.style.width = '100%';
         input.style.outline = 'none';
         input.style.boxSizing = 'border-box';
         input.placeholder = 'Añadir tarea';
+        input.style.placeholder = 'white'
 
         const menu = document.createElement('div');
-        const tituloMenu = document.createElement('div');
-        tituloMenu.innerHTML = 'Comandos';
-        tituloMenu.style.fontSize = '13px';
-        tituloMenu.style.fontWeight = 'bold';
-        tituloMenu.style.padding = '6px';
-        menu.appendChild(tituloMenu);
         menu.style.position = 'absolute';
         menu.style.fontSize = '13px';
-        menu.style.top = '170px';
+        menu.style.top = '145px';
         menu.style.color = '#6b7280';
         menu.style.padding = '6px';
         menu.style.width = '100%';
@@ -39,6 +43,15 @@ class InputText extends HTMLElement {
         menu.style.display = 'none';
         menu.style.borderRadius = '8px';
         menu.style.boxShadow = 'rgb(0 0 0 / 7%) 10px 10px 10px 0px';
+
+
+
+        if (prefersDarkScheme.matches) {
+            input.style.backgroundColor = '#374151';
+            input.style.color = '#f9fafb';
+            menu.style.color = '#f9fafb';
+            menu.style.backgroundColor = '#374151';
+        }
 
         const options = ['/delete', '/log', '/complete', '/update', '/version', '/test', '/export', '/md', '/modal'];
         const descriptions = ['Borra todas las tareas', 'Muestra el log de acciones', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Prueba de modal']
@@ -72,6 +85,7 @@ class InputText extends HTMLElement {
             });
             item.addEventListener('mouseenter', () => {
                 item.style.backgroundColor = '#e5e7eb';
+                if (prefersDarkScheme.matches) item.style.backgroundColor = '#4b5563';
                 item.style.cursor = 'pointer';
             });
 
@@ -147,7 +161,7 @@ class InputText extends HTMLElement {
                             input.focus();
                         });
                         item.addEventListener('mouseenter', () => {
-                            item.style.backgroundColor = '#e5e7eb';
+                            if (prefersDarkScheme.matches) item.style.backgroundColor = '#4b5563';
                             item.style.cursor = 'pointer';
                         });
 
@@ -229,7 +243,7 @@ class InputText extends HTMLElement {
     log() {
         const title = 'Log';
         const taskEvents = JSON.parse(localStorage.getItem('taskEvents')) || [];
-
+        console.log(taskEvents)
         function generateHTMLFromArray(data) {
             const headerRow = "<tr><th>Tipo</th><th>Tarea</th><th>Timestamp</th></tr>";
 
@@ -244,9 +258,8 @@ class InputText extends HTMLElement {
                         <tfoot></tfoot>
                     </table>`;
         }
-
         const event = new CustomEvent('modal-message', {
-            detail: [title, generateHTMLFromArray(taskEvents)]
+            detail: [title, generateHTMLFromArray(taskEvents.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)))]
         });
         document.dispatchEvent(event);
     }
