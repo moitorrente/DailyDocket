@@ -53,8 +53,8 @@ class InputText extends HTMLElement {
             menu.style.backgroundColor = '#374151';
         }
 
-        const options = ['/delete', '/log', '/complete', '/update', '/version', '/test', '/export', '/md', '/modal'];
-        const descriptions = ['Borra todas las tareas', 'Muestra el log de acciones', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Prueba de modal']
+        const options = ['/delete', '/log', '/complete', '/update', '/version', '/test', '/export', '/md', '/modal', '/sidebar'];
+        const descriptions = ['Borra todas las tareas', 'Muestra el log de acciones', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Prueba de modal', 'Muestra sidebar']
         options.forEach((option, index) => {
             const item = document.createElement('div');
             item.style.display = 'flex';
@@ -178,7 +178,19 @@ class InputText extends HTMLElement {
             }
         });
 
-        window.addEventListener('click', () => menu.style.display = 'none');
+        window.addEventListener('click', (event) => {
+            console.log(event)
+            menu.style.display = 'none';
+            const x = event.clientX;
+            const y = event.clientY;
+            const targetElement = document.elementFromPoint(x, y);
+            const sidebar = targetElement.closest('input-text');
+            // if (event.target != 'input-text') {
+            //     const sidebarNavigation = document.querySelector("sidebar-navigation");
+            //     sidebarNavigation.hideSidebar();
+            // }
+
+        });
         container.appendChild(input);
         container.appendChild(menu);
         shadow.appendChild(container);
@@ -200,6 +212,7 @@ class InputText extends HTMLElement {
             '/md': () => this.exportMD(),
             '/modal': () => this.showModal('Título', 'Contenido'),
             '/log': () => this.log(),
+            '/sidebar': () => this.sidebar(),
         };
 
         const selectedOption = options[option];
@@ -307,6 +320,11 @@ class InputText extends HTMLElement {
             .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g, '$1')
             .replace(/```(.+?)\n([\s\S]+?)\n```/g, '$2')
             .replace(/`([^`]+)`/g, '$1');
+    }
+
+    sidebar() {
+        const sidebarNavigation = document.querySelector("sidebar-navigation");
+        sidebarNavigation.toggleSidebar();
     }
 
 
