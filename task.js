@@ -37,7 +37,7 @@ class TaskList extends HTMLElement {
             box-shadow: inset 0px 1px 0px var(--gray-100);
             padding: .5rem 0 .5rem 0;
             word-wrap: break-word;
-            width: 82%;
+            width: 100%;
         }
 
         /* estilos para la fecha */
