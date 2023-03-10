@@ -1,6 +1,6 @@
 const GHPATH = '/DailyDocket';
 const APP_PREFIX = 'DailyDocket_';
-const VERSION = 'version_001c';
+const VERSION = 'version_001d';
 const RUNTIME = 'runtime';
 
 const URLS = [

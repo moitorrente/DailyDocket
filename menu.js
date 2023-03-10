@@ -33,6 +33,7 @@ class CustomMenu extends HTMLElement {
         #custom-menu a:hover {
           background-color: #e5e7eb;
         }
+        
 
         @media (prefers-color-scheme: dark) {
           #custom-menu {
@@ -81,7 +82,6 @@ class CustomMenu extends HTMLElement {
         }
 
         if (index === 2) {
-          console.log(this.lastTaskClicked.id)
 
           const event = new CustomEvent('input-edit', {
             detail: getRaw(Number(this.lastTaskClicked.id))

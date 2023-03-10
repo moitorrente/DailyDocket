@@ -179,7 +179,6 @@ class InputText extends HTMLElement {
         });
 
         window.addEventListener('click', (event) => {
-            console.log(event)
             menu.style.display = 'none';
             const x = event.clientX;
             const y = event.clientY;
@@ -256,7 +255,6 @@ class InputText extends HTMLElement {
     log() {
         const title = 'Log';
         const taskEvents = JSON.parse(localStorage.getItem('taskEvents')) || [];
-        console.log(taskEvents)
         function generateHTMLFromArray(data) {
             const headerRow = "<tr><th>Tipo</th><th>Tarea</th><th>Timestamp</th></tr>";
 
@@ -284,8 +282,8 @@ class InputText extends HTMLElement {
     exportText() {
         const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
         const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
-        const openTasksText = openTasks.map(task => `   - ${task.description}`).join('\r\n');
-        const closedTasksText = closedTasks.map(task => `   - ${task.description}`).join('\r\n');
+        const openTasksText = openTasks.map(task => `   - ${task.text}`).join('\r\n');
+        const closedTasksText = closedTasks.map(task => `   - ${task.text} > ${task.date} - ${task.closed ? task.closed : ''}`).join('\r\n');
         const exporText = `Tareas abiertas \r\n${openTasksText} \r\n\r\nTareas cerradas \r\n${closedTasksText}`;
         downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.txt`)
     }
@@ -293,8 +291,8 @@ class InputText extends HTMLElement {
     exportMD() {
         const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
         const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
-        const openTasksText = openTasks.map(task => `- [ ] ${task.description}`).join('\n');
-        const closedTasksText = closedTasks.map(task => `- [x] ${task.description}`).join('\n');
+        const openTasksText = openTasks.map(task => `- [ ] ${task.text}`).join('\n');
+        const closedTasksText = closedTasks.map(task => `- [x] ${task.text}`).join('\n');
         const exportText = `## Tareas abiertas\n\n${openTasksText}\n\n## Tareas cerradas\n\n${closedTasksText}`;
         downloadFile(exportText, `Tareas ${new Date().toLocaleString()}.md`);
     }
@@ -304,6 +302,7 @@ class InputText extends HTMLElement {
             .replace(/\*\*_(.+?)_\*\*/g, '<strong><i>$1</i></strong>')
             .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
             .replace(/\*([^*]+)\*/g, '<i>$1</i>')
+            .replace(/==([^*]+)==/g, '<span style="color: #2142b0; background-color: #dbeafe; border-radius: 5px; padding: 5px; padding-top: 2px; padding-bottom: 2px;">$1</span>')
             .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\s+\"([^"]+)\"\)/g, '<a href="$2" title="$3">$1</a>')
             .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g, '<a href="$2">$1</a>')
             // .replace(/(#+) (.+)/g, (match, level, title) => `<h${level.length}>${title}</h${level.length}>`)
@@ -316,6 +315,7 @@ class InputText extends HTMLElement {
             .replace(/\*\*_(.+?)_\*\*/g, '$1')
             .replace(/\*\*([^*]+)\*\*/g, '$1')
             .replace(/\*([^*]+)\*/g, '$1')
+            .replace(/==([^*]+)==/g, '$1')
             .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\s+\"([^"]+)\"\)/g, '$1')
             .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g, '$1')
             .replace(/```(.+?)\n([\s\S]+?)\n```/g, '$2')

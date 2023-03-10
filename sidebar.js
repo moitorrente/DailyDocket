@@ -103,12 +103,9 @@ class SidebarNavigation extends HTMLElement {
             </svg>
             </div>
           </div>
-          <hr style="border: none;border-top: 1px solid #4b5563;             ">
+          <hr style="border: none;border-top: 1px solid #4b5563;">
           <ul>
-            <li><span>Home</span></li>
-            <li><span>About</span></li>
-            <li><span>Services</span></li>
-            <li><span>Contact</span></li>
+            <li><span>Default</span></li>
           </ul>
         </div>
       `;
@@ -123,6 +120,12 @@ class SidebarNavigation extends HTMLElement {
     this.input = this.shadowRoot.querySelector("input");
     this.input.disabled = true;
     this.listContainer = this.shadowRoot.querySelector("ul");
+    this.workspaces = JSON.parse(localStorage.getItem("workspaces")) || [];
+
+    this.add = this.shadowRoot.querySelector("#add");
+
+    this.add.addEventListener('click', this.addWorkspace.bind(this));
+    this.renderList();
 
   }
 
@@ -132,16 +135,32 @@ class SidebarNavigation extends HTMLElement {
   }
 
   showSidebar() {
-    console.log('show')
     this.sidebar.classList.add("show");
     this.input.disabled = false;
   }
 
   hideSidebar() {
-    console.log('hide')
-
     this.sidebar.classList.remove("show");
     this.input.disabled = true;
+  }
+
+  addWorkspace() {
+    if (this.input.value) {
+      this.workspaces.push(this.input.value);
+      localStorage.setItem("workspaces", JSON.stringify(this.workspaces));
+      this.input.value = "";
+      this.renderList();
+    }
+  }
+
+  renderList() {
+    this.listContainer.innerHTML = "";
+    this.workspaces.forEach(workspace => {
+      const newWorkspace = document.createElement("li");
+      newWorkspace.textContent = workspace;
+      newWorkspace.addEventListener("click", () => console.log(newWorkspace.textContent));
+      this.listContainer.appendChild(newWorkspace);
+    });
   }
 }
 

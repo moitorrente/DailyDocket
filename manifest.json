@@ -5,8 +5,8 @@
     "description": "Task application",
     "scope": "/DailyDocket/",
     "start_url": "/DailyDocket/",
-    "background_color": "#FFFFFF",
-    "theme_color": "#FFFFFF",
+    "background_color": "#f9fafb",
+    "theme_color": "#f9fafb",
     "orientation": "any",
     "display": "standalone",
     "icons": [
