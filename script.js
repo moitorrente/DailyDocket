@@ -2,7 +2,6 @@
 let openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
 let closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
 
-
 const createTasks = () => {
     document.querySelector('.open').innerHTML = '';
 

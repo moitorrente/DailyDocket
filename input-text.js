@@ -53,8 +53,8 @@ class InputText extends HTMLElement {
             menu.style.backgroundColor = '#374151';
         }
 
-        const options = ['/delete', '/log', '/complete', '/update', '/version', '/test', '/export', '/md', '/modal', '/sidebar'];
-        const descriptions = ['Borra todas las tareas', 'Muestra el log de acciones', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Prueba de modal', 'Muestra sidebar']
+        const options = ['/delete', '/log', '/complete', '/update', '/version', '/test', '/export', '/md', '/modal', '/sidebar', '/timer'];
+        const descriptions = ['Borra todas las tareas', 'Muestra el log de acciones', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Prueba de modal', 'Muestra sidebar', 'Crea un temporizador']
         options.forEach((option, index) => {
             const item = document.createElement('div');
             item.style.display = 'flex';
@@ -156,7 +156,7 @@ class InputText extends HTMLElement {
                         item.addEventListener('click', () => {
                             // Lógica para ejecutar acción según opción seleccionada
                             this.executeOption(option)
-                            input.value = '';
+                            //input.value = '';
                             menu.style.display = 'none';
                             input.focus();
                         });
@@ -212,14 +212,32 @@ class InputText extends HTMLElement {
             '/modal': () => this.showModal('Título', 'Contenido'),
             '/log': () => this.log(),
             '/sidebar': () => this.sidebar(),
+            '/timer': () => this.timer(param)
         };
+
+
 
         const selectedOption = options[option];
         if (selectedOption) {
             selectedOption();
         } else {
             this.toastTest('Comando no válido');
+            this.input.value = '';
         }
+    }
+
+    timer(time) {
+        if (!time) {
+            this.input.value = '/timer ';
+            return;
+        }
+        const timerComponent = document.querySelector('timer-component');
+        if (isNaN(time)) {
+            this.toastTest(`Número de minutos no válido: ${time}`)
+        } else {
+            timerComponent.setAttribute('time', time);
+        }
+        this.input.value = '';
     }
 
     deleteAll() {
@@ -233,7 +251,7 @@ class InputText extends HTMLElement {
             detail: ' Todas las tareas han sido borradas'
         });
         document.dispatchEvent(event);
-
+        this.input.value = '';
 
     }
 
@@ -242,6 +260,7 @@ class InputText extends HTMLElement {
             detail: text
         });
         document.dispatchEvent(event);
+        this.input.value = '';
     }
 
     showModal(title, body) {
@@ -249,7 +268,7 @@ class InputText extends HTMLElement {
             detail: [title, body]
         });
         document.dispatchEvent(event);
-
+        this.input.value = '';
     }
 
     log() {
@@ -273,9 +292,11 @@ class InputText extends HTMLElement {
             detail: [title, generateHTMLFromArray(taskEvents.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)))]
         });
         document.dispatchEvent(event);
+        this.input.value = '';
     }
 
     update() {
+        this.input.value = '';
         forceReload();
     }
 
@@ -285,7 +306,8 @@ class InputText extends HTMLElement {
         const openTasksText = openTasks.map(task => `   - ${task.text}`).join('\r\n');
         const closedTasksText = closedTasks.map(task => `   - ${task.text} > ${task.date} - ${task.closed ? task.closed : ''}`).join('\r\n');
         const exporText = `Tareas abiertas \r\n${openTasksText} \r\n\r\nTareas cerradas \r\n${closedTasksText}`;
-        downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.txt`)
+        downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.txt`);
+        this.input.value = '';
     }
 
     exportMD() {
@@ -295,9 +317,11 @@ class InputText extends HTMLElement {
         const closedTasksText = closedTasks.map(task => `- [x] ${task.text}`).join('\n');
         const exportText = `## Tareas abiertas\n\n${openTasksText}\n\n## Tareas cerradas\n\n${closedTasksText}`;
         downloadFile(exportText, `Tareas ${new Date().toLocaleString()}.md`);
+        this.input.value = '';
     }
 
     transformMDtoHTML(input) {
+        this.input.value = '';
         return input
             .replace(/\*\*_(.+?)_\*\*/g, '<strong><i>$1</i></strong>')
             .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
@@ -311,6 +335,7 @@ class InputText extends HTMLElement {
     }
 
     removeMarkdown(input) {
+        this.input.value = '';
         return input
             .replace(/\*\*_(.+?)_\*\*/g, '$1')
             .replace(/\*\*([^*]+)\*\*/g, '$1')
@@ -325,6 +350,7 @@ class InputText extends HTMLElement {
     sidebar() {
         const sidebarNavigation = document.querySelector("sidebar-navigation");
         sidebarNavigation.toggleSidebar();
+        this.input.value = '';
     }
 
 

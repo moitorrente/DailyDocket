@@ -10,6 +10,7 @@
     <title>DailyDocket</title>
     <link rel="stylesheet" href="style.css">
     <script defer src="task.js"></script>
+    <script defer src="timer.js"></script>
     <script defer src="input-text.js"></script>
     <script defer src="date.js"></script>
     <script defer src="toast.js"></script>
@@ -22,15 +23,16 @@
 </head>
 
 <body>
-    <header class="header">
-        <img style="        background-color: #f8fafc;
+    <header class="header" style="display: flex; flex: row; justify-content: space-between;">
+        <img style="background-color: #f8fafc;
         border-radius: 10px;" src="icon.svg" width="30px" alt="">
     </header>
 
     <div class="container">
-        <section style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
-            <my-date></my-date>
-            <element-counter class="counter-container" count-id="open" count-text=" tareas abiertas"></element-counter>
+        <section style="display: flex; align-items: center; justify-content: space-between; gap: 2px; margin-bottom: 1rem; gap: 20px;">
+            <my-date style="flex-grow: 1;"></my-date>
+            <timer-component></timer-component>
+            <element-counter class="counter-container" count-id="open" count-text=" tareas abiertas" style="flex-shrink: 1;"></element-counter>
         </section>
         <input-text></input-text>
         <custom-menu></custom-menu>
