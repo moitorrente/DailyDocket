@@ -60,6 +60,15 @@ const addOpenTask = (description, raw, text, date, id) => {
     logTaskEvent('TO_OPEN', id)
     saveTasksToLocalStorage();
 };
+// this.editing, htmlToShow, inputText, onlyText, date.innerHTML
+const editTask = (id, description, raw, text, date) => {
+    const task = getTask(id);
+    task.description = description;
+    task.raw = raw;
+    task.text = text;
+    task.date = date;
+    saveTasksToLocalStorage()
+}
 
 const createOpenTask = (description, raw, text, date, id) => {
     openTasks.push({ description, raw, text, date, id, completed: false, closed: null });
@@ -103,6 +112,10 @@ const removeAllTasks = () => {
     openTasks = [];
     closedTasks = [];
     saveTasksToLocalStorage();
+}
+
+function getTask(id) {
+    return openTasks.find(task => task.id === id) || closedTasks.find(task => task.id === id);
 }
 
 function getText(id) {

@@ -19,7 +19,7 @@ class InputText extends HTMLElement {
         input.style.fontWeight = '400';
         input.style.fontSize = '18px';
 
-
+        this.editing = false;
         const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
 
 
@@ -30,9 +30,10 @@ class InputText extends HTMLElement {
         input.style.placeholder = 'white'
 
         const menu = document.createElement('div');
+        menu.id = 'menu';
         menu.style.position = 'absolute';
         menu.style.fontSize = '13px';
-        menu.style.top = '145px';
+        menu.style.top = '175px';
         menu.style.color = '#6b7280';
         menu.style.padding = '6px';
         menu.style.width = '100%';
@@ -123,9 +124,14 @@ class InputText extends HTMLElement {
                 if (command.startsWith('/')) {
                     this.executeOption(command, param);
                 } else {
-                    const htmlToShow = this.transformMDtoHTML(input.value);
-                    const onlyText = this.removeMarkdown(input.value);
-                    createOpenTask(htmlToShow, input.value, onlyText, date.innerHTML, this.taskId);
+                    const htmlToShow = this.transformMDtoHTML(inputText);
+                    const onlyText = this.removeMarkdown(inputText);
+                    if (this.editing) {
+                        editTask(this.editing, htmlToShow, inputText, onlyText, date.innerHTML);
+                        this.editing = false;
+                    } else {
+                        createOpenTask(htmlToShow, inputText, onlyText, date.innerHTML, this.taskId);
+                    }
                 }
                 input.value = '';
             } else if (text.startsWith('/')) {
@@ -197,7 +203,9 @@ class InputText extends HTMLElement {
 
     connectedCallback() {
         document.addEventListener('input-edit', (event) => {
-            this.input.value = event.detail;
+            console.log(event.detail)
+            this.editing = event.detail.id;
+            this.input.value = event.detail.raw;
         });
     }
 

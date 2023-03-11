@@ -11,8 +11,6 @@ class ElementCounter extends HTMLElement {
       shadowRoot.querySelector("#count").textContent = count + countText;
     });
 
-    console.loo
-
     const expandSVG = `
     <svg width="17" height="17" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
