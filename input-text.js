@@ -117,13 +117,16 @@ class InputText extends HTMLElement {
                 taskList.appendChild(date);
                 localStorage.setItem('maxId', this.taskId)
 
-                const inputText = input.value.trim();
+                let inputText = input.value.trim();
                 const spaceIndex = inputText.indexOf(' ');
                 const command = spaceIndex === -1 ? inputText : inputText.slice(0, spaceIndex);
                 const param = spaceIndex === -1 ? '' : inputText.slice(spaceIndex + 1);
                 if (command.startsWith('/')) {
                     this.executeOption(command, param);
                 } else {
+                    if (text.startsWith('=')) {
+                        inputText = `${inputText.slice(1)} = ${this.calculadora(inputText.slice(1))}`;
+                    }
                     const htmlToShow = this.transformMDtoHTML(inputText);
                     const onlyText = this.removeMarkdown(inputText);
                     if (this.editing) {
@@ -362,6 +365,38 @@ class InputText extends HTMLElement {
         sidebarNavigation.toggleSidebar();
         this.input.value = '';
     }
+
+    calculadora(str) {
+        // Validar que la entrada sea una cadena de texto
+        if (typeof str !== 'string') {
+            throw new Error('La entrada debe ser una cadena de texto');
+        }
+
+        // Validar que la entrada solo contenga caracteres permitidos (números, operadores y paréntesis)
+        if (!/^[0-9+\-*/().\s]*$/.test(str)) {
+            throw new Error('La entrada contiene caracteres no permitidos');
+        }
+
+        // Validar que los paréntesis estén correctamente balanceados
+        let parens = 0;
+        for (let i = 0; i < str.length; i++) {
+            if (str[i] === '(') {
+                parens++;
+            } else if (str[i] === ')') {
+                parens--;
+            }
+            if (parens < 0) {
+                throw new Error('Los paréntesis no están balanceados');
+            }
+        }
+        if (parens !== 0) {
+            throw new Error('Los paréntesis no están balanceados');
+        }
+
+        // Si la entrada es segura, evaluar la expresión y devolver el resultado
+        return eval(str);
+    }
+
 
 
 }
