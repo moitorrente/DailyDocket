@@ -133,6 +133,7 @@ button:hover {
                     this.timerEl.textContent = secondsToTime(this.time);
                 } else {
                     clearInterval(this.intervalId);
+                    this.running = false;
                     if ('Notification' in window) {
                         // Pedir permiso para mostrar notificaciones
                         Notification.requestPermission().then(function (permission) {
