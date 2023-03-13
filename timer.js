@@ -162,9 +162,12 @@ button:hover {
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === 'time') {
+            this.stopTimer();
             this.time = parseInt(newValue) * 60;
-            this.timerEl.textContent = secondsToTime(this.time)
+            this.timerEl.textContent = secondsToTime(this.time);
+            this.running = false;
             this.show();
+            this.startTimer();
         }
     }
 
