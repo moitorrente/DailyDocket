@@ -254,7 +254,8 @@ class InputText extends HTMLElement {
 
     counter() {
         const counter = document.querySelector('my-counter');
-        counter.setAttribute('show', true)
+        counter.setAttribute('show', true);
+        this.input.value = '';
     }
 
     deleteAll() {
