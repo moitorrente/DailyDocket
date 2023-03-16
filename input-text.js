@@ -54,8 +54,8 @@ class InputText extends HTMLElement {
             menu.style.backgroundColor = '#374151';
         }
 
-        const options = ['/delete', '/log', '/complete', '/update', '/version', '/test', '/export', '/md', '/modal', '/sidebar', '/timer'];
-        const descriptions = ['Borra todas las tareas', 'Muestra el log de acciones', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Prueba de modal', 'Muestra sidebar', 'Crea un temporizador']
+        const options = ['/delete', '/log', '/complete', '/update', '/version', '/test', '/export', '/md', '/modal', '/sidebar', '/timer', '/counter'];
+        const descriptions = ['Borra todas las tareas', 'Muestra el log de acciones', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Prueba de modal', 'Muestra sidebar', 'Crea un temporizador', 'Crea un contador']
         options.forEach((option, index) => {
             const item = document.createElement('div');
             item.style.display = 'flex';
@@ -223,7 +223,8 @@ class InputText extends HTMLElement {
             '/modal': () => this.showModal('Título', 'Contenido'),
             '/log': () => this.log(),
             '/sidebar': () => this.sidebar(),
-            '/timer': () => this.timer(param)
+            '/timer': () => this.timer(param),
+            '/counter': () => this.counter(),
         };
 
 
@@ -242,13 +243,18 @@ class InputText extends HTMLElement {
             this.input.value = '/timer ';
             return;
         }
-        const timerComponent = document.querySelector('timer-component');
+        const timerComponent = document.querySelectorAll('timer-component');
         if (isNaN(time)) {
             this.toastTest(`Número de minutos no válido: ${time}`)
         } else {
-            timerComponent.setAttribute('time', time);
+            timerComponent.forEach(timer => timer.setAttribute('time', time));
         }
         this.input.value = '';
+    }
+
+    counter() {
+        const counter = document.querySelector('my-counter');
+        counter.setAttribute('show', true)
     }
 
     deleteAll() {

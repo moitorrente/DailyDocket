@@ -32,6 +32,7 @@ class ElementCounter extends HTMLElement {
             padding: 6px;
             display: flex;
             align-items: center;
+            transition: background-color .3s ease;
           }
 
           div:hover{

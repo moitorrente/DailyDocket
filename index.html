@@ -15,6 +15,7 @@
     <script defer src="date.js"></script>
     <script defer src="toast.js"></script>
     <script defer src="counter.js"></script>
+    <script defer src="MyCounter.js"></script>
     <script defer src="menu.js"></script>
     <script defer src="sidebar.js"></script>
     <script defer src="modal.js"></script>
@@ -23,30 +24,48 @@
 </head>
 
 <body>
-    <header class="header" style="display: flex; flex: row; justify-content: space-between; margin-top: 2rem;">
-        <img style="background-color: #f8fafc;
-        border-radius: 10px;" src="icon.svg" width="30px" alt="">
-    </header>
 
-    <div class="container">
-        <section style="display: flex; align-items: center; justify-content: space-between; gap: 2px; margin-bottom: 1rem; gap: 20px;">
-            <my-date style="flex-grow: 1;"></my-date>
-            <timer-component></timer-component>
-            <element-counter class="counter-container" count-id="open" count-text=" tareas abiertas" style="flex-shrink: 1;"></element-counter>
-        </section>
-        <input-text></input-text>
-        <custom-menu></custom-menu>
-        <div id="open" class="open" style="margin-top: 1rem; padding: 0 0rem 1rem;"></div>
 
-        <details>
-            <summary style="display: flex; align-items: center; justify-content: end; cursor: pointer; color: #9ca3af">
-                <span style="display: flex; align-items: center; gap: 3px" class="counter-container">
-                    <element-counter count-id="closed" count-text=" tareas cerradas" svg="true"></element-counter>
-                </span>
-            </summary>
-            <div id="closed" class="closed" style="margin-top: 1rem; padding: 0 0rem 1rem;"></div>
-        </details>
+    <div style="display: flex; justify-content: center; flex-grow: 1; gap: 7vw">
+        <div class="container">
+            <header class="header" style="display: flex; flex: row; justify-content: space-between; margin-top: 2rem;">
+                <img style="background-color: #f8fafc;
+                border-radius: 10px;" src="icon.svg" width="30px" alt="">
+            </header>
+            <section
+                style="display: flex; align-items: center; justify-content: space-between; gap: 2px; margin-bottom: 1rem; gap: 20px;">
+                <my-date style="flex-grow: 1;"></my-date>
+                <timer-component></timer-component>
+
+                <element-counter class="counter-container" count-id="open" count-text=" tareas abiertas"
+                    style="flex-shrink: 1;"></element-counter>
+            </section>
+            <input-text></input-text>
+
+
+
+            <custom-menu></custom-menu>
+
+            <div id="open" class="open" style="margin-top: 1rem; padding: 0 0rem 1rem;"></div>
+
+            <details>
+                <summary
+                    style="display: flex; align-items: center; justify-content: end; cursor: pointer; color: #9ca3af">
+                    <span style="display: flex; align-items: center; gap: 3px" class="counter-container">
+                        <element-counter count-id="closed" count-text=" tareas cerradas" svg="true"></element-counter>
+                    </span>
+                </summary>
+                <div id="closed" class="closed" style="margin-top: 1rem; padding: 0 0rem 1rem;"></div>
+            </details>
+        </div>
+        <div class="lateral-container" style="display: none; justify-content: center; margin-top: 7.7rem;">
+            <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                <my-counter></my-counter>
+            </div>
+        </div>
     </div>
+
+
     <sidebar-navigation></sidebar-navigation>
 
     <modal-component title="Título del modal" body="Cuerpo del modal"></modal-component>

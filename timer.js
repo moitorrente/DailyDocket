@@ -37,7 +37,7 @@ class TimerComponent extends HTMLElement {
 .timer-container {
   font-family: 'Roboto Mono', monospace;
   min-width: 130px;
-  max-width: 140px;
+  max-width: 170px;
   background-color: #f3f4f6;
   color: #6b7280;
   border-radius: 5px;
