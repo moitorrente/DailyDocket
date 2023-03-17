@@ -82,3 +82,40 @@ body {
 #custom-menu a:hover {
     background-color: #d3d3d3;
 }
+
+
+
+.wrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.column {
+    flex: 1;
+    padding: 1px;
+}
+
+.column1 {
+    flex-basis: 20%;
+}
+
+.column2 {
+    flex-basis: 60%;
+}
+
+.column3 {
+    flex-basis: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.column3 > * {
+    margin-top: 10px;
+  }
+
+@media only screen and (max-width: 768px) {
+    .column1, .column3 {
+        display: none;
+    }
+}

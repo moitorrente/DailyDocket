@@ -1,29 +1,29 @@
 // Define the web component element
 class MyCounter extends HTMLElement {
-    static get observedAttributes() {
-        return ['show'];
-    }
-    constructor() {
-        super();
+  static get observedAttributes() {
+    return ['show'];
+  }
+  constructor() {
+    super();
 
-        // Create the shadow DOM
-        const shadowRoot = this.attachShadow({ mode: "open" });
+    // Create the shadow DOM
+    const shadowRoot = this.attachShadow({ mode: "open" });
 
-        // Create the HTML structure as a string
-        const template = `<style>
+    // Create the HTML structure as a string
+    const template = `<style>
   .container {
-    /* 
-    max-width: 300px; */
-    min-width: 300px;
+
+    width: 100%;
+    /* min-width: 300px; */
     background-color: #f3f4f6;
     color: #6b7280;
-    border-radius: 10px;
+    border-radius: 9px;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    padding: 5px;
+    padding: 3px;
     gap: 3px;
   }
 
@@ -38,8 +38,8 @@ class MyCounter extends HTMLElement {
     color: #6b7280;
     border: none;
     font-size: 6px;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 5px;
+    border-radius: 7px;
     cursor: pointer;
     transition: background-color .3s ease;
   }
@@ -53,11 +53,11 @@ class MyCounter extends HTMLElement {
     border: 0;
     font-family: 'Roboto Mono', monospace;
     background-color: transparent;
-    border-radius: 8px;
-    max-width: 80px;
+    border-radius: 7px;
+    max-width: 70px;
     text-align: center;
     outline: none;
-    padding: 5px;
+    padding: 3px;
     font-size: 22px;
     color: #6b7280;
     transition: background-color .3s ease, color .3s ease;
@@ -71,8 +71,36 @@ class MyCounter extends HTMLElement {
   .hidden {
     display: none;
   }
+
+  @media (prefers-color-scheme: dark) {
+    .container {
+      background-color: #374151;
+      color: #f3f4f6;
+    }
+
+    button {
+      background-color: #374151;
+      color: #9ca3af;
+      transition: background-color .3s ease;
+    }
+
+    button:hover {
+      background-color: #4b5563;
+      color: #e5e7eb;
+    }
+
+    input {
+      color: #d1d5db;
+    }
+
+    input:hover {
+      background-color: #4b5563;
+      color: #e5e7eb;
+    }
+
+  }
 </style>
-<div class="container">
+<div class="container hidden">
   <button class="decrement">
     <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -80,7 +108,7 @@ class MyCounter extends HTMLElement {
         fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
     </svg>
   </button>
-  <input type="text" class="value" value="0">
+  <input type="text" class="value" value="0" disabled>
   <button class="increment">
     <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -96,7 +124,7 @@ class MyCounter extends HTMLElement {
         fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
     </svg>
   </button>
-  <button class="close" style="border-radius: 3px;">
+  <button class="close">
     <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z"
@@ -106,65 +134,61 @@ class MyCounter extends HTMLElement {
 </div>`;
 
 
-        // Add the HTML elements to the shadow DOM
-        shadowRoot.innerHTML = template;
+    // Add the HTML elements to the shadow DOM
+    shadowRoot.innerHTML = template;
 
-        // Get the value element and buttons
+    // Get the value element and buttons
 
+  }
+
+  connectedCallback() {
+    this.container = this.shadowRoot.querySelector(".container");
+    this.valueEl = this.shadowRoot.querySelector(".value");
+    this.decrementBtn = this.shadowRoot.querySelector(".decrement");
+    this.incrementBtn = this.shadowRoot.querySelector(".increment");
+    this.resetBtn = this.shadowRoot.querySelector(".reset");
+    this.stopBtn = this.shadowRoot.querySelector('.close');
+    // Add event listeners to the buttons
+    this.decrementBtn.addEventListener("click", this.decrement.bind(this));
+    this.incrementBtn.addEventListener("click", this.increment.bind(this));
+    this.resetBtn.addEventListener("click", this.reset.bind(this));
+    this.stopBtn.addEventListener('click', this.hide.bind(this));
+
+  }
+
+  // Decrement the value
+  decrement() {
+    let value = parseInt(this.valueEl.value);
+    value--;
+    this.valueEl.value = value;
+  }
+
+  // Increment the value
+  increment() {
+    let value = parseInt(this.valueEl.value);
+    value++;
+    this.valueEl.value = value;
+  }
+
+  // Reset the value
+  reset() {
+    this.valueEl.value = "0";
+  }
+
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'show') {
+      this.show();
     }
+  }
 
-    connectedCallback() {
-        this.container = this.shadowRoot.querySelector(".container");
-        this.valueEl = this.shadowRoot.querySelector(".value");
-        this.decrementBtn = this.shadowRoot.querySelector(".decrement");
-        this.incrementBtn = this.shadowRoot.querySelector(".increment");
-        this.resetBtn = this.shadowRoot.querySelector(".reset");
-        this.stopBtn = this.shadowRoot.querySelector('.close');
+  hide() {
+    this.container.classList.add("hidden");
+  }
 
-
-        // Add event listeners to the buttons
-        this.decrementBtn.addEventListener("click", this.decrement.bind(this));
-        this.incrementBtn.addEventListener("click", this.increment.bind(this));
-        this.resetBtn.addEventListener("click", this.reset.bind(this));
-        this.stopBtn.addEventListener('click', this.hide.bind(this));
-
-    }
-
-    // Decrement the value
-    decrement() {
-        let value = parseInt(this.valueEl.value);
-        value--;
-        this.valueEl.value = value;
-    }
-
-    // Increment the value
-    increment() {
-        let value = parseInt(this.valueEl.value);
-        value++;
-        this.valueEl.value = value;
-    }
-
-    // Reset the value
-    reset() {
-        this.valueEl.value = "0";
-    }
-
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (name === 'show') {
-            this.show();
-        }
-    }
-
-    hide() {
-        document.querySelector('.lateral-container').style.display = 'none';
-        this.container.classList.add("hidden");
-    }
-
-    show() {
-        document.querySelector('.lateral-container').style.display = 'flex';
-        this.container.classList.remove("hidden");
-    }
+  show() {
+    this.container.classList.remove("hidden");
+  }
 }
 
 // Define the web component

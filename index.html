@@ -12,6 +12,8 @@
     <script defer src="task.js"></script>
     <script defer src="timer.js"></script>
     <script defer src="MyCounter.js"></script>
+    <script defer src="MovableElement.js"></script>
+    <script defer src="DigitalClock.js"></script>
     <script defer src="input-text.js"></script>
     <script defer src="date.js"></script>
     <script defer src="toast.js"></script>
@@ -24,37 +26,61 @@
 </head>
 
 <body>
-    <header class="header" style="display: flex; flex: row; justify-content: space-between; margin-top: 2rem;">
-        <img style="background-color: #f8fafc;
-        border-radius: 10px;" src="icon.svg" width="30px" alt="">
-    </header>
 
-    <div class="container">
-        <section
-            style="display: flex; align-items: center; justify-content: space-between; gap: 2px; margin-bottom: 1rem; gap: 20px;">
-            <my-date style="flex-grow: 1;"></my-date>
-            <timer-component></timer-component>
-            <element-counter class="counter-container" count-id="open" count-text=" tareas abiertas"
-                style="flex-shrink: 1;"></element-counter>
-        </section>
-        <input-text></input-text>
-        <div class="lateral-container" style="display: none; justify-content: center; margin-top: 1rem;">
-            <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+    <div class="wrapper">
+        <div class="column column1"></div>
+        <div class="column column2">
+            <header class="header" style="display: flex; flex: row; justify-content: space-between; margin-top: 2rem;">
+                <img style="background-color: #f8fafc;
+                border-radius: 10px;" src="icon.svg" width="30px" alt="">
+            </header>
+            <div class="container">
+                <section
+                    style="display: flex; align-items: center; justify-content: space-between; gap: 2px; margin-bottom: 1rem; gap: 20px;">
+                    <my-date style="flex-grow: 1;"></my-date>
+                    <timer-component></timer-component>
+
+                    <element-counter class="counter-container" count-id="open" count-text=" tareas abiertas"
+                        style="flex-shrink: 1;"></element-counter>
+                </section>
+                <input-text></input-text>
+                <div class="lateral-container" style="display: none; justify-content: center; margin-top: 1rem;">
+                    <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                        
+                    </div>
+                </div>
+                <custom-menu></custom-menu>
+
+                <movable-element style="position: absolute">
+
+                </movable-element>
+
+                <div id="open" class="open" style="margin-top: 1rem; padding: 0 0rem 1rem;"></div>
+
+                <details>
+                    <summary
+                        style="display: flex; align-items: center; justify-content: end; cursor: pointer; color: #9ca3af">
+                        <span style="display: flex; align-items: center; gap: 3px" class="counter-container">
+                            <element-counter count-id="closed" count-text=" tareas cerradas"
+                                svg="true"></element-counter>
+                        </span>
+                    </summary>
+                    <div id="closed" class="closed" style="margin-top: 1rem; padding: 0 0rem 1rem;"></div>
+                </details>
+            </div>
+        </div>
+        <div class="column column3" style="margin-top: 120px;">
+            <div class="widgets">
                 <my-counter></my-counter>
             </div>
         </div>
-        <custom-menu></custom-menu>
-        <div id="open" class="open" style="margin-top: 1rem; padding: 0 0rem 1rem;"></div>
-
-        <details>
-            <summary style="display: flex; align-items: center; justify-content: end; cursor: pointer; color: #9ca3af">
-                <span style="display: flex; align-items: center; gap: 3px" class="counter-container">
-                    <element-counter count-id="closed" count-text=" tareas cerradas" svg="true"></element-counter>
-                </span>
-            </summary>
-            <div id="closed" class="closed" style="margin-top: 1rem; padding: 0 0rem 1rem;"></div>
-        </details>
     </div>
+
+
+
+
+
+
 
     <sidebar-navigation></sidebar-navigation>
 

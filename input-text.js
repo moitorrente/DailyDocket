@@ -44,8 +44,7 @@ class InputText extends HTMLElement {
         menu.style.display = 'none';
         menu.style.borderRadius = '8px';
         menu.style.boxShadow = 'rgb(0 0 0 / 7%) 10px 10px 10px 0px';
-
-
+        menu.style.zIndex = 999;
 
         if (prefersDarkScheme.matches) {
             input.style.backgroundColor = '#374151';
@@ -54,8 +53,8 @@ class InputText extends HTMLElement {
             menu.style.backgroundColor = '#374151';
         }
 
-        const options = ['/delete', '/log', '/complete', '/update', '/version', '/test', '/export', '/md', '/modal', '/sidebar', '/timer', '/counter'];
-        const descriptions = ['Borra todas las tareas', 'Muestra el log de acciones', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Prueba de modal', 'Muestra sidebar', 'Crea un temporizador', 'Crea un contador']
+        const options = ['/delete', '/log', '/complete', '/update', '/version', '/test', '/export', '/md', '/modal', '/sidebar', '/timer', '/counter', '/clock'];
+        const descriptions = ['Borra todas las tareas', 'Muestra el log de acciones', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Prueba de modal', 'Muestra sidebar', 'Crea un temporizador', 'Crea un contador', 'Muestra la hora']
         options.forEach((option, index) => {
             const item = document.createElement('div');
             item.style.display = 'flex';
@@ -225,6 +224,7 @@ class InputText extends HTMLElement {
             '/sidebar': () => this.sidebar(),
             '/timer': () => this.timer(param),
             '/counter': () => this.counter(),
+            '/clock': () => this.clock()
         };
 
 
@@ -236,6 +236,13 @@ class InputText extends HTMLElement {
             this.toastTest('Comando no válido');
             this.input.value = '';
         }
+    }
+
+    clock(){
+        const container = document.querySelector('.widgets');
+        const clock = document.createElement('digital-clock');
+        container.appendChild(clock);
+        this.input.value = '';
     }
 
     timer(time) {
@@ -381,7 +388,12 @@ class InputText extends HTMLElement {
 
         // Validar que la entrada solo contenga caracteres permitidos (números, operadores y paréntesis)
         if (!/^[0-9+\-*/().\s]*$/.test(str)) {
+            const event = new CustomEvent('toast-message', {
+                detail: ' La entrada contiene caracteres no permitidos'
+            });
+            document.dispatchEvent(event);
             throw new Error('La entrada contiene caracteres no permitidos');
+       
         }
 
         // Validar que los paréntesis estén correctamente balanceados
