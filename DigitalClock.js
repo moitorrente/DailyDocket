@@ -12,7 +12,7 @@ class DigitalClock extends HTMLElement {
     background-color: #f3f4f6;
     color: #6b7280;
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 22px;
     border-radius: 9px;
     position: relative;
     display: flex;
@@ -42,6 +42,7 @@ class DigitalClock extends HTMLElement {
 
    .display {
     flex-grow: 1;
+    padding: 6px;
     display: flex;
     justify-content: center;
     align-items: center;
