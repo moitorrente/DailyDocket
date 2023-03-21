@@ -79,7 +79,7 @@ class InputText extends HTMLElement {
             item.addEventListener('click', () => {
                 // Lógica para ejecutar acción según opción seleccionada
                 this.executeOption(option)
-                input.value = '';
+                // input.value = '';
                 menu.style.display = 'none';
                 input.focus();
             });
@@ -135,7 +135,7 @@ class InputText extends HTMLElement {
                         createOpenTask(htmlToShow, inputText, onlyText, date.innerHTML, this.taskId);
                     }
                 }
-                input.value = '';
+                // input.value = '';
             } else if (text.startsWith('/')) {
                 // Mostrar menú de comandos que coinciden con el texto ingresado
                 const matchedCommands = options.filter(option => option.startsWith(text));
@@ -205,7 +205,6 @@ class InputText extends HTMLElement {
 
     connectedCallback() {
         document.addEventListener('input-edit', (event) => {
-            console.log(event.detail)
             this.editing = event.detail.id;
             this.input.value = event.detail.raw;
         });
@@ -236,9 +235,10 @@ class InputText extends HTMLElement {
             this.toastTest('Comando no válido');
             this.input.value = '';
         }
+
     }
 
-    clock(){
+    clock() {
         const container = document.querySelector('.widgets');
         const clock = document.createElement('digital-clock');
         container.appendChild(clock);
@@ -393,7 +393,7 @@ class InputText extends HTMLElement {
             });
             document.dispatchEvent(event);
             throw new Error('La entrada contiene caracteres no permitidos');
-       
+
         }
 
         // Validar que los paréntesis estén correctamente balanceados

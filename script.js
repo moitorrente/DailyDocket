@@ -19,11 +19,19 @@ const createTasks = () => {
         const title = document.createElement('span');
         title.setAttribute('slot', 'title');
         title.innerHTML = task.description;
+
         const date = document.createElement('span');
         date.setAttribute('slot', 'date');
         date.innerHTML = task.date;
+
+        const status = document.createElement('span');
+        status.setAttribute('slot', 'status');
+        status.innerHTML = task.status;
+
+
         taskList.appendChild(title);
         taskList.appendChild(date);
+        taskList.appendChild(status);
         document.querySelector('.open').prepend(taskList);
     });
 
@@ -56,7 +64,7 @@ const saveTasksToLocalStorage = () => {
 
 // Función para agregar una nueva tarea abierta
 const addOpenTask = (description, raw, text, date, id) => {
-    openTasks.push({ description, raw, text, date, id, completed: false, closed: null });
+    openTasks.push({ description, raw, text, date, id, completed: false, closed: null, status: null });
     logTaskEvent('TO_OPEN', id)
     saveTasksToLocalStorage();
 };
@@ -67,7 +75,13 @@ const editTask = (id, description, raw, text, date) => {
     task.raw = raw;
     task.text = text;
     task.date = date;
-    saveTasksToLocalStorage()
+    saveTasksToLocalStorage();
+}
+
+const changeTaskStatus = (id, status) => {
+    const task = getTask(id);
+    task.status = status;
+    saveTasksToLocalStorage();
 }
 
 const createOpenTask = (description, raw, text, date, id) => {

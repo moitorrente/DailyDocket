@@ -7,11 +7,10 @@ class DigitalClock extends HTMLElement {
         const template = `<style>
   .container {
     font-family: 'Roboto Mono', monospace;
-    width: 100%;
-    margin-top: 10px;
+    width: 200px;
+    height: 40px;
     background-color: #f3f4f6;
     color: #6b7280;
-    font-weight: bold;
     font-size: 22px;
     border-radius: 9px;
     position: relative;

@@ -14,6 +14,7 @@ body {
     -webkit-font-smoothing: antialiased;
     background-color: #f8fafc;
     margin: 0;
+    -webkit-font-smoothing: antialiased;
 
 
 }
@@ -52,7 +53,7 @@ body {
 
 
 .container {
-    max-width: 650px;
+    max-width: 700px;
     padding: 0 10px;
     margin: 1px auto 20px auto;
 }
@@ -96,23 +97,23 @@ body {
 }
 
 .column1 {
-    flex-basis: 20%;
+    flex-basis: 17%;
 }
 
 .column2 {
-    flex-basis: 60%;
+    flex-basis: 66%;
 }
 
 .column3 {
-    flex-basis: 20%;
+    flex-basis: 17%;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    justify-content: center;
 }
 
-.column3 > * {
+/* .column3>* {
     margin-top: 10px;
-  }
+} */
 
 @media only screen and (max-width: 768px) {
     .column1, .column3 {

@@ -13,8 +13,8 @@ class MyCounter extends HTMLElement {
     const template = `<style>
   .container {
 
-    width: 100%;
-    /* min-width: 300px; */
+    width: 210px;
+    height: 40px;
     background-color: #f3f4f6;
     color: #6b7280;
     border-radius: 9px;
