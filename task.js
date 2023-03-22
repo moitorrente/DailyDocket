@@ -71,6 +71,7 @@ class TaskList extends HTMLElement {
 
   .task:hover {
     background-color: var(--gray-100);
+    cursor: pointer;
   }
 
   .task:hover .task-date {
@@ -253,6 +254,18 @@ class TaskList extends HTMLElement {
         addOpenTask(taskTitle, taskRaw, taskText, taskDate, taskId);
       }
     })
+
+    const task = shadowRoot.querySelector('.task');
+    task.addEventListener('click', () => {
+      const event = new CustomEvent('modal-message', {
+        detail: {
+          title: this.taskTitle, status: this.statusContainer ? this.statusContainer : ''
+        }
+      });
+      document.dispatchEvent(event);
+    })
+
+
   }
   connectedCallback() {
     const slot = this.shadowRoot.querySelector('slot[name="title"]');
@@ -267,25 +280,34 @@ class TaskList extends HTMLElement {
 
     const slotStatus = this.shadowRoot.querySelector('slot[name="status"]');
     const assignedNodesStatus = slotStatus.assignedNodes()[0]?.textContent;
+    this.taskStatus = assignedNodesStatus;
+    this.statusContainer;
 
     if (assignedNodesStatus == 'pending') {
       const contenedor = this.shadowRoot.querySelector('div[name="status"]');
       contenedor.style.display = 'flex';
       contenedor.innerHTML = `<div class="point yellow"></div>
-      <div class="task-status-desc">Pending</div>`
+      <div class="task-status-desc">Pending</div>`;
+      this.statusContainer = contenedor.innerHTML;
+
     }
     if (assignedNodesStatus == 'stopped') {
       const contenedor = this.shadowRoot.querySelector('div[name="status"]');
       contenedor.style.display = 'flex';
       contenedor.innerHTML = `<div class="point red"></div>
-      <div class="task-status-desc">Stopped</div>`
+      <div class="task-status-desc">Stopped</div>`;
+      this.statusContainer = contenedor.innerHTML;
+
     }
     if (assignedNodesStatus == 'progress') {
       const contenedor = this.shadowRoot.querySelector('div[name="status"]');
       contenedor.style.display = 'flex';
       contenedor.innerHTML = `<div class="point green"></div>
-      <div class="task-status-desc">Progress</div>`
+      <div class="task-status-desc">Progress</div>`;
+      this.statusContainer = contenedor.innerHTML;
+
     }
+
 
   }
 }
