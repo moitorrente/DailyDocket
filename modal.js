@@ -3,6 +3,32 @@ class Modal extends HTMLElement {
     super();
     const template = document.createElement('template');
     template.innerHTML = `<style>
+  /* Estilo para la barra de desplazamiento en general */
+  ::-webkit-scrollbar {
+    width: 5px;
+    border-radius: 20px;
+
+  }
+
+  /* Estilo para el fondo de la barra de desplazamiento */
+  ::-webkit-scrollbar-track {
+    background-color: #d1d5db;
+    width: 5px;
+
+  }
+
+  /* Estilo para el "pulgar" de la barra de desplazamiento */
+  ::-webkit-scrollbar-thumb {
+    background-color: #9ca3af;
+    border-radius: 20px;
+    border: none;
+  }
+
+  /* Estilo para el "pulgar" de la barra de desplazamiento cuando se está arrastrando */
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #4b5563;
+  }
+
   .modal {
     display: none;
     position: fixed;
@@ -66,6 +92,12 @@ class Modal extends HTMLElement {
     background-color: #f3f4f6;
     padding: 10px;
     border: 0;
+    resize: none;
+    /* Deshabilita el redimensionamiento manual del textarea */
+    overflow-y: auto;
+    /* Oculta cualquier contenido que sobresalga del textarea */
+    height: 200px;
+    /* Establece la altura inicial del textarea en "auto" */
     width: 96%;
   }
 
@@ -90,7 +122,7 @@ class Modal extends HTMLElement {
   }
 
   .red {
-    background: #ef4444;  
+    background: #ef4444;
   }
 
   .task-status {
@@ -118,6 +150,19 @@ class Modal extends HTMLElement {
     max-height: 40vh;
     display: flex;
     justify-content: center;
+  }
+
+  .sub {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+  }
+
+  .task-date {
+    margin-top: 1rem;
+    color: #6b7280;
+    font-size: x-small;
   }
 
 
@@ -151,8 +196,14 @@ class Modal extends HTMLElement {
       background-color: #111827;
     }
 
+
+
     .description:focus {
       outline: 1px solid #475569;
+    }
+
+    .task-date {
+      color: #9ca3af;
     }
 
   }
@@ -168,9 +219,11 @@ class Modal extends HTMLElement {
         </svg></div>
 
     </div>
-    <div class="task-status" style="margin-top: 1rem;"></div>
-    <p class="modal-body"></p>
-    <textarea class="description" name="" id="" rows="10"></textarea>
+    <div class="sub" style="margin-top: 1rem;">
+      <div class="task-status"></div>
+    </div>
+    <textarea class="description" name="" id="" rows="" placeholder="Añade descripción..."></textarea>
+    <div class="task-date"></div>
   </div>
 </div>`;
 
@@ -179,13 +232,17 @@ class Modal extends HTMLElement {
 
     const closeButton = this.shadowRoot.querySelector('.close');
     closeButton.addEventListener('click', () => this.hide());
+    this.taskId;
 
-    const modal = this.shadowRoot.querySelector('.modal');
-    this.shadowRoot.addEventListener('click', function (event) {
-      if (!event.target.closest('.modal-content')) {
-        modal.style.display = 'none'
-      }
+    const textarea = this.shadowRoot.querySelector('.description');
+
+    const arrow = '\u2192';
+    textarea.addEventListener("input", () => {
+      textarea.value = textarea.value.replace(/->/g, arrow);
+
     });
+
+
   }
 
   connectedCallback() {
@@ -193,14 +250,34 @@ class Modal extends HTMLElement {
     // const body = this.getAttribute('body');
     // this.shadowRoot.querySelector('.modal-title').textContent = title;
     // this.shadowRoot.querySelector('.modal-body').textContent = body;
-
+    let taskId;
     document.addEventListener('modal-message', (event) => {
-      const { title, status } = event.detail;
-      console.log(title, status)
+      const { id, title, status, date } = event.detail;
+      const description = getTaskDescription(id)
+      const textarea = this.shadowRoot.querySelector('.description');
 
+      taskId = id;
       this.shadowRoot.querySelector('.modal-title').innerHTML = title;
-      this.shadowRoot.querySelector('.task-status').innerHTML = status;
+      textarea.value = description ? description : '';
+      if (status) {
+        this.shadowRoot.querySelector('.task-status').style.display = 'flex';
+        this.shadowRoot.querySelector('.task-status').innerHTML = status;
+      } else {
+        this.shadowRoot.querySelector('.task-status').style.display = 'none';
+      }
+      this.shadowRoot.querySelector('.task-date').innerHTML = `Creada el ${date}`;
       this.show();
+    });
+
+
+    const description = this.shadowRoot.querySelector('.description')
+
+    const modal = this.shadowRoot.querySelector('.modal');
+    this.shadowRoot.addEventListener('click', function (event) {
+      if (!event.target.closest('.modal-content')) {
+        updateDescription(taskId, description.value)
+        modal.style.display = 'none';
+      }
     });
   }
 
@@ -211,6 +288,14 @@ class Modal extends HTMLElement {
   hide() {
     this.shadowRoot.querySelector('.modal').style.display = 'none';
   }
+
+
+
+
 }
 
 customElements.define('modal-component', Modal);
+
+function updateDescription(id, value) {
+  editDescription(id, value)
+}

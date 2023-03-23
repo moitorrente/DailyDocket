@@ -5,11 +5,11 @@ let closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
 const createTasks = () => {
     document.querySelector('.open').innerHTML = '';
 
-
+    let openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
+    let closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
     // const workspace = localStorage.getItem('current-workspace');
 
     // let openfiltered = openTasks.filter(task => task.workspace === workspace)
-
     openTasks.forEach(task => {
         const taskList = document.createElement('task-list');
         taskList.shadowRoot.querySelector('input').checked = task.completed;
@@ -18,7 +18,7 @@ const createTasks = () => {
         taskList.setAttribute('text', task.text);
         const title = document.createElement('span');
         title.setAttribute('slot', 'title');
-        title.innerHTML = task.description;
+        title.innerHTML = task.title;
 
         const date = document.createElement('span');
         date.setAttribute('slot', 'date');
@@ -44,7 +44,7 @@ const createTasks = () => {
         taskList.setAttribute('text', task.text);
         const title = document.createElement('span');
         title.setAttribute('slot', 'title');
-        title.innerHTML = task.description;
+        title.innerHTML = task.title;
         const date = document.createElement('span');
         date.setAttribute('slot', 'date');
         date.innerHTML = task.date;
@@ -63,18 +63,29 @@ const saveTasksToLocalStorage = () => {
 };
 
 // Función para agregar una nueva tarea abierta
-const addOpenTask = (description, raw, text, date, id) => {
-    openTasks.push({ description, raw, text, date, id, completed: false, closed: null, status: null });
+const addOpenTask = (title, raw, text, date, id) => {
+    openTasks.push({ title, raw, text, date, id, completed: false, closed: null, status: null, description: null });
     logTaskEvent('TO_OPEN', id)
-    saveTasksToLocalStorage();
+    // saveTasksToLocalStorage();
 };
 // this.editing, htmlToShow, inputText, onlyText, date.innerHTML
-const editTask = (id, description, raw, text, date) => {
+const editTask = (id, title, raw, text, date) => {
     const task = getTask(id);
-    task.description = description;
+    task.title = title;
     task.raw = raw;
     task.text = text;
     task.date = date;
+    saveTasksToLocalStorage();
+}
+
+const getTaskDescription = (id) => {
+    const task = getTask(id);
+    return task.description;
+}
+
+const editDescription = (id, description) => {
+    const task = getTask(id);
+    task.description = description;
     saveTasksToLocalStorage();
 }
 
@@ -84,42 +95,42 @@ const changeTaskStatus = (id, status) => {
     saveTasksToLocalStorage();
 }
 
-const createOpenTask = (description, raw, text, date, id) => {
-    openTasks.push({ description, raw, text, date, id, completed: false, closed: null });
+const createOpenTask = (title, raw, text, date, id) => {
+    openTasks.push({ title, raw, text, date, id, completed: false, closed: null });
     logTaskEvent('CREATE', id)
-    saveTasksToLocalStorage();
+    // saveTasksToLocalStorage();
 };
 
 // Función para agregar una nueva tarea cerrada
-const addClosedTask = (description, raw, text, date, id) => {
-    closedTasks.push({ description, raw, text, date, id, completed: true, closed: new Date().toLocaleDateString('es-ES') });
+const addClosedTask = (title, raw, text, date, id) => {
+    closedTasks.push({ title, raw, text, date, id, completed: true, closed: new Date().toLocaleDateString('es-ES') });
     logTaskEvent('TO_CLOSE', id)
-    saveTasksToLocalStorage();
+    // saveTasksToLocalStorage();
 };
 
 
 // // Función para actualizar una tarea abierta
-// const updateOpenTask = (index, description, date, completed) => {
-//     openTasks[index] = { description, date, completed };
+// const updateOpenTask = (index, title, date, completed) => {
+//     openTasks[index] = { title, date, completed };
 //     saveTasksToLocalStorage();
 // };
 
 // // Función para actualizar una tarea cerrada
-// const updateClosedTask = (index, description, date, completed) => {
-//     closedTasks[index] = { description, date, completed };
+// const updateClosedTask = (index, title, date, completed) => {
+//     closedTasks[index] = { title, date, completed };
 //     saveTasksToLocalStorage();
 // };
 
 // Función para eliminar una tarea abierta
 const removeOpenTask = (id) => {
     openTasks = openTasks.filter(task => task.id !== id);
-    saveTasksToLocalStorage();
+    // saveTasksToLocalStorage();
 };
 
 // Función para eliminar una tarea cerrada
 const removeClosedTask = (id) => {
     closedTasks = closedTasks.filter(task => task.id !== id);
-    saveTasksToLocalStorage();
+    // saveTasksToLocalStorage();
 };
 
 const removeAllTasks = () => {

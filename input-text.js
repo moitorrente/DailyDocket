@@ -130,9 +130,11 @@ class InputText extends HTMLElement {
                     const onlyText = this.removeMarkdown(inputText);
                     if (this.editing) {
                         editTask(this.editing, htmlToShow, inputText, onlyText, date.innerHTML);
+                        saveTasksToLocalStorage();
                         this.editing = false;
                     } else {
                         createOpenTask(htmlToShow, inputText, onlyText, date.innerHTML, this.taskId);
+                        saveTasksToLocalStorage();
                     }
                 }
                 // input.value = '';
@@ -328,7 +330,7 @@ class InputText extends HTMLElement {
     exportText() {
         const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
         const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
-        const openTasksText = openTasks.map(task => `   - ${task.text} ${task.status ?  ' - Status: ' + task.status : ''}`).join('\r\n');
+        const openTasksText = openTasks.map(task => `   - ${task.text} ${task.status ?  ' · Status: ' + task.status : ''}`).join('\r\n');
         const closedTasksText = closedTasks.map(task => `   - ${task.text} > ${task.date} - ${task.closed ? task.closed : ''}`).join('\r\n');
         const exporText = `Tareas abiertas \r\n${openTasksText} \r\n\r\nTareas cerradas \r\n${closedTasksText}`;
         downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.txt`);

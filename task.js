@@ -241,29 +241,39 @@ class TaskList extends HTMLElement {
 </div>`;
     shadowRoot.innerHTML = template;
 
+    const task = shadowRoot.querySelector('.task');
+    task.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!e.target.matches('#myCheckbox')) {
+        const event = new CustomEvent('modal-message', {
+          detail: {
+            id: this.taskId,
+            title: this.taskTitle,
+            status: this.statusContainer ? this.statusContainer : '',
+            date: this.taskDate
+          }
+        });
+        document.dispatchEvent(event);
+      }
+    })
+
     const checkbox = shadowRoot.querySelector("input[type='checkbox']");
 
     // Escuchar los cambios en el estado del checkbox
-    checkbox.addEventListener('change', () => {
+    checkbox.addEventListener('click', (event) => {
       const { taskTitle, taskRaw, taskText, taskDate, taskId } = this;
       if (checkbox.checked) {
         removeOpenTask(taskId);
         addClosedTask(taskTitle, taskRaw, taskText, taskDate, taskId);
+        saveTasksToLocalStorage();
       } else {
         removeClosedTask(taskId);
         addOpenTask(taskTitle, taskRaw, taskText, taskDate, taskId);
+        saveTasksToLocalStorage();
       }
     })
 
-    const task = shadowRoot.querySelector('.task');
-    task.addEventListener('click', () => {
-      const event = new CustomEvent('modal-message', {
-        detail: {
-          title: this.taskTitle, status: this.statusContainer ? this.statusContainer : ''
-        }
-      });
-      document.dispatchEvent(event);
-    })
+
 
 
   }
