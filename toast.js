@@ -85,7 +85,7 @@ class ToastComponent extends HTMLElement {
         @media (prefers-color-scheme: dark) {
             .toast_message {
                 color: #f9fafb;    
-                background-color: #374151;
+                background-color: #1f2937;
                 border: 1px solid #4b5563;
             }
 
