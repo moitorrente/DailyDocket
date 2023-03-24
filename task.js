@@ -317,8 +317,6 @@ class TaskList extends HTMLElement {
       this.statusContainer = contenedor.innerHTML;
 
     }
-
-
   }
 }
 

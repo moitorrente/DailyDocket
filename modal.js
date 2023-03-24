@@ -165,10 +165,6 @@ class Modal extends HTMLElement {
     font-size: x-small;
   }
 
-
-
-
-
   @media (prefers-color-scheme: dark) {
     .modal-content {
       background-color: #111827;
@@ -239,7 +235,6 @@ class Modal extends HTMLElement {
     const arrow = '\u2192';
     textarea.addEventListener("input", () => {
       textarea.value = textarea.value.replace(/->/g, arrow);
-
     });
 
 
@@ -249,7 +244,7 @@ class Modal extends HTMLElement {
 
     let taskId;
     document.addEventListener('modal-message', (event) => {
-      const { id, title, status, date, description } = event.detail;
+      const { id, title, status, date, description, closed } = event.detail;
 
       taskId = id;
 
@@ -265,7 +260,12 @@ class Modal extends HTMLElement {
         this.shadowRoot.querySelector('.task-status').style.display = 'none';
       }
 
-      this.shadowRoot.querySelector('.task-date').innerHTML = `Creada el ${date}`;
+      let dateText = `Creada el ${date}`;
+
+      if (closed) {
+        dateText += ` - Cerrada el ${closed}  ·  ${calculateDateDifference(date, closed)} días`
+      }
+      this.shadowRoot.querySelector('.task-date').textContent = dateText;
       this.show();
     });
 
@@ -318,4 +318,22 @@ function createPill(value) {
 
   }
 
+}
+
+function calculateDateDifference(date1, date2) {
+  // Convert the input dates to Date objects
+  var startDate = new Date(date1.split("/").reverse().join("-"));
+  var endDate = new Date(date2.split("/").reverse().join("-"));
+
+  // Convert the dates to milliseconds
+  var startDateMs = startDate.getTime();
+  var endDateMs = endDate.getTime();
+
+  // Calculate the difference in milliseconds
+  var dateDifferenceMs = endDateMs - startDateMs;
+
+  // Convert the difference to days
+  var days = Math.round(dateDifferenceMs / 86400000);
+
+  return days;
 }
