@@ -246,25 +246,25 @@ class Modal extends HTMLElement {
   }
 
   connectedCallback() {
-    // const title = this.getAttribute('title');
-    // const body = this.getAttribute('body');
-    // this.shadowRoot.querySelector('.modal-title').textContent = title;
-    // this.shadowRoot.querySelector('.modal-body').textContent = body;
+
     let taskId;
     document.addEventListener('modal-message', (event) => {
-      const { id, title, status, date } = event.detail;
-      const description = getTaskDescription(id)
-      const textarea = this.shadowRoot.querySelector('.description');
+      const { id, title, status, date, description } = event.detail;
 
       taskId = id;
+
       this.shadowRoot.querySelector('.modal-title').innerHTML = title;
+
+      const textarea = this.shadowRoot.querySelector('.description');
       textarea.value = description ? description : '';
-      if (status) {
+
+      if (status && status !== 'null') {
         this.shadowRoot.querySelector('.task-status').style.display = 'flex';
-        this.shadowRoot.querySelector('.task-status').innerHTML = status;
+        this.shadowRoot.querySelector('.task-status').innerHTML = createPill(status);
       } else {
         this.shadowRoot.querySelector('.task-status').style.display = 'none';
       }
+
       this.shadowRoot.querySelector('.task-date').innerHTML = `Creada el ${date}`;
       this.show();
     });
@@ -275,7 +275,7 @@ class Modal extends HTMLElement {
     const modal = this.shadowRoot.querySelector('.modal');
     this.shadowRoot.addEventListener('click', function (event) {
       if (!event.target.closest('.modal-content')) {
-        updateDescription(taskId, description.value)
+        updateDescription(taskId, description.value);
         modal.style.display = 'none';
       }
     });
@@ -298,4 +298,24 @@ customElements.define('modal-component', Modal);
 
 function updateDescription(id, value) {
   editDescription(id, value)
+}
+
+function createPill(value) {
+  if (value == 'pending') {
+    return `<div class="point yellow"></div>
+    <div class="task-status-desc">Pending</div>`;
+
+  }
+  if (value == 'stopped') {
+    return `<div class="point red"></div>
+    <div class="task-status-desc">Stopped</div>`;
+
+  }
+  if (value == 'progress') {
+
+    return `<div class="point green"></div>
+    <div class="task-status-desc">Progress</div>`;
+
+  }
+
 }
