@@ -27,47 +27,67 @@ class PopUpInfo extends HTMLElement {
         const style = document.createElement('style');
 
         style.textContent = `
+        
         .wrapper {
-          position: relative;
-          display: flex;
-          align-items: center;
-        }
-  
-        .info {
-          font-size: 0.5rem;
-          width: 110px;
-          display: none;
-          background-color: #f9fafb;
-          border: 1px solid #d1d5db;
-          padding: 6px;
-          border-radius: 4px;
-          opacity: 0;
-          transition: 0.3s all;
-          position: absolute;
-          bottom: 15px;
-          left: -20px;
-          z-index: 113;
-        }
+position: relative;
+display: flex;
+align-items: center;
+}
 
-        .icon{
-            display: flex;
-            align-items: center;
-        }
-  
-  
-        .icon:hover + .info, .icon:focus + .info {
-          opacity: 1;
-          display: inline-block;
-        }
+.info {
+font-size: 0.5rem;
+width: 110px;
+display: none;
+background-color: #f9fafb;
+border: 1px solid #d1d5db;
+padding: 6px;
+border-radius: 4px;
+opacity: 0;
+transition: 0.3s all;
+position: absolute;
+bottom: 15px;
+left: -95px;
+z-index: 113;
+}
+
+.icon{
+display: flex;
+align-items: center;
+}
+
+.due-translated {
+color: #374151;
+font-weight: 500;
+margin-top: 5px;'
+}
+
+.icon:hover{
+color: #4b5563;
+font-weight: 500;
+
+}
 
 
-        @media (prefers-color-scheme: dark) {
-            .info {
-                background-color: #111827;
-                border: 1px solid #4b5563;
-              }
-        }
-      `;
+.icon:hover + .info, .icon:focus + .info {
+opacity: 1;
+display: inline-block;
+}
+
+
+@media (prefers-color-scheme: dark) {
+.info {
+background-color: #111827;
+border: 1px solid #4b5563;
+}
+.due-translated {
+color: #f3f4f6;
+}
+.icon:hover{
+    color: #f3f4f6;
+    
+    }
+
+}`;
 
         // Attach the created elements to the shadow dom
         shadow.appendChild(style);

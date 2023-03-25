@@ -337,7 +337,7 @@ class TaskList extends HTMLElement {
 
     if (this.taskDue !== 'undefined' && this.taskDue) {
       contenedor.style.display = 'flex';
-      contenedor.innerHTML += `<popup-info img="" data-text="Fecha planificada: ${this.taskDue}<div style='color: white; margin-top: 5px;'>${calculateDateDifferenceText(new Date().toLocaleDateString('es-ES'), this.taskDue)}</div>"></popup-info>`;
+      contenedor.innerHTML += `<popup-info img="" data-text="Fecha planificada: ${this.taskDue}<div class='due-translated'>${calculateDateDifferenceText(new Date().toLocaleDateString('es-ES'), this.taskDue)}</div>"></popup-info>`;
     }
   }
 }
@@ -358,13 +358,24 @@ function calculateDateDifferenceText(date1, date2) {
 
   // Convert the difference to days
   const days = Math.round(dateDifferenceMs / 86400000);
-
-  console.log(days)
-
-  if (days > 1) return `Faltan ${days} días`;
+  
+  if (days > 365) return `Dentro de más de un año`;
+  if (days > 30 * 11) return `Dentro de once meses`;
+  if (days > 30 * 10) return `Dentro de diez meses`;
+  if (days > 30 * 9) return `Dentro de nueve meses`;
+  if (days > 30 * 8) return `Dentro de ocho meses`;
+  if (days > 30 * 7) return `Dentro de siete meses`;
+  if (days > 30 * 6) return `Dentro de seis meses`;
+  if (days > 30 * 5) return `Dentro de cinco meses`;
+  if (days > 30 * 4) return `Dentro de cuatro meses`;
+  if (days > 30 * 3) return `Dentro de tres meses`;
+  if (days > 30 * 2) return `Dentro de dos meses`;
+  if (days > 31) return `Dentro de más de un mes`;
+  if (days > 1) return `Dentro de ${days} días`;
   if (days === 1) return `Mañana`;
   if (days === 0) return `Hoy`;
   if (days === -1) return `Ayer`;
-  if (days < -1) return `Fue hace ${-days} días`;
+  if (days < -1) return `Hace ${-days} días`;
+  if (days < -31) return `Hace de más de un mes`;
 
 }

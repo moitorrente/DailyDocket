@@ -136,6 +136,11 @@ class TaskDueDate extends HTMLElement {
       color: #e5e7eb;
     }
 
+    .date:hover {
+      background-color: #374151;
+      color: #e5e7eb;
+    }
+
   }
 </style>
 <div class="modal">

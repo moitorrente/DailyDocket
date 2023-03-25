@@ -51,27 +51,6 @@ class TaskDescription extends HTMLElement {
     max-width: 550px;
   }
 
-  .close {
-    color: #aaa;
-    cursor: pointer;
-    padding: 3px;
-    border-radius: 4px;
-    width: 16px;
-    height: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    align-self: baseline;
-  }
-
-  .close:hover,
-  .close:focus {
-    color: #6b7280;
-    background-color: #e5e7eb;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
   .modal-title {
     flex-grow: 1;
     font-size: medium;
@@ -218,12 +197,6 @@ class TaskDescription extends HTMLElement {
       background-color: #1f2937;
     }
 
-    .close:hover,
-    .close:focus {
-      color: #d1d5db;
-      background-color: #374151;
-    }
-
     .modal-title {
       color: #e5e7eb;
     }
@@ -247,12 +220,6 @@ class TaskDescription extends HTMLElement {
   <div class="modal-content">
     <div class="modal-title-container">
       <div class="modal-title"></div>
-      <div class="close"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M12.8536 2.85355C13.0488 2.65829 13.0488 2.34171 12.8536 2.14645C12.6583 1.95118 12.3417 1.95118 12.1464 2.14645L7.5 6.79289L2.85355 2.14645C2.65829 1.95118 2.34171 1.95118 2.14645 2.14645C1.95118 2.34171 1.95118 2.65829 2.14645 2.85355L6.79289 7.5L2.14645 12.1464C1.95118 12.3417 1.95118 12.6583 2.14645 12.8536C2.34171 13.0488 2.65829 13.0488 2.85355 12.8536L7.5 8.20711L12.1464 12.8536C12.3417 13.0488 12.6583 13.0488 12.8536 12.8536C13.0488 12.6583 13.0488 12.3417 12.8536 12.1464L8.20711 7.5L12.8536 2.85355Z"
-            fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
-        </svg></div>
-
     </div>
     <div class="sub" style="margin-top: 1rem;">
       <div class="task-status"></div>
@@ -266,9 +233,7 @@ class TaskDescription extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-    const closeButton = this.shadowRoot.querySelector('.close');
-    closeButton.addEventListener('click', () => this.hide());
-    this.taskId;
+
 
     const textarea = this.shadowRoot.querySelector('.description');
 
@@ -337,9 +302,6 @@ class TaskDescription extends HTMLElement {
     this.shadowRoot.querySelector('.modal').style.display = 'block';
   }
 
-  hide() {
-    this.shadowRoot.querySelector('.modal').style.display = 'none';
-  }
 
 }
 
