@@ -63,6 +63,10 @@ createTasks();
 const saveTasksToLocalStorage = () => {
     localStorage.setItem('openTasks', JSON.stringify(openTasks));
     localStorage.setItem('closedTasks', JSON.stringify(closedTasks));
+    const event = new CustomEvent('updated-storage', {
+        detail: 'updates'
+    });
+    document.dispatchEvent(event);
     createTasks();
 };
 

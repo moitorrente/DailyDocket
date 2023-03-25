@@ -71,7 +71,6 @@ class TaskList extends HTMLElement {
 
   .task:hover {
     background-color: var(--gray-100);
-    cursor: pointer;
   }
 
   .task:hover .task-date {
@@ -358,7 +357,7 @@ function calculateDateDifferenceText(date1, date2) {
 
   // Convert the difference to days
   const days = Math.round(dateDifferenceMs / 86400000);
-  
+
   if (days > 365) return `Dentro de más de un año`;
   if (days > 30 * 11) return `Dentro de once meses`;
   if (days > 30 * 10) return `Dentro de diez meses`;

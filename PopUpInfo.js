@@ -28,7 +28,7 @@ class PopUpInfo extends HTMLElement {
 
         style.textContent = `
         
-        .wrapper {
+.wrapper {
 position: relative;
 display: flex;
 align-items: center;
