@@ -43,10 +43,10 @@ class TaskDescription extends HTMLElement {
 
   .modal-content {
     background-color: #f3f4f6;
+    border: 1px solid #9ca3af;
     margin: 10% auto;
     padding: 20px;
     border-radius: 10px;
-    border: 1px solid #9ca3af;
     width: 80%;
     max-width: 550px;
   }

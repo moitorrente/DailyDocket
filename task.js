@@ -66,7 +66,7 @@ class TaskList extends HTMLElement {
     white-space: nowrap;
     transition: opacity 0.4s ease;
     flex-basis: 10%;
-
+    display: none;
   }
 
   .task:hover {
@@ -76,7 +76,10 @@ class TaskList extends HTMLElement {
 
   .task:hover .task-date {
     opacity: 1;
+    display: flex;
   }
+
+
 
   input[type="checkbox"] {
     display: none;
@@ -119,6 +122,7 @@ class TaskList extends HTMLElement {
 
   .task-status {
     display: flex;
+    justify-content: center;
     outline: 1px solid var(--gray-200);
     color: var(--gray-400);
     font-size: 9px;
@@ -127,6 +131,7 @@ class TaskList extends HTMLElement {
     gap: 4px;
     height: 15px;
     padding: 0px 6px 1px 4px;
+    flex-shrink: 0;
     border-radius: 25px;
     flex-basis: 5%;
     background-color: var(--bg-color);
@@ -198,7 +203,6 @@ class TaskList extends HTMLElement {
       color: var(--gray-100);
     }
 
-
     .task-date {
       color: var(--gray-100);
     }
@@ -232,15 +236,17 @@ class TaskList extends HTMLElement {
     <slot name="title"></slot>
   </div>
   <slot name="status" style="display: none"></slot>
+  <slot name="due" style="display: none"></slot>
+  <div class="task-date">
+  <slot name="date"></slot>
+</div>
   <div name="status" style="display: none" class="task-status"></div>
   <!-- <div class="task-status">
     <slot name="status"></slot>
     <div class="point"></div>
     <div class="task-status-desc">Pending</div>
   </div> -->
-  <div class="task-date">
-    <slot name="date"></slot>
-  </div>
+
 </div>`;
     shadowRoot.innerHTML = template;
 
@@ -296,35 +302,42 @@ class TaskList extends HTMLElement {
     this.taskStatus = assignedNodesStatus;
     this.statusContainer;
 
-    if (assignedNodesStatus === 'pending') {
-      const contenedor = this.shadowRoot.querySelector('div[name="status"]');
+    const slotDue = this.shadowRoot.querySelector('slot[name="due"]');
+    const assignedNodesDue = slotDue.assignedNodes()[0]?.textContent;
+    this.taskDue = assignedNodesDue;
+
+    const contenedor = this.shadowRoot.querySelector('div[name="status"]');
+
+    if (this.taskStatus === 'pending') {
       contenedor.style.display = 'flex';
       contenedor.innerHTML = `<div class="point yellow"></div>
       <div class="task-status-desc">Pending</div>`;
       this.statusContainer = contenedor.innerHTML;
 
     }
-    if (assignedNodesStatus === 'stopped') {
-      const contenedor = this.shadowRoot.querySelector('div[name="status"]');
+    if (this.taskStatus === 'stopped') {
       contenedor.style.display = 'flex';
       contenedor.innerHTML = `<div class="point red"></div>
       <div class="task-status-desc">Stopped</div>`;
       this.statusContainer = contenedor.innerHTML;
 
     }
-    if (assignedNodesStatus === 'progress') {
-      const contenedor = this.shadowRoot.querySelector('div[name="status"]');
+    if (this.taskStatus === 'progress') {
       contenedor.style.display = 'flex';
       contenedor.innerHTML = `<div class="point green"></div>
       <div class="task-status-desc">Progress</div>`;
       this.statusContainer = contenedor.innerHTML;
     }
-    if (assignedNodesStatus === 'planned') {
-      const contenedor = this.shadowRoot.querySelector('div[name="status"]');
+    if (this.taskStatus === 'planned') {
       contenedor.style.display = 'flex';
       contenedor.innerHTML = `<div class="point blue"></div>
       <div class="task-status-desc">Planned</div>`;
       this.statusContainer = contenedor.innerHTML;
+    }
+
+    if (this.taskDue !== 'undefined' && this.taskDue) {
+      contenedor.style.display = 'flex';
+      contenedor.innerHTML += `<popup-info img="" data-text="${this.taskDue}"></popup-info>`;
     }
   }
 }

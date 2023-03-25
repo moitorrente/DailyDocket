@@ -27,11 +27,15 @@ const createTasks = () => {
         const status = document.createElement('span');
         status.setAttribute('slot', 'status');
         status.innerHTML = task.status;
+        const due = document.createElement('span');
+        due.setAttribute('slot', 'due');
+        due.innerHTML = task.due;
 
 
         taskList.appendChild(title);
         taskList.appendChild(date);
         taskList.appendChild(status);
+        taskList.appendChild(due);
         document.querySelector('.open').prepend(taskList);
     });
 

@@ -18,6 +18,7 @@
     <script defer src="date.js"></script>
     <script defer src="toast.js"></script>
     <script defer src="TaskCounter.js"></script>
+    <script defer src="PopUpInfo.js"></script>
     <script defer src="TaskDueDate.js"></script>
     <script defer src="ContextualMenu.js"></script>
     <script defer src="sidebar.js"></script>
@@ -39,9 +40,9 @@
                     style="display: flex; align-items: center; justify-content: space-between; gap: 2px; margin-bottom: 1rem; gap: 20px;">
                     <my-date style="flex-grow: 1;"></my-date>
                     <timer-component></timer-component>
-
                     <task-counter class="counter-container" count-id="open" count-text=" tareas abiertas"
-                        style="flex-shrink: 1;"></task-counter>
+                        style="flex-shrink: 1;">
+                    </task-counter>
                 </section>
                 <input-text></input-text>
                 <div class="lateral-container" style="display: none; justify-content: center; margin-top: 1rem;">
@@ -57,8 +58,7 @@
                     <summary
                         style="display: flex; align-items: center; justify-content: end; cursor: pointer; color: #9ca3af">
                         <span style="display: flex; align-items: center; gap: 3px" class="counter-container">
-                            <task-counter count-id="closed" count-text=" tareas cerradas"
-                                svg="true"></task-counter>
+                            <task-counter count-id="closed" count-text=" tareas cerradas" svg="true"></task-counter>
                         </span>
                     </summary>
                     <div id="closed" class="closed" style="margin-top: 1rem; padding: 0 0rem 1rem;"></div>
