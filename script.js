@@ -64,7 +64,7 @@ const saveTasksToLocalStorage = () => {
 
 // Función para agregar una nueva tarea abierta
 const addOpenTask = (title, raw, text, date, id) => {
-    openTasks.push({ title, raw, text, date, id, completed: false, closed: null, status: null, description: null });
+    openTasks.push({ title, raw, text, date, id, completed: false, closed: null, status: null, description: null, due: null });
     logTaskEvent('TO_OPEN', id)
     // saveTasksToLocalStorage();
 };
@@ -86,6 +86,12 @@ const getTaskDescription = (id) => {
 const editDescription = (id, description) => {
     const task = getTask(id);
     task.description = description;
+    saveTasksToLocalStorage();
+}
+
+const taskEditDue = (id, value) => {
+    const task = getTask(id);
+    task.due = value;
     saveTasksToLocalStorage();
 }
 

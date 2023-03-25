@@ -17,16 +17,16 @@
     <script defer src="input-text.js"></script>
     <script defer src="date.js"></script>
     <script defer src="toast.js"></script>
-    <script defer src="counter.js"></script>
+    <script defer src="TaskCounter.js"></script>
+    <script defer src="TaskDueDate.js"></script>
     <script defer src="ContextualMenu.js"></script>
     <script defer src="sidebar.js"></script>
-    <script defer src="modal.js"></script>
+    <script defer src="TaskDescription.js"></script>
     <script defer src="script.js"></script>
 
 </head>
 
 <body>
-
     <div class="wrapper">
         <div class="column column1"></div>
         <div class="column column2">
@@ -40,8 +40,8 @@
                     <my-date style="flex-grow: 1;"></my-date>
                     <timer-component></timer-component>
 
-                    <element-counter class="counter-container" count-id="open" count-text=" tareas abiertas"
-                        style="flex-shrink: 1;"></element-counter>
+                    <task-counter class="counter-container" count-id="open" count-text=" tareas abiertas"
+                        style="flex-shrink: 1;"></task-counter>
                 </section>
                 <input-text></input-text>
                 <div class="lateral-container" style="display: none; justify-content: center; margin-top: 1rem;">
@@ -51,18 +51,14 @@
                 </div>
                 <contextual-menu></contextual-menu>
 
-                <movable-element style="position: absolute">
-
-                </movable-element>
-
                 <div id="open" class="open" style="margin-top: 1rem; padding: 0 0rem 1rem;"></div>
 
                 <details>
                     <summary
                         style="display: flex; align-items: center; justify-content: end; cursor: pointer; color: #9ca3af">
                         <span style="display: flex; align-items: center; gap: 3px" class="counter-container">
-                            <element-counter count-id="closed" count-text=" tareas cerradas"
-                                svg="true"></element-counter>
+                            <task-counter count-id="closed" count-text=" tareas cerradas"
+                                svg="true"></task-counter>
                         </span>
                     </summary>
                     <div id="closed" class="closed" style="margin-top: 1rem; padding: 0 0rem 1rem;"></div>
@@ -84,7 +80,8 @@
 
     <sidebar-navigation></sidebar-navigation>
 
-    <modal-component title="Título del modal" body="Cuerpo del modal"></modal-component>
+    <task-description></task-description>
+    <task-due-date></task-due-date>
     <toast-component text=""></toast-component>
     <script>
         if (navigator.serviceWorker) {

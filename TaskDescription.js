@@ -1,4 +1,4 @@
-class Modal extends HTMLElement {
+class TaskDescription extends HTMLElement {
   constructor() {
     super();
     const template = document.createElement('template');
@@ -96,7 +96,7 @@ class Modal extends HTMLElement {
     /* Deshabilita el redimensionamiento manual del textarea */
     overflow-y: auto;
     /* Oculta cualquier contenido que sobresalga del textarea */
-    height: 200px;
+    height: 100px;
     /* Establece la altura inicial del textarea en "auto" */
     width: 96%;
   }
@@ -125,7 +125,43 @@ class Modal extends HTMLElement {
     background: #ef4444;
   }
 
+  .blue {
+    background: #2563eb;
+  }
+
   .task-status {
+    display: flex;
+    outline: 1px solid #d1d5db;
+    width: fit-content;
+    color: #4b5563;
+    font-size: 9px;
+    font-weight: 400;
+    align-items: center;
+    gap: 4px;
+    height: 15px;
+    padding: 0px 6px 0px 4px;
+    border-radius: 25px;
+    flex-basis: 5%;
+    background-color: #e5e7eb;
+  }
+
+  .task-due{
+    display: flex;
+    outline: 1px solid #d1d5db;
+    width: fit-content;
+    color: #4b5563;
+    font-size: 9px;
+    font-weight: 400;
+    align-items: center;
+    gap: 4px;
+    height: 15px;
+    padding: 0px 6px 0px 6px;
+    border-radius: 25px;
+    flex-basis: 5%;
+    background-color: #e5e7eb;
+  }
+
+  .task-done {
     display: flex;
     outline: 1px solid #e5e7eb;
     width: fit-content;
@@ -176,6 +212,11 @@ class Modal extends HTMLElement {
       color: #9ca3af;
       background-color: #1f2937;
     }
+    .task-due {
+      outline: 1px solid #374151;
+      color: #9ca3af;
+      background-color: #1f2937;
+    }
 
     .close:hover,
     .close:focus {
@@ -191,8 +232,6 @@ class Modal extends HTMLElement {
       color: #d1d5db;
       background-color: #111827;
     }
-
-
 
     .description:focus {
       outline: 1px solid #475569;
@@ -217,6 +256,7 @@ class Modal extends HTMLElement {
     </div>
     <div class="sub" style="margin-top: 1rem;">
       <div class="task-status"></div>
+      <div class="task-due"></div>
     </div>
     <textarea class="description" name="" id="" rows="" placeholder="Añade descripción..."></textarea>
     <div class="task-date"></div>
@@ -243,8 +283,8 @@ class Modal extends HTMLElement {
   connectedCallback() {
 
     let taskId;
-    document.addEventListener('modal-message', (event) => {
-      const { id, title, status, date, description, closed } = event.detail;
+    document.addEventListener('detail-message', (event) => {
+      const { id, title, status, date, description, closed, completed, due } = event.detail;
 
       taskId = id;
 
@@ -258,6 +298,18 @@ class Modal extends HTMLElement {
         this.shadowRoot.querySelector('.task-status').innerHTML = createPill(status);
       } else {
         this.shadowRoot.querySelector('.task-status').style.display = 'none';
+      }
+
+      if (due && due !== 'null') {
+        this.shadowRoot.querySelector('.task-due').style.display = 'flex';
+        this.shadowRoot.querySelector('.task-due').innerHTML = due;
+      } else {
+        this.shadowRoot.querySelector('.task-due').style.display = 'none';
+      }
+
+      if (completed && completed !== 'null') {
+        this.shadowRoot.querySelector('.task-status').style.display = 'flex';
+        this.shadowRoot.querySelector('.task-status').innerHTML = createPill('done');
       }
 
       let dateText = `Creada el ${date}`;
@@ -289,51 +341,53 @@ class Modal extends HTMLElement {
     this.shadowRoot.querySelector('.modal').style.display = 'none';
   }
 
-
-
-
 }
 
-customElements.define('modal-component', Modal);
+customElements.define('task-description', TaskDescription);
 
 function updateDescription(id, value) {
   editDescription(id, value)
 }
 
 function createPill(value) {
-  if (value == 'pending') {
+  if (value === 'pending') {
     return `<div class="point yellow"></div>
     <div class="task-status-desc">Pending</div>`;
-
   }
-  if (value == 'stopped') {
+  if (value === 'stopped') {
     return `<div class="point red"></div>
     <div class="task-status-desc">Stopped</div>`;
-
   }
-  if (value == 'progress') {
-
+  if (value === 'progress') {
     return `<div class="point green"></div>
     <div class="task-status-desc">Progress</div>`;
+  }
 
+  if (value === 'done') {
+    return `<svg width="15" height="15" viewBox="0 0 15 15" fill="#16a34a" xmlns="http://www.w3.org/2000/svg"><path d="M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z" fill="#16a34a" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+    <div class="task-status-desc">Finalizada</div>`;
+  }
+  if (value === 'planned') {
+    return `<div class="point blue"></div>
+        <div class="task-status-desc">Planned</div>`;
   }
 
 }
 
 function calculateDateDifference(date1, date2) {
   // Convert the input dates to Date objects
-  var startDate = new Date(date1.split("/").reverse().join("-"));
-  var endDate = new Date(date2.split("/").reverse().join("-"));
+  const startDate = new Date(date1.split("/").reverse().join("-"));
+  const endDate = new Date(date2.split("/").reverse().join("-"));
 
   // Convert the dates to milliseconds
-  var startDateMs = startDate.getTime();
-  var endDateMs = endDate.getTime();
+  const startDateMs = startDate.getTime();
+  const endDateMs = endDate.getTime();
 
   // Calculate the difference in milliseconds
-  var dateDifferenceMs = endDateMs - startDateMs;
+  const dateDifferenceMs = endDateMs - startDateMs;
 
   // Convert the difference to days
-  var days = Math.round(dateDifferenceMs / 86400000);
+  const days = Math.round(dateDifferenceMs / 86400000);
 
   return days;
 }

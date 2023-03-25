@@ -158,6 +158,9 @@ class TaskList extends HTMLElement {
   .red {
     background: #ef4444;
   }
+  .blue {
+    background: #2563eb;
+  }
 
   @media (prefers-color-scheme: dark) {
     :host {
@@ -293,7 +296,7 @@ class TaskList extends HTMLElement {
     this.taskStatus = assignedNodesStatus;
     this.statusContainer;
 
-    if (assignedNodesStatus == 'pending') {
+    if (assignedNodesStatus === 'pending') {
       const contenedor = this.shadowRoot.querySelector('div[name="status"]');
       contenedor.style.display = 'flex';
       contenedor.innerHTML = `<div class="point yellow"></div>
@@ -301,7 +304,7 @@ class TaskList extends HTMLElement {
       this.statusContainer = contenedor.innerHTML;
 
     }
-    if (assignedNodesStatus == 'stopped') {
+    if (assignedNodesStatus === 'stopped') {
       const contenedor = this.shadowRoot.querySelector('div[name="status"]');
       contenedor.style.display = 'flex';
       contenedor.innerHTML = `<div class="point red"></div>
@@ -309,13 +312,19 @@ class TaskList extends HTMLElement {
       this.statusContainer = contenedor.innerHTML;
 
     }
-    if (assignedNodesStatus == 'progress') {
+    if (assignedNodesStatus === 'progress') {
       const contenedor = this.shadowRoot.querySelector('div[name="status"]');
       contenedor.style.display = 'flex';
       contenedor.innerHTML = `<div class="point green"></div>
       <div class="task-status-desc">Progress</div>`;
       this.statusContainer = contenedor.innerHTML;
-
+    }
+    if (assignedNodesStatus === 'planned') {
+      const contenedor = this.shadowRoot.querySelector('div[name="status"]');
+      contenedor.style.display = 'flex';
+      contenedor.innerHTML = `<div class="point blue"></div>
+      <div class="task-status-desc">Planned</div>`;
+      this.statusContainer = contenedor.innerHTML;
     }
   }
 }

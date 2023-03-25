@@ -290,13 +290,13 @@ class InputText extends HTMLElement {
         this.input.value = '';
     }
 
-    showModal(title, body) {
-        const event = new CustomEvent('modal-message', {
-            detail: [title, body]
-        });
-        document.dispatchEvent(event);
-        this.input.value = '';
-    }
+    // showModal(title, body) {
+    //     const event = new CustomEvent('modal-message', {
+    //         detail: [title, body]
+    //     });
+    //     document.dispatchEvent(event);
+    //     this.input.value = '';
+    // }
 
     log() {
         const title = 'Log';
@@ -315,10 +315,10 @@ class InputText extends HTMLElement {
                         <tfoot></tfoot>
                     </table>`;
         }
-        const event = new CustomEvent('modal-message', {
-            detail: [title, generateHTMLFromArray(taskEvents.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)))]
-        });
-        document.dispatchEvent(event);
+        // const event = new CustomEvent('modal-message', {
+        //     detail: [title, generateHTMLFromArray(taskEvents.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)))]
+        // });
+        // document.dispatchEvent(event);
         this.input.value = '';
     }
 

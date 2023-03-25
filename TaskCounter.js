@@ -1,4 +1,4 @@
-class ElementCounter extends HTMLElement {
+class TaskCounter extends HTMLElement {
   constructor() {
     super();
     const shadowRoot = this.attachShadow({ mode: "open" });
@@ -61,4 +61,4 @@ class ElementCounter extends HTMLElement {
   }
 }
 
-customElements.define("element-counter", ElementCounter);
+customElements.define("task-counter", TaskCounter);

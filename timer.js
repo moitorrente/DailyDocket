@@ -1,11 +1,11 @@
 class TimerComponent extends HTMLElement {
-    static get observedAttributes() {
-        return ['time'];
-    }
-    constructor() {
-        super();
+  static get observedAttributes() {
+    return ['time'];
+  }
+  constructor() {
+    super();
 
-        this.innerHTML = `<div class="timer-container hidden">
+    this.innerHTML = `<div class="timer-container hidden">
   <div class="timer">15:00</div>
   <div class="navigation">
 
@@ -19,20 +19,20 @@ class TimerComponent extends HTMLElement {
   </div>
 </div>`;
 
-        this.timerContainer = this.querySelector('.timer-container');
+    this.timerContainer = this.querySelector('.timer-container');
 
-        this.timerEl = this.querySelector('.timer');
-        this.stopBtn = this.querySelector('#stop');
+    this.timerEl = this.querySelector('.timer');
+    this.stopBtn = this.querySelector('#stop');
 
-        this.timerEl.addEventListener('click', this.startTimer.bind(this));
-        this.stopBtn.addEventListener('click', this.stopTimer.bind(this));
+    this.timerEl.addEventListener('click', this.startTimer.bind(this));
+    this.stopBtn.addEventListener('click', this.stopTimer.bind(this));
 
-        this.running = false;
-        this.time = 15 * 60;
-    }
+    this.running = false;
+    this.time = 15 * 60;
+  }
 
-    connectedCallback() {
-        this.insertAdjacentHTML('beforeend', `
+  connectedCallback() {
+    this.insertAdjacentHTML('beforeend', `
 <style>
 .timer-container {
   font-family: 'Roboto Mono', monospace;
@@ -122,81 +122,81 @@ button:hover {
 
 </style>`);
 
-    }
+  }
 
-    startTimer() {
-        if (this.running) {
-            clearInterval(this.intervalId);
+  startTimer() {
+    if (this.running) {
+      clearInterval(this.intervalId);
+    } else {
+      this.intervalId = setInterval(() => {
+        if (this.time > 0) {
+          this.time--;
+          this.timerEl.textContent = secondsToTime(this.time);
         } else {
-            this.intervalId = setInterval(() => {
-                if (this.time > 0) {
-                    this.time--;
-                    this.timerEl.textContent = secondsToTime(this.time);
-                } else {
-                    clearInterval(this.intervalId);
-                    this.running = false;
-                    if ('Notification' in window) {
-                        // Pedir permiso para mostrar notificaciones
-                        Notification.requestPermission().then(function (permission) {
+          clearInterval(this.intervalId);
+          this.running = false;
+          if ('Notification' in window) {
+            // Pedir permiso para mostrar notificaciones
+            Notification.requestPermission().then(function (permission) {
 
-                            // Si el usuario da permiso
-                            if (permission === "granted") {
-                                // Crear la notificación
-                                var notification = new Notification("Fin del timer", {
-                                    body: "Se ha finalizado el timer",
-                                    icon: "icon.svg"
-                                });
+              // Si el usuario da permiso
+              if (permission === "granted") {
+                // Crear la notificación
+                const notification = new Notification("Fin del timer", {
+                  body: "Se ha finalizado el timer",
+                  icon: "icon.svg"
+                });
 
-                                // Mostrar la notificación
-                                notification.onclick = function () {
-                                    window.focus();
-                                    notification.close();
-                                };
-                            }
-                        });
-                    }
-                }
-            }, 1000);
+                // Mostrar la notificación
+                notification.onclick = function () {
+                  window.focus();
+                  notification.close();
+                };
+              }
+            });
+          }
         }
-        this.running = !this.running;
+      }, 1000);
     }
+    this.running = !this.running;
+  }
 
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (name === 'time') {
-            this.stopTimer();
-            this.time = parseInt(newValue) * 60;
-            this.timerEl.textContent = secondsToTime(this.time);
-            this.running = false;
-            this.show();
-            this.startTimer();
-        }
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'time') {
+      this.stopTimer();
+      this.time = parseInt(newValue) * 60;
+      this.timerEl.textContent = secondsToTime(this.time);
+      this.running = false;
+      this.show();
+      this.startTimer();
     }
+  }
 
-    stopTimer() {
-        clearInterval(this.intervalId);
-        this.hide();
-    }
+  stopTimer() {
+    clearInterval(this.intervalId);
+    this.hide();
+  }
 
-    hide() {
-        this.timerContainer.classList.add("hidden");
-    }
+  hide() {
+    this.timerContainer.classList.add("hidden");
+  }
 
-    show() {
-        this.timerContainer.classList.remove("hidden");
-    }
+  show() {
+    this.timerContainer.classList.remove("hidden");
+  }
 
 }
 
 function secondsToTime(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
 
-    const formattedHours = hours > 0 ? `${hours < 10 ? `0${hours}` : `${hours}`}:` : '';
-    const formattedMinutes = `${minutes < 10 ? `0${minutes}` : `${minutes}`}:`;
-    const formattedSeconds = remainingSeconds < 10 ? `0${remainingSeconds}` : `${remainingSeconds}`;
+  const formattedHours = hours > 0 ? `${hours < 10 ? `0${hours}` : `${hours}`}:` : '';
+  const formattedMinutes = `${minutes < 10 ? `0${minutes}` : `${minutes}`}:`;
+  const formattedSeconds = remainingSeconds < 10 ? `0${remainingSeconds}` : `${remainingSeconds}`;
 
-    return `${formattedHours}${formattedMinutes}${formattedSeconds}`;
+  return `${formattedHours}${formattedMinutes}${formattedSeconds}`;
 }
 
 
