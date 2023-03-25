@@ -337,9 +337,34 @@ class TaskList extends HTMLElement {
 
     if (this.taskDue !== 'undefined' && this.taskDue) {
       contenedor.style.display = 'flex';
-      contenedor.innerHTML += `<popup-info img="" data-text="${this.taskDue}"></popup-info>`;
+      contenedor.innerHTML += `<popup-info img="" data-text="Fecha planificada: ${this.taskDue}<div style='color: white; margin-top: 5px;'>${calculateDateDifferenceText(new Date().toLocaleDateString('es-ES'), this.taskDue)}</div>"></popup-info>`;
     }
   }
 }
 
 customElements.define("task-list", TaskList);
+
+function calculateDateDifferenceText(date1, date2) {
+  // Convert the input dates to Date objects
+  const startDate = new Date(date1.split("/").reverse().join("-"));
+  const endDate = new Date(date2.split("/").reverse().join("-"));
+
+  // Convert the dates to milliseconds
+  const startDateMs = startDate.getTime();
+  const endDateMs = endDate.getTime();
+
+  // Calculate the difference in milliseconds
+  const dateDifferenceMs = endDateMs - startDateMs;
+
+  // Convert the difference to days
+  const days = Math.round(dateDifferenceMs / 86400000);
+
+  console.log(days)
+
+  if (days > 1) return `Faltan ${days} días`;
+  if (days === 1) return `Mañana`;
+  if (days === 0) return `Hoy`;
+  if (days === -1) return `Ayer`;
+  if (days < -1) return `Fue hace ${-days} días`;
+
+}
