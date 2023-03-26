@@ -53,8 +53,8 @@ class InputText extends HTMLElement {
             menu.style.backgroundColor = '#374151';
         }
 
-        const options = ['/delete', '/log', '/complete', '/update', '/version', '/test', '/export', '/md', '/modal', '/sidebar', '/timer', '/counter', '/clock'];
-        const descriptions = ['Borra todas las tareas', 'Muestra el log de acciones', 'Completa las tareas abiertas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Prueba de modal', 'Muestra sidebar', 'Crea un temporizador', 'Crea un contador', 'Muestra la hora']
+        const options = ['/delete', '/update', '/version', '/test', '/text', '/md', '/sidebar', '/timer', '/counter', '/clock', '/export', '/import', '/stats'];
+        const descriptions = ['Borra todas las tareas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Muestra sidebar', 'Crea un temporizador', 'Crea un contador', 'Muestra la hora', 'Exporta las tareas en json', 'Importa las tareas en json', 'Estadísticas de tareas']
         options.forEach((option, index) => {
             const item = document.createElement('div');
             item.style.display = 'flex';
@@ -101,7 +101,10 @@ class InputText extends HTMLElement {
             menu.style.display = 'none';
             const text = event.target.value.trim();
 
-            if (event.keyCode === 13 && text.length) {
+            if (event.keyCode === 38 && input.value === '') {
+                const lastCommand = localStorage.getItem('last-command');
+                if (lastCommand) input.value = lastCommand;
+            } else if (event.keyCode === 13 && text.length) {
                 this.taskId++;
                 const taskList = document.createElement('task-list');
                 taskList.setAttribute('id', this.taskId);
@@ -218,9 +221,11 @@ class InputText extends HTMLElement {
             '/test': () => this.toastTest(param),
             '/update': () => this.update(),
             '/version': () => this.toastTest('Version: 1.3'),
-            '/export': () => this.exportText(),
+            '/text': () => this.exportText(),
             '/md': () => this.exportMD(),
-            '/modal': () => this.showModal('Título', 'Contenido'),
+            '/export': () => this.exportjson(),
+            '/stats': () => this.stats(),
+            '/import': () => this.import(),
             '/log': () => this.log(),
             '/sidebar': () => this.sidebar(),
             '/timer': () => this.timer(param),
@@ -233,6 +238,7 @@ class InputText extends HTMLElement {
         const selectedOption = options[option];
         if (selectedOption) {
             selectedOption();
+            localStorage.setItem('last-command', option);
         } else {
             this.toastTest('Comando no válido');
             this.input.value = '';
@@ -267,6 +273,14 @@ class InputText extends HTMLElement {
         this.input.value = '';
     }
 
+    stats() {
+        const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
+        const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
+        console.log(`Tareas abiertas: ${openTasks.length} \r\nTareas cerradas: ${closedTasks.length}\r\nPorcentaje tareas completadas: ${Math.round(closedTasks.length / (closedTasks.length + openTasks.length) * 100, 2)}%`)
+        this.input.value = '';
+
+    }
+
     deleteAll() {
         removeAllTasks();
         localStorage.setItem('maxId', 0);
@@ -290,14 +304,6 @@ class InputText extends HTMLElement {
         this.input.value = '';
     }
 
-    // showModal(title, body) {
-    //     const event = new CustomEvent('modal-message', {
-    //         detail: [title, body]
-    //     });
-    //     document.dispatchEvent(event);
-    //     this.input.value = '';
-    // }
-
     log() {
         const title = 'Log';
         const taskEvents = JSON.parse(localStorage.getItem('taskEvents')) || [];
@@ -315,10 +321,6 @@ class InputText extends HTMLElement {
                         <tfoot></tfoot>
                     </table>`;
         }
-        // const event = new CustomEvent('modal-message', {
-        //     detail: [title, generateHTMLFromArray(taskEvents.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)))]
-        // });
-        // document.dispatchEvent(event);
         this.input.value = '';
     }
 
@@ -327,10 +329,36 @@ class InputText extends HTMLElement {
         forceReload();
     }
 
+    import() {
+        const input = document.getElementById("json_file_input");
+        input.click();
+        input.addEventListener("change", function () {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.readAsText(file);
+                reader.onload = function () {
+                    const tasks = JSON.parse(reader.result);
+                    //TODO validar el fichero
+                    const acc = confirm('Si continuas se borrará las tareas actuales');
+                    if (acc) {
+                        rewriteTasksToLocalStorage(tasks.openTasks, tasks.closedTasks);
+                    }
+                };
+                reader.onerror = function () {
+                    const event = new CustomEvent('toast-message', {
+                        detail: 'Error al leer el archivo'
+                    });
+                    document.dispatchEvent(event);
+                };
+            }
+        });
+    }
+
     exportText() {
         const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
         const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
-        const openTasksText = openTasks.map(task => `   - ${task.text} ${task.status ?  ' · Status: ' + task.status : ''}`).join('\r\n');
+        const openTasksText = openTasks.map(task => `   - ${task.text} ${task.status ? ' · Status: ' + task.status : ''}`).join('\r\n');
         const closedTasksText = closedTasks.map(task => `   - ${task.text} > ${task.date} - ${task.closed ? task.closed : ''}`).join('\r\n');
         const exporText = `Tareas abiertas \r\n${openTasksText} \r\n\r\nTareas cerradas \r\n${closedTasksText}`;
         downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.txt`);
@@ -344,6 +372,19 @@ class InputText extends HTMLElement {
         const closedTasksText = closedTasks.map(task => `- [x] ${task.text}`).join('\n');
         const exportText = `## Tareas abiertas\n\n${openTasksText}\n\n## Tareas cerradas\n\n${closedTasksText}`;
         downloadFile(exportText, `Tareas ${new Date().toLocaleString()}.md`);
+        this.input.value = '';
+    }
+
+    exportjson() {
+        const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
+        const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
+
+        const data = JSON.stringify({
+            openTasks: openTasks,
+            closedTasks: closedTasks
+        }, null, 2)
+
+        downloadFile(data, `DailyDocketExport ${new Date().toLocaleString()}.json`);
         this.input.value = '';
     }
 

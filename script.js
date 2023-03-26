@@ -70,6 +70,16 @@ const saveTasksToLocalStorage = () => {
     createTasks();
 };
 
+const rewriteTasksToLocalStorage = (openTasks, closedTasks) => {
+    localStorage.setItem('openTasks', JSON.stringify(openTasks));
+    localStorage.setItem('closedTasks', JSON.stringify(closedTasks));
+    const event = new CustomEvent('updated-storage', {
+        detail: 'updates'
+    });
+    document.dispatchEvent(event);
+    createTasks();
+};
+
 // Función para agregar una nueva tarea abierta
 const addOpenTask = (title, raw, text, date, id) => {
     openTasks.push({ title, raw, text, date, id, completed: false, closed: null, status: null, description: null, due: null });
