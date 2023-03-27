@@ -1,31 +1,28 @@
 class MyCalendar extends HTMLElement {
-    constructor() {
-        super();
-        this.currentMonth = new Date().getMonth();
-        this.currentYear = new Date().getFullYear();
-        this.monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-        this.daysOfWeek = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-        this.attachShadow({ mode: 'open' });
-    }
+  constructor() {
+    super();
+    this.currentMonth = new Date().getMonth();
+    this.currentYear = new Date().getFullYear();
+    this.monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    this.daysOfWeek = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+    this.attachShadow({ mode: 'open' });
+  }
 
-    connectedCallback() {
-        this.render();
-    }
+  connectedCallback() {
+    this.render();
+  }
 
-    render() {
-        const monthYear = `${this.monthNames[this.currentMonth]} ${this.currentYear}`;
-        const days = this.getDaysOfMonth(this.currentMonth, this.currentYear);
+  render() {
+    const monthYear = `${this.monthNames[this.currentMonth]} ${this.currentYear}`;
+    const days = this.getDaysOfMonth(this.currentMonth, this.currentYear);
 
-        const style = `:host {
+    const style = `:host {
   display: block;
   font-family: sans-serif;
 }
 
 .calendar {
-  border: 1px solid #d1d5db;
   border-radius: 4px;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  padding: 16px;
   width: 220px;
 }
 
@@ -134,7 +131,7 @@ hr {
 }`;
 
 
-        const html = `
+    const html = `
         <div class="calendar">
           <div class="month-year">
             <div>${monthYear}</div>
@@ -152,59 +149,67 @@ hr {
           </div>
           <hr>
           <div class="days">
-            ${days.map(day => day.date ? `<div class="day ${day.isToday ? 'today' : ''}">${day.date}</div>` : '<div class"day"></div>').join('')}
+            ${days.map(day => day.date ? `<div data-date="${this.currentYear}-${(this.currentMonth + 1).toString().padStart(2, '0')}-${day.date.toString().padStart(2, '0')}" class="day ${day.isToday ? 'today' : ''}">${day.date}</div>` : '<div class"day"></div>').join('')}
           </div>
         </div>
       `;
 
-        this.shadowRoot.innerHTML = `
+    this.shadowRoot.innerHTML = `
         <style>${style}</style>
         ${html}
       `;
 
-        const prevMonthButton = this.shadowRoot.querySelector('.prev-month');
-        const nextMonthButton = this.shadowRoot.querySelector('.next-month');
+    const prevMonthButton = this.shadowRoot.querySelector('.prev-month');
+    const nextMonthButton = this.shadowRoot.querySelector('.next-month');
+    const daysButton = this.shadowRoot.querySelectorAll('.day');
 
-        prevMonthButton.addEventListener('click', () => {
-            this.currentMonth--;
-            if (this.currentMonth < 0) {
-                this.currentMonth = 11;
-                this.currentYear--;
-            }
-            this.render();
-        });
+    prevMonthButton.addEventListener('click', () => {
+      this.currentMonth--;
+      if (this.currentMonth < 0) {
+        this.currentMonth = 11;
+        this.currentYear--;
+      }
+      this.render();
+    });
 
-        nextMonthButton.addEventListener('click', () => {
-            this.currentMonth++;
-            if (this.currentMonth > 11) {
-                this.currentMonth = 0;
-                this.currentYear++;
-            }
-            this.render();
-        });
+    nextMonthButton.addEventListener('click', () => {
+      this.currentMonth++;
+      if (this.currentMonth > 11) {
+        this.currentMonth = 0;
+        this.currentYear++;
+      }
+      this.render();
+    });
+
+    daysButton.forEach((day) => day.addEventListener('click', () => {
+      const event = new CustomEvent('date-selected', {
+        detail: day.dataset.date
+      });
+      document.dispatchEvent(event);
+    }))
+  }
+
+  getDaysOfMonth(month, year) {
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDayOfWeek = new Date(year, month, 1).getDay();
+    const days = [];
+
+    for (let i = 1; i <= daysInMonth; i++) {
+      const date = new Date(year, month, i);
+      days.push({ date: i, isToday: this.isToday(date) });
     }
 
-    getDaysOfMonth(month, year) {
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const firstDayOfWeek = new Date(year, month, 1).getDay();
-        const days = [];
-
-        for (let i = 1; i <= daysInMonth; i++) {
-            const date = new Date(year, month, i);
-            days.push({ date: i, isToday: this.isToday(date) });
-        }
-
-        for (let i = 0; i < firstDayOfWeek - 1; i++) {
-            days.unshift({});
-        }
-
-        return days;
+    for (let i = 0; i < firstDayOfWeek - 1; i++) {
+      days.unshift({});
     }
 
-    isToday(date) {
-        const today = new Date();
-        return date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
-    }
+    return days;
+  }
+
+  isToday(date) {
+    const today = new Date();
+    return date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+  }
 }
 
 customElements.define('custom-calendar', MyCalendar);

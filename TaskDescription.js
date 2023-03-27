@@ -233,8 +233,6 @@ class TaskDescription extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-
-
     const textarea = this.shadowRoot.querySelector('.description');
 
     const arrow = '\u2192';
