@@ -21,7 +21,7 @@ class TaskDueDate extends HTMLElement {
 
   .modal-content {
     background-color: #f3f4f6;
-    margin: 10% auto;
+    margin: 20vh auto;
     padding: 20px;
     border-radius: 10px;
     border: 1px solid #9ca3af;
@@ -141,7 +141,7 @@ class TaskDueDate extends HTMLElement {
       color: #e5e7eb;
     }
 
-    .date:hover {
+    .date:hover, .date-picker:hover {
       background-color: #374151;
       color: #e5e7eb;
     }

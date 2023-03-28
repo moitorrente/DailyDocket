@@ -45,7 +45,6 @@ class DatePicker extends HTMLElement {
                 display: flex;
                 justify-content: space-between;
                 border-bottom: 1px solid #e5e7eb;
-
         }
 
         .modal-body {
@@ -66,7 +65,6 @@ class DatePicker extends HTMLElement {
                 margin-bottom: 10px;
                 background-color: white;
                 color: #6b7280;
-
         }
 
         input::-webkit-calendar-picker-indicator {
@@ -81,12 +79,12 @@ class DatePicker extends HTMLElement {
                 display: none;
         }
 
-        input:hover{
+        input:hover {
                 outline: 0;
                 border: 1px solid #6b7280;
         }
 
-        input:focus{
+        input:focus {
                 outline: 0;
                 border: 1px solid #4b5563;
         }
@@ -104,6 +102,61 @@ class DatePicker extends HTMLElement {
                 cursor: pointer;
                 background-color: #3f3f46;
         }
+
+        @media (prefers-color-scheme: dark) {
+                .modal-content {
+                        background-color: #111827;
+                }
+
+                .close:hover,
+                .close:focus {
+                        color: #d1d5db;
+                        background-color: #374151;
+                }
+
+                .modal-title-container {
+                        border-bottom: 1px solid #374151;
+
+                }
+
+                .modal-title {
+                        color: #d1d5db;
+                }
+
+                .secondary-title {
+                        color: #d1d5db;
+                }
+
+
+
+                .date:hover {
+                        background-color: #374151;
+                        color: #e5e7eb;
+                }
+
+                .remove-date:hover {
+                        background-color: #374151;
+                        color: #ef4444;
+                }
+
+                button {
+
+                        border: 1px solid #4b5563;
+                        background-color: #374151;
+                        color: #f3f4f6;
+                }
+
+                button:hover {
+                        background-color: #4b5563;
+
+                }
+
+                input {
+                        border: 1px solid #6b7280;
+                        background-color: #374151;
+                        color: #e5e7eb;
+                }
+        }
 </style>
 
 <div class="modal">
@@ -118,7 +171,7 @@ class DatePicker extends HTMLElement {
                                 </svg>
                         </div>
                 </div>
-                <div style="font-size: 12px;">
+                <div class="secondary-title" style="font-size: 12px;">
                         Fecha de finalización
                 </div>
                 <input type="date" name="" id="">
@@ -142,7 +195,7 @@ class DatePicker extends HTMLElement {
 
         document.addEventListener('launch-datepicker', (event) => {
             this.taskid = event.detail.id;
-            this.shadowRoot.querySelector('.modal').style.display = 'block';
+            this.shadowRoot.querySelector('.modal').style.display = 'flex';
         })
     }
 }

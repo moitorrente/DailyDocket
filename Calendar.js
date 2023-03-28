@@ -96,7 +96,6 @@ hr {
 
   .calendar {
     background-color: #111827;
-    border: 1px solid #4b5563;
     color: #f3f4f6;
   }
 
