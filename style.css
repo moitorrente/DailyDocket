@@ -19,8 +19,13 @@ body {
 
 }
 
+a:-webkit-any-link {
+    text-decoration: none;
+    color: #2563eb!important;
+}
 a:-webkit-any-link:hover {
-    text-decoration: underline!important;
+    text-decoration: underline !important;
+    color: #2563eb!important;
 }
 
 /* Estilo para la barra de desplazamiento en general */
@@ -52,6 +57,15 @@ a:-webkit-any-link:hover {
 @media (prefers-color-scheme: dark) {
     body {
         background-color: #111827;
+    }
+
+    a:-webkit-any-link {
+        text-decoration: none;
+        color: #4338ca!important;
+    }
+    a:-webkit-any-link:hover {
+        text-decoration: underline !important;
+        color: #4338ca !important;
     }
 }
 

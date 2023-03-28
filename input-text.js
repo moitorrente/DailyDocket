@@ -469,10 +469,10 @@ function downloadFile(texto, nombreArchivo) {
     enlaceDescarga.href = window.URL.createObjectURL(archivo);
     enlaceDescarga.download = nombreArchivo;
     enlaceDescarga.click();
-    const event = new CustomEvent('toast-message', {
-        detail: 'Tareas descargadas'
-    });
-    document.dispatchEvent(event);
+    // const event = new CustomEvent('toast-message', {
+    //     detail: 'Tareas descargadas'
+    // });
+    // document.dispatchEvent(event);
 }
 
 async function forceReload() {

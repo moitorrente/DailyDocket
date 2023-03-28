@@ -343,6 +343,9 @@ class ContextualMenu extends HTMLElement {
   }
 
   dueDateTask() {
+    const taskDueDate = document.createElement('task-due-date');
+    document.getElementById('mix-container').append(taskDueDate);
+
     const event = new CustomEvent('due-date-message', {
       detail:
         getTask(Number(this.lastTaskClicked.id))

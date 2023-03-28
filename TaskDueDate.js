@@ -4,6 +4,7 @@ class TaskDueDate extends HTMLElement {
     super();
     const template = document.createElement('template');
     let taskId;
+
     template.innerHTML = `<style>
   .modal {
     display: none;
@@ -209,7 +210,7 @@ class TaskDueDate extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     const closeButton = this.shadowRoot.querySelector('.close');
-    closeButton.addEventListener('click', () => this.hide());
+    closeButton.addEventListener('click', () => this.remove());
     this.taskId;
 
     const tomorrow = this.shadowRoot.querySelector('.tomorrow');
@@ -217,10 +218,24 @@ class TaskDueDate extends HTMLElement {
     const week = this.shadowRoot.querySelector('.week');
     week.textContent = getDateAfterDays(7);
     this.taskId;
+
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  handleKeyDown(event) {
+    const exists = document.querySelector('date-picker');
+    if (event.key === 'Escape' && !exists) {
+      this.remove();
+    }
   }
 
   connectedCallback() {
     let taskId;
+    document.addEventListener('keydown', this.handleKeyDown);
 
     document.addEventListener('close-task-due', (event) => {
       this.hide();
@@ -239,7 +254,7 @@ class TaskDueDate extends HTMLElement {
 
       this.shadowRoot.querySelector('.remove-date').addEventListener('click', () => {
         updateDue(taskId, null);
-        _this.style.display = 'none';
+        _this.remove();
 
       })
 
@@ -252,12 +267,17 @@ class TaskDueDate extends HTMLElement {
 
         if (dateValue) {
           updateDue(taskId, dateValue);
-          _this.style.display = 'none';
+          _this.remove();
         }
       }));
     });
 
+    const _this = this;
+
     this.shadowRoot.querySelector('#datepicker').addEventListener('click', () => {
+      const datePicker = document.createElement('date-picker');
+      document.getElementById('mix-container').append(datePicker);
+
       const event = new CustomEvent('launch-datepicker', {
         detail: {
           id: this.taskId
@@ -270,7 +290,7 @@ class TaskDueDate extends HTMLElement {
     this.shadowRoot.addEventListener('click', function (event) {
       if (!event.target.closest('.modal-content')) {
         // updateDescription(taskId, description.value);
-        modal.style.display = 'none';
+        _this.remove();
       }
     });
   }

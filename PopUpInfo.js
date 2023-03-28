@@ -32,25 +32,23 @@ class PopUpInfo extends HTMLElement {
         // Create some CSS to apply to the shadow dom
         const style = document.createElement('style');
 
-        style.textContent = `
-        
-.wrapper {
+        style.textContent = `.wrapper {
 position: relative;
 display: flex;
 align-items: center;
 }
 
 .wrapper:hover{
-    cursor: pointer;
+cursor: pointer;
 }
 
 
 .red{
-    color: #dc2626;
+color: #dc2626;
 }
 
 .orange{
-    color: #fb923c;
+color: #fb923c;
 }
 
 
@@ -92,6 +90,14 @@ opacity: 1;
 display: inline-block;
 }
 
+.icon.red:hover{
+color: #b91c1c;
+
+}
+.icon.orange:hover{
+color: #ea580c;
+}
+
 @media (prefers-color-scheme: dark) {
 .info {
 background-color: #111827;
@@ -101,23 +107,25 @@ border: 1px solid #4b5563;
 color: #f3f4f6;
 }
 .icon:hover{
-    color: #f3f4f6;
-    }
+color: #f3f4f6;
+}
 
-    .icon.red:hover{
-        color: #f87171;
+.icon.red:hover{
+color: #f87171;
 
-    }
-    .icon.orange:hover{
-        color: #fdba74;
-
-    }
+}
+.icon.orange:hover{
+color: #fdba74;
+}
 
 }`;
         // Attach the created elements to the shadow dom
         shadow.appendChild(style);
 
         wrapper.addEventListener('click', () => {
+            const taskDueDate = document.createElement('task-due-date');
+            document.getElementById('mix-container').append(taskDueDate);
+
             const event = new CustomEvent('due-date-message', {
                 detail: getTask(Number(this.taskId))
             });

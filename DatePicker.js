@@ -195,37 +195,89 @@ class DatePicker extends HTMLElement {
                 <div class="secondary-title" style="font-size: 12px;">
                         Fecha de finalización
                 </div>
-                <input type="date" name="" id="">
+                <input type="date" name="" id="date-picker-text">
                 <custom-calendar></custom-calendar>
-                <button style="width: 100%;">Seleccionar fecha</button>
+                <button class="select" style="width: 100%;">Seleccionar fecha</button>
         </div>
 </div>`;
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
 
         const closeButton = this.shadowRoot.querySelector('.close');
-        closeButton.addEventListener('click', () => this.shadowRoot.querySelector('.modal').style.display = 'none'
-        );
+        closeButton.addEventListener('click', () => this.remove());
+
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+
+    }
+
+    disconnectedCallback() {
+        document.removeEventListener('keydown', this.handleKeyDown);
+    }
+
+    handleKeyDown(event) {
+        const webcomponent1 = document.querySelector('date-picker');
+        const webcomponent2 = document.querySelector('task-due-date');
+
+        const rect1 = webcomponent1.getBoundingClientRect();
+        const rect2 = webcomponent2.getBoundingClientRect();
+
+        if (rect1.bottom === rect2.bottom && event.key === 'Escape') {
+            // El webcomponent1 está encima
+            // webcomponent1.handleEscape();
+            this.remove();
+        }
     }
 
     connectedCallback() {
+        document.addEventListener('keydown', this.handleKeyDown);
+
         document.addEventListener('date-selected', (event) => {
             this.shadowRoot.querySelector('input').value = event.detail;
             taskEditDue(this.taskid, formatDate(event.detail));
-            this.shadowRoot.querySelector('.modal').style.display = 'none';
             const eventClose = new CustomEvent('close-task-due', {});
             document.dispatchEvent(eventClose);
+            this.remove();
+
         });
+
+        // document.addEventListener('keydown', (event) => {
+        //     if (event.key === 'Escape') {
+        //         // Se ha pulsado la tecla "Escape"
+        //         this.remove();
+        //     }
+        // });
+
+
+        const datepickerText = this.shadowRoot.querySelector('#date-picker-text');
+        const selectButton = this.shadowRoot.querySelector('.select');
+        selectButton.addEventListener('click', () => {
+            if (!datepickerText.value) {
+                const event = new CustomEvent('toast-message', {
+                    detail: 'Fecha no válida'
+                });
+                document.dispatchEvent(event);
+            } else {
+                const partes = datepickerText.value.split('-');
+                const fecha = `${partes[2]}/${partes[1]}/${partes[0]}`;
+                taskEditDue(this.taskid, fecha);
+                const eventClose = new CustomEvent('close-task-due', {});
+                document.dispatchEvent(eventClose);
+                this.remove();
+
+            }
+        })
 
         document.addEventListener('launch-datepicker', (event) => {
             this.taskid = event.detail.id;
             this.shadowRoot.querySelector('.modal').style.display = 'flex';
         });
 
+        const _this = this;
+
         const modal = this.shadowRoot.querySelector('.modal');
         this.shadowRoot.addEventListener('click', function (event) {
             if (!event.target.closest('.modal-content')) {
-                modal.style.display = 'none';
+                _this.remove();
             }
         });
     }
