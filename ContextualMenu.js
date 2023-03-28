@@ -130,10 +130,12 @@ class ContextualMenu extends HTMLElement {
 
     .menu-sub-list {
       background-color: #1f2937;
+      border: 1px solid #4b5563;
+      opacity: .97;
     }
 
     .menu-button {
-      color: #9ca3af;
+      color: #e5e7eb;
       background-color: #1f2937;
 
     }

@@ -21,21 +21,42 @@ class DatePicker extends HTMLElement {
 
         .modal-title {
                 font-size: 14px;
+                margin-bottom: 10px;
+
         }
 
 
-        .close {}
+        .close {
+            color: #aaa;
+            cursor: pointer;
+            padding: 3px;
+            border-radius: 4px;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-self: baseline;
+          }
+        
+          .close:hover,
+          .close:focus {
+            color: #6b7280;
+            background-color: #e5e7eb;
+            text-decoration: none;
+            cursor: pointer;
+          }
 
         .modal-content {
                 background-color: #f9fafb;
-                margin: 10% auto;
+                margin: 10vh auto;
                 padding: 20px;
                 border-radius: 6px;
                 border: 1px solid #9ca3af;
                 /* width: 80%; */
-                height: 370px;
+                height: 380px;
                 gap: 10px;
-                max-width: 260px;
+                max-width: 280px;
                 display: flex;
                 flex-direction: column;
         }
@@ -182,6 +203,9 @@ class DatePicker extends HTMLElement {
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
 
+        const closeButton = this.shadowRoot.querySelector('.close');
+        closeButton.addEventListener('click', () => this.shadowRoot.querySelector('.modal').style.display = 'none'
+        );
     }
 
     connectedCallback() {
@@ -196,7 +220,14 @@ class DatePicker extends HTMLElement {
         document.addEventListener('launch-datepicker', (event) => {
             this.taskid = event.detail.id;
             this.shadowRoot.querySelector('.modal').style.display = 'flex';
-        })
+        });
+
+        const modal = this.shadowRoot.querySelector('.modal');
+        this.shadowRoot.addEventListener('click', function (event) {
+            if (!event.target.closest('.modal-content')) {
+                modal.style.display = 'none';
+            }
+        });
     }
 }
 customElements.define('date-picker', DatePicker);
