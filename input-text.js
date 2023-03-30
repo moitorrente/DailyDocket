@@ -53,8 +53,8 @@ class InputText extends HTMLElement {
             menu.style.backgroundColor = '#374151';
         }
 
-        const options = ['/delete', '/update', '/version', '/test', '/text', '/md', '/sidebar', '/timer', '/counter', '/clock', '/export', '/import', '/stats'];
-        const descriptions = ['Borra todas las tareas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Muestra sidebar', 'Crea un temporizador', 'Crea un contador', 'Muestra la hora', 'Exporta las tareas en json', 'Importa las tareas en json', 'Estadísticas de tareas']
+        const options = ['/delete', '/update', '/version', '/test', '/text', '/md', '/sidebar', '/timer', '/counter', '/clock', '/export', '/import', '/stats', '/sticky'];
+        const descriptions = ['Borra todas las tareas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Muestra sidebar', 'Crea un temporizador', 'Crea un contador', 'Muestra la hora', 'Exporta las tareas en json', 'Importa las tareas en json', 'Estadísticas de tareas', 'Genera un sticky note']
         options.forEach((option, index) => {
             const item = document.createElement('div');
             item.style.display = 'flex';
@@ -230,7 +230,8 @@ class InputText extends HTMLElement {
             '/sidebar': () => this.sidebar(),
             '/timer': () => this.timer(param),
             '/counter': () => this.counter(),
-            '/clock': () => this.clock()
+            '/clock': () => this.clock(),
+            '/sticky': () => this.generateSticky()
         };
 
 
@@ -244,6 +245,13 @@ class InputText extends HTMLElement {
             this.input.value = '';
         }
 
+    }
+
+    generateSticky() {
+        const container = document.querySelector('.sticky-notes');
+        const sticky = document.createElement('sticky-note');
+        container.appendChild(sticky);
+        this.input.value = '';
     }
 
     clock() {

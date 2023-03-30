@@ -215,17 +215,7 @@ class DatePicker extends HTMLElement {
     }
 
     handleKeyDown(event) {
-        const webcomponent1 = document.querySelector('date-picker');
-        const webcomponent2 = document.querySelector('task-due-date');
-
-        const rect1 = webcomponent1.getBoundingClientRect();
-        const rect2 = webcomponent2.getBoundingClientRect();
-
-        if (rect1.bottom === rect2.bottom && event.key === 'Escape') {
-            // El webcomponent1 está encima
-            // webcomponent1.handleEscape();
-            this.remove();
-        }
+        if (event.key === 'Escape') this.remove();
     }
 
     connectedCallback() {
