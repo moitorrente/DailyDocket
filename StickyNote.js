@@ -75,7 +75,8 @@ class StickyNote extends HTMLElement {
   }
 
   .content {
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: 500;
     color: #92400e;
     overflow-y: auto;
   }
