@@ -24,7 +24,7 @@ class TaskList extends HTMLElement {
     display: flex;
     align-items: center;
     gap: .5rem;
-    border-radius: 10px;
+    border-radius: 5px;
     padding: 0 .5rem 0 .5rem;
     transition: background-color 0.4s ease;
     background-color: var(--bg-color);

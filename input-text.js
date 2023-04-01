@@ -4,6 +4,7 @@ class InputText extends HTMLElement {
         const shadow = this.attachShadow({ mode: 'open' });
 
         const container = document.createElement('div');
+        container.style.width = '100%'
         const input = document.createElement('input');
         this.input = input;
         this.taskId = localStorage.getItem('maxId') || 0;
@@ -14,7 +15,7 @@ class InputText extends HTMLElement {
         input.style.border = 'none';
         input.style.backgroundColor = '#e5e7eb';
         input.style.color = '#4b5563';
-        input.style.borderRadius = '10px';
+        input.style.borderRadius = '5px';
         input.style.padding = '12px';
         input.style.fontWeight = '400';
         input.style.fontSize = '18px';
@@ -31,18 +32,18 @@ class InputText extends HTMLElement {
 
         const menu = document.createElement('div');
         menu.id = 'menu';
-        menu.style.position = 'absolute';
         menu.style.fontSize = '13px';
         menu.style.top = '175px';
         menu.style.color = '#6b7280';
         menu.style.padding = '6px';
         menu.style.width = '100%';
-        menu.style.maxWidth = '300px';
+        // menu.style.maxWidth = '300px';
         menu.style.outline = 'none';
         menu.style.boxSizing = 'border-box';
+        // menu.style.width = input.style.width;
         menu.style.backgroundColor = '#f3f4f6';
         menu.style.display = 'none';
-        menu.style.borderRadius = '8px';
+        menu.style.borderRadius = '5px';
         menu.style.boxShadow = 'rgb(0 0 0 / 7%) 10px 10px 10px 0px';
         menu.style.zIndex = 999;
 
@@ -53,9 +54,25 @@ class InputText extends HTMLElement {
             menu.style.backgroundColor = '#374151';
         }
 
-        const options = ['/delete', '/update', '/version', '/test', '/text', '/md', '/sidebar', '/timer', '/counter', '/clock', '/export', '/import', '/stats', '/sticky'];
-        const descriptions = ['Borra todas las tareas', 'Actualiza la aplicación', 'Consulta la versión de la aplicación', 'Test de toast', 'Exporta a .txt', 'Exporta a .md', 'Muestra sidebar', 'Crea un temporizador', 'Crea un contador', 'Muestra la hora', 'Exporta las tareas en json', 'Importa las tareas en json', 'Estadísticas de tareas', 'Genera un sticky note']
-        options.forEach((option, index) => {
+        const apps = [
+            { command: "/sticky", description: 'Crea una sticky note', action: () => this.sticky() },
+            { command: "/hub", description: 'Lanza el hub de aplicaciones', action: () => this.hub() },
+            { command: "/timer", description: 'Crea un temporizador', action: (time) => this.timer(time) },
+            { command: "/test", description: 'Crea un temporizador', action: (message) => this.toastTest(message) },
+            { command: "/counter", description: 'Crea un temporizador', action: () => this.counter() },
+            { command: "/delete", description: 'Borra todas las tareas', action: () => this.deleteAll() },
+            { command: "/update", description: 'Actualiza la aplicación', action: () => this.update() },
+            { command: "/version", description: 'Consulta la versión de la aplicación', action: () => this.toastTest('Version: 1.3') },
+            { command: "/export", description: 'Exporta las tareas en json', action: () => this.export() },
+            { command: "/import", description: 'Importa las tareas desde json', action: () => this.import() },
+            { command: "/text", description: 'Exporta a txt', action: () => this.exportText() },
+            { command: "/md", description: 'Exporta a md', action: () => this.exportMD() },
+            { command: "/clock", description: 'Muestra la hora', action: () => this.clock() },
+            { command: "/sidebar", description: 'Muestra sidebar', action: () => this.sidebar() },
+            { command: "/stats", description: 'Muestra estadísticas', action: () => this.stats() },
+        ];
+
+        apps.forEach(app => {
             const item = document.createElement('div');
             item.style.display = 'flex';
             item.style.alignItems = 'baseline';
@@ -63,10 +80,10 @@ class InputText extends HTMLElement {
             const command = document.createElement('div');
             command.style.width = '80px';
             const description = document.createElement('div');
-            command.innerHTML = option;
+            command.innerHTML = app.command;
             description.style.color = '#9ca3af';
 
-            description.innerHTML = descriptions[index];
+            description.innerHTML = app.description;
             description.style.fontSize = '10px';
             item.appendChild(command);
             item.appendChild(description);
@@ -77,8 +94,7 @@ class InputText extends HTMLElement {
             item.style.fontSize = '13px';
 
             item.addEventListener('click', () => {
-                // Lógica para ejecutar acción según opción seleccionada
-                this.executeOption(option)
+                app.action();
                 // input.value = '';
                 menu.style.display = 'none';
                 input.focus();
@@ -94,7 +110,7 @@ class InputText extends HTMLElement {
             });
             menu.appendChild(item);
         });
-        shadow.appendChild(menu);
+        // input.appendChild(menu);
         // Agregar evento de teclado al input
 
         input.addEventListener('keyup', (event) => {
@@ -124,7 +140,7 @@ class InputText extends HTMLElement {
                 const command = spaceIndex === -1 ? inputText : inputText.slice(0, spaceIndex);
                 const param = spaceIndex === -1 ? '' : inputText.slice(spaceIndex + 1);
                 if (command.startsWith('/')) {
-                    this.executeOption(command, param);
+                    apps.filter(app => app.command === command ? app.action(param) : false)
                 } else {
                     if (text.startsWith('=')) {
                         inputText = `${inputText.slice(1)} = ${this.calculadora(inputText.slice(1))}`;
@@ -143,7 +159,7 @@ class InputText extends HTMLElement {
                 // input.value = '';
             } else if (text.startsWith('/')) {
                 // Mostrar menú de comandos que coinciden con el texto ingresado
-                const matchedCommands = options.filter(option => option.startsWith(text));
+                const matchedCommands = apps.filter(option => option.command.startsWith(text));
                 if (matchedCommands.length > 0) {
                     menu.innerHTML = '';
                     matchedCommands.forEach((option, index) => {
@@ -154,9 +170,9 @@ class InputText extends HTMLElement {
                         const command = document.createElement('div');
                         command.style.width = '80px';
                         const description = document.createElement('div');
-                        command.innerHTML = option;
+                        command.innerHTML = option.command;
                         description.style.color = '#9ca3af';
-                        description.innerHTML = descriptions[options.indexOf(option)];
+                        description.innerHTML = option.description;
                         description.style.fontSize = '10px';
                         item.appendChild(command);
                         item.appendChild(description);
@@ -168,7 +184,8 @@ class InputText extends HTMLElement {
 
                         item.addEventListener('click', () => {
                             // Lógica para ejecutar acción según opción seleccionada
-                            this.executeOption(option)
+                            // this.executeOption(option)
+                            option.action()
                             //input.value = '';
                             menu.style.display = 'none';
                             input.focus();
@@ -215,39 +232,7 @@ class InputText extends HTMLElement {
         });
     }
 
-    executeOption(option, param) {
-        const options = {
-            '/delete': () => this.deleteAll(),
-            '/test': () => this.toastTest(param),
-            '/update': () => this.update(),
-            '/version': () => this.toastTest('Version: 1.3'),
-            '/text': () => this.exportText(),
-            '/md': () => this.exportMD(),
-            '/export': () => this.exportjson(),
-            '/stats': () => this.stats(),
-            '/import': () => this.import(),
-            '/log': () => this.log(),
-            '/sidebar': () => this.sidebar(),
-            '/timer': () => this.timer(param),
-            '/counter': () => this.counter(),
-            '/clock': () => this.clock(),
-            '/sticky': () => this.generateSticky()
-        };
-
-
-
-        const selectedOption = options[option];
-        if (selectedOption) {
-            selectedOption();
-            localStorage.setItem('last-command', option);
-        } else {
-            this.toastTest('Comando no válido');
-            this.input.value = '';
-        }
-
-    }
-
-    generateSticky() {
+    sticky() {
         const container = document.querySelector('.sticky-notes');
         const sticky = document.createElement('sticky-note');
         container.appendChild(sticky);
@@ -290,16 +275,21 @@ class InputText extends HTMLElement {
     }
 
     deleteAll() {
-        removeAllTasks();
-        localStorage.setItem('maxId', 0);
-        this.taskId = 0;
+        const acc = confirm('Si continuas se borrará las tareas actuales');
 
-        document.querySelector('.open').innerHTML = '';
-        document.querySelector('.closed').innerHTML = '';
-        const event = new CustomEvent('toast-message', {
-            detail: ' Todas las tareas han sido borradas'
-        });
-        document.dispatchEvent(event);
+        if (acc) {
+            removeAllTasks();
+            localStorage.setItem('maxId', 0);
+            this.taskId = 0;
+
+            document.querySelector('.open').innerHTML = '';
+            document.querySelector('.closed').innerHTML = '';
+            const event = new CustomEvent('toast-message', {
+                detail: ' Todas las tareas han sido borradas'
+            });
+            document.dispatchEvent(event);
+        }
+
         this.input.value = '';
 
     }
@@ -361,6 +351,7 @@ class InputText extends HTMLElement {
                 };
             }
         });
+        this.input.value = '';
     }
 
     exportText() {
@@ -383,7 +374,7 @@ class InputText extends HTMLElement {
         this.input.value = '';
     }
 
-    exportjson() {
+    export() {
         const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
         const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
 
@@ -393,6 +384,11 @@ class InputText extends HTMLElement {
         }, null, 2)
 
         downloadFile(data, `DailyDocketExport ${new Date().toLocaleString()}.json`);
+        this.input.value = '';
+    }
+
+    hub() {
+        document.querySelector('.app-hub').appendChild(document.createElement('app-hub'));
         this.input.value = '';
     }
 
