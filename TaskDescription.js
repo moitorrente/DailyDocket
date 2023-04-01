@@ -66,10 +66,10 @@ class TaskDescription extends HTMLElement {
   .description {
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     border-radius: 4px;
-    margin-top: 1rem;
+    margin-top: .6rem;
     color: #6b7280;
     background-color: #f3f4f6;
-    padding: 10px;
+    padding: 5px;
     border: 0;
     resize: none;
     /* Deshabilita el redimensionamiento manual del textarea */

@@ -251,7 +251,7 @@ class InputText extends HTMLElement {
                     return;
                 }
 
-                if(exactMatch){
+                if (exactMatch) {
                     exactMatch.action();
                     input.value = '';
                     menu.style.display = 'none';
@@ -380,7 +380,6 @@ class InputText extends HTMLElement {
             // }
 
         });
-
 
         const commandContainer = document.createElement('div');
         this.commandContainer = commandContainer;
@@ -540,9 +539,9 @@ class InputText extends HTMLElement {
     exportText() {
         const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
         const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
-        const openTasksText = openTasks.map(task => `   - ${task.text} ${task.status ? ' · Status: ' + task.status : ''}`).join('\r\n');
-        const closedTasksText = closedTasks.map(task => `   - ${task.text} > ${task.date} - ${task.closed ? task.closed : ''}`).join('\r\n');
-        const exporText = `Tareas abiertas \r\n${openTasksText} \r\n\r\nTareas cerradas \r\n${closedTasksText}`;
+        const openTasksText = openTasks.map(task => `    - ${task.text}${task.status ? ' · Status: ' + task.status : ''}${task.due ? ' · Fecha planificada: ' + task.due : ''}${task.description ? '\r\n\t' + task.description.replace(/\n/g, '\n\t') : ''}`).join('\r\n');
+        const closedTasksText = closedTasks.map(task => `    - ${task.text} [${task.date} - ${task.closed}]${task.description ? '\r\n\t' + task.description.replace(/\n/g, '\n\t') : ''}`).join('\r\n');
+        const exporText = `Tareas abiertas (${openTasks.length}) \r\n${openTasksText} \r\n\r\nTareas cerradas (${closedTasks.length}) \r\n${closedTasksText}`;
         downloadFile(exporText, `Tareas ${new Date().toLocaleString()}.txt`);
         this.input.value = '';
     }
@@ -550,9 +549,9 @@ class InputText extends HTMLElement {
     exportMD() {
         const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
         const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
-        const openTasksText = openTasks.map(task => `- [ ] ${task.text}`).join('\n');
-        const closedTasksText = closedTasks.map(task => `- [x] ${task.text}`).join('\n');
-        const exportText = `## Tareas abiertas\n\n${openTasksText}\n\n## Tareas cerradas\n\n${closedTasksText}`;
+        const openTasksText = openTasks.map(task => `- [ ] ${task.text}${task.status ? '\`' + task.status + '\`' : ''}${task.due ? ' \`' + task.due + '\`' : ''}${task.description ? '\r\n\t\t' + task.description.replace(/\n/g, '\n\t\t') : ''}`).join('\n');
+        const closedTasksText = closedTasks.map(task => `- [x] ${task.text} \`${task.date} - ${task.closed}\``).join('\n');
+        const exportText = `## Tareas abiertas (${openTasks.length})\n\n${openTasksText}\n\n## Tareas cerradas (${closedTasks.length})\n\n${closedTasksText}`;
         downloadFile(exportText, `Tareas ${new Date().toLocaleString()}.md`);
         this.input.value = '';
     }
