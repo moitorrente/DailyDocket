@@ -17,6 +17,11 @@ class InputText extends HTMLElement {
 
         const style = document.createElement('style');
         style.innerHTML = `
+        input::selection {
+            background-color: #64748b;
+            color: white;
+          }
+
   ::-webkit-scrollbar {
     width: 4px; /* Ancho de la barra de desplazamiento */
 }
@@ -43,6 +48,10 @@ class InputText extends HTMLElement {
       ::-webkit-scrollbar-thumb {
         background-color: #6b7280; /* Color de la barra de desplazamiento */
         border-radius: 20px; /* Radio de la esquina de la barra de desplazamiento */
+      }
+
+      input::selection {
+        background-color: #64748b;
       }
   }
 `;

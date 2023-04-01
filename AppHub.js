@@ -90,10 +90,8 @@ class AppHub extends HTMLElement {
           }
           
           .grid-item {
-            background-color: #ddd;
             border-radius: 5px;
             padding-bottom: 100%; /* Establece una relación de aspecto cuadrada */
-
           }
         
           .modal-title {
@@ -116,11 +114,11 @@ class AppHub extends HTMLElement {
           .button {
             align-items: center;
             justify-content: center;
-            background-color: #1f2937;
+            background-color: #e5e7eb;
             border: none;
             font-size: 10px;
             line-height: 20px;
-            color: #f9fafb;
+            color: #374151;
             border-radius: 5px;
             cursor: pointer;
             outline: none;
@@ -129,7 +127,8 @@ class AppHub extends HTMLElement {
           
           .button:focus,
           .button:hover {
-            background-color: #374151;
+            background-color: #6b7280;
+            color: #e5e7eb;
           }
           
           .button svg {
@@ -145,6 +144,16 @@ class AppHub extends HTMLElement {
 
               .modal-title {
                 color: #e5e7eb;
+              }
+
+              .button{
+                background-color: #1f2937;
+                color: #f9fafb;
+              }
+
+              .button:focus,
+              .button:hover {
+                background-color: #374151;
               }
           }
         </style>
