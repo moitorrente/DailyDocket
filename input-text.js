@@ -9,7 +9,40 @@ class InputText extends HTMLElement {
         this.input = input;
         this.taskId = localStorage.getItem('maxId') || 0;
 
-        localStorage.setItem('mode', 'dark')
+        const style = document.createElement('style');
+        style.innerHTML = `
+  ::-webkit-scrollbar {
+    width: 4px; /* Ancho de la barra de desplazamiento */
+}
+
+  ::-webkit-scrollbar-track {
+    background-color: transparent; /* Color del fondo de la barra de desplazamiento */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #d1d5db; /* Color de la barra de desplazamiento */
+    border-radius: 20px; /* Radio de la esquina de la barra de desplazamiento */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    ::-webkit-scrollbar {
+        width: 2px; /* Ancho de la barra de desplazamiento */
+        background-color: transparent;
+      }
+    
+      ::-webkit-scrollbar-track {
+        background-color: transparent; /* Color del fondo de la barra de desplazamiento */
+      }
+    
+      ::-webkit-scrollbar-thumb {
+        background-color: #6b7280; /* Color de la barra de desplazamiento */
+        border-radius: 20px; /* Radio de la esquina de la barra de desplazamiento */
+      }
+  }
+`;
+container.appendChild(style);
+
+        localStorage.setItem('mode', 'dark');
 
         input.type = 'text';
         input.style.border = 'none';
@@ -37,10 +70,12 @@ class InputText extends HTMLElement {
         menu.style.color = '#6b7280';
         menu.style.padding = '6px';
         menu.style.width = '100%';
+        menu.style.marginTop = '5px'
         // menu.style.maxWidth = '300px';
         menu.style.outline = 'none';
         menu.style.boxSizing = 'border-box';
-        // menu.style.width = input.style.width;
+        menu.style.maxHeight = '40vh';
+        menu.style.overflow = 'auto';
         menu.style.backgroundColor = '#f3f4f6';
         menu.style.display = 'none';
         menu.style.borderRadius = '5px';
@@ -55,15 +90,15 @@ class InputText extends HTMLElement {
         }
 
         const apps = [
-            { command: "/sticky", description: 'Crea una sticky note', action: () => this.sticky() },
-            { command: "/hub", description: 'Lanza el hub de aplicaciones', action: () => this.hub() },
-            { command: "/timer", description: 'Crea un temporizador', action: (time) => this.timer(time) },
-            { command: "/test", description: 'Crea un temporizador', action: (message) => this.toastTest(message) },
-            { command: "/counter", description: 'Crea un temporizador', action: () => this.counter() },
+            { command: "/sticky", description: 'Crea una sticky note', action: () => this.sticky(), quick: 'S' },
+            { command: "/hub", description: 'Lanza el hub de aplicaciones', action: () => this.hub(), quick: 'H' },
+            { command: "/timer", description: 'Crea un temporizador', action: (time) => this.timer(time), quick: 'T' },
+            { command: "/test", description: 'Test de toast', action: (message) => this.toastTest(message) },
+            { command: "/counter", description: 'Crea un contador', action: () => this.counter(), quick: 'C' },
             { command: "/delete", description: 'Borra todas las tareas', action: () => this.deleteAll() },
-            { command: "/update", description: 'Actualiza la aplicación', action: () => this.update() },
+            { command: "/update", description: 'Actualiza la aplicación', action: () => this.update(), quick: 'U' },
             { command: "/version", description: 'Consulta la versión de la aplicación', action: () => this.toastTest('Version: 1.3') },
-            { command: "/export", description: 'Exporta las tareas en json', action: () => this.export() },
+            { command: "/export", description: 'Exporta las tareas en json', action: () => this.export(), quick: 'E' },
             { command: "/import", description: 'Importa las tareas desde json', action: () => this.import() },
             { command: "/text", description: 'Exporta a txt', action: () => this.exportText() },
             { command: "/md", description: 'Exporta a md', action: () => this.exportMD() },
@@ -108,10 +143,42 @@ class InputText extends HTMLElement {
             item.addEventListener('mouseleave', () => {
                 item.style.backgroundColor = 'transparent';
             });
+
+
             menu.appendChild(item);
         });
-        // input.appendChild(menu);
-        // Agregar evento de teclado al input
+
+
+        document.addEventListener('keydown', (event) => {
+            console.log(event)
+            if (event.altKey) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+
+            // if (event.altKey && event.keyCode === '32') {
+
+            //     console.log('llega')
+            //     event.preventDefault();
+            //     event.stopPropagation();
+            //     input.focus();
+            //     // Aquí puedes colocar cualquier acción que desees realizar
+            // }
+        })
+
+        apps.forEach(app => {
+            if (app.quick) {
+                document.addEventListener('keyup', (event) => {
+                    if (event.altKey && (event.key.toUpperCase() === app.quick)) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        app.action()
+                        // Aquí puedes colocar cualquier acción que desees realizar
+                    }
+                })
+            }
+        });
 
         input.addEventListener('keyup', (event) => {
             menu.style.display = 'none';
@@ -165,7 +232,7 @@ class InputText extends HTMLElement {
                     matchedCommands.forEach((option, index) => {
                         const item = document.createElement('div');
                         item.style.display = 'flex';
-                        item.style.alignItems = 'baseline';
+                        item.style.alignItems = 'center';
                         item.style.justifyContent = 'space-between';
                         const command = document.createElement('div');
                         command.style.width = '80px';
@@ -174,6 +241,62 @@ class InputText extends HTMLElement {
                         description.style.color = '#9ca3af';
                         description.innerHTML = option.description;
                         description.style.fontSize = '10px';
+                        description.style.display = 'flex';
+                        description.style.alignItems = 'center';
+                        description.style.gap = '10px';
+
+                        if (option.quick) {
+
+                            const hotKeys = document.createElement('div');
+                            hotKeys.style.display = 'flex';
+                            hotKeys.style.alignItems = 'center';
+                            hotKeys.style.justifyContent = 'center';
+                            hotKeys.style.gap = '3px';
+
+                            const alt = document.createElement('div');
+                            alt.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4.75 6.75V17.25C4.75 18.3546 5.64543 19.25 6.75 19.25H17.25C18.3546 19.25 19.25 18.3546 19.25 17.25V6.75C19.25 5.64543 18.3546 4.75 17.25 4.75H6.75C5.64543 4.75 4.75 5.64543 4.75 6.75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M8.5 8C8.5 8.27614 8.27614 8.5 8 8.5C7.72386 8.5 7.5 8.27614 7.5 8C7.5 7.72386 7.72386 7.5 8 7.5C8.27614 7.5 8.5 7.72386 8.5 8Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M8.5 12C8.5 12.2761 8.27614 12.5 8 12.5C7.72386 12.5 7.5 12.2761 7.5 12C7.5 11.7239 7.72386 11.5 8 11.5C8.27614 11.5 8.5 11.7239 8.5 12Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M12.5 8C12.5 8.27614 12.2761 8.5 12 8.5C11.7239 8.5 11.5 8.27614 11.5 8C11.5 7.72386 11.7239 7.5 12 7.5C12.2761 7.5 12.5 7.72386 12.5 8Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M12.5 12C12.5 12.2761 12.2761 12.5 12 12.5C11.7239 12.5 11.5 12.2761 11.5 12C11.5 11.7239 11.7239 11.5 12 11.5C12.2761 11.5 12.5 11.7239 12.5 12Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M16.5 8C16.5 8.27614 16.2761 8.5 16 8.5C15.7239 8.5 15.5 8.27614 15.5 8C15.5 7.72386 15.7239 7.5 16 7.5C16.2761 7.5 16.5 7.72386 16.5 8Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M16.5 12C16.5 12.2761 16.2761 12.5 16 12.5C15.7239 12.5 15.5 12.2761 15.5 12C15.5 11.7239 15.7239 11.5 16 11.5C16.2761 11.5 16.5 11.7239 16.5 12Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M7.75 16.25H16.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                            `;
+                            alt.style.color = '#9ca3af';
+                            alt.style.fontSize = '10px';
+                            alt.style.backgroundColor = '#6b7280';
+                            alt.style.color = '#f9fafb';
+                            alt.style.padding = '3px';
+                            alt.style.width = '10px';
+                            alt.style.height = '10px';
+                            alt.style.borderRadius = '3px';
+                            alt.style.display = 'flex';
+                            alt.style.alignItems = 'center';
+                            alt.style.justifyContent = 'center';
+
+                            const quick = document.createElement('div');
+                            quick.innerHTML = option.quick;
+                            quick.style.color = '#9ca3af';
+                            quick.style.fontSize = '10px';
+                            quick.style.backgroundColor = '#6b7280';
+                            quick.style.color = '#f9fafb';
+                            quick.style.padding = '3px';
+                            quick.style.width = '10px';
+                            quick.style.height = '10px';
+                            quick.style.borderRadius = '3px';
+                            quick.style.display = 'flex';
+                            quick.style.alignItems = 'center';
+                            quick.style.justifyContent = 'center';
+
+                            hotKeys.appendChild(alt);
+                            hotKeys.appendChild(quick);
+                            description.appendChild(hotKeys);
+                        }
+
+
                         item.appendChild(command);
                         item.appendChild(description);
                         item.style.padding = '6px';
@@ -181,6 +304,10 @@ class InputText extends HTMLElement {
                         item.style.paddingRight = '12px'
                         item.style.borderRadius = '8px';
                         item.style.fontSize = '13px';
+
+
+
+
 
                         item.addEventListener('click', () => {
                             // Lógica para ejecutar acción según opción seleccionada
