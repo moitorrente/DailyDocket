@@ -72,13 +72,28 @@ class AppHub extends HTMLElement {
           }
         
           .modal-content {
+            align-items: center;
             background-color: #f3f4f6;
             border: 1px solid #9ca3af;
             margin: 10% auto;
             padding: 15px;
             border-radius: 5px;
-            width: 100%;
-            max-width: 470px;
+            width: 80%;
+            max-width: 410px;
+          }
+
+          .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(30%, 1fr)); /* Columnas de ancho flexible */
+            grid-auto-rows: minmax(100px, auto); /* Ajusta la altura de las filas según su contenido, con un mínimo de 100px */
+            gap: 15px; /* Agrega un espacio de 20px entre las celdas */
+          }
+          
+          .grid-item {
+            background-color: #ddd;
+            border-radius: 5px;
+            padding-bottom: 100%; /* Establece una relación de aspecto cuadrada */
+
           }
         
           .modal-title {
@@ -101,17 +116,15 @@ class AppHub extends HTMLElement {
           .button {
             align-items: center;
             justify-content: center;
-            width: 70px;
-            height: 70px;
             background-color: #1f2937;
             border: none;
             font-size: 10px;
             line-height: 20px;
             color: #f9fafb;
             border-radius: 5px;
-            margin: 10px;
             cursor: pointer;
             outline: none;
+            padding: 20px;
           }
           
           .button:focus,
@@ -140,7 +153,7 @@ class AppHub extends HTMLElement {
         // Crear los botones con los iconos y los nombres de las aplicaciones
         const buttons = appList.map((app, index) => {
             const button = `
-          <button class="button" tabindex="${index + 1}">
+          <button class="button grid-element" tabindex="${index + 1}">
               ${app.icon}
             <div>${app.name}</div>
           </button>
@@ -165,7 +178,11 @@ class AppHub extends HTMLElement {
 
       App hub</div>
     </div>
+
+    <div class="grid-container">
     ${buttons.join('')}
+    </div>
+
   </div>
 </div>
       `;

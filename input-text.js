@@ -4,7 +4,13 @@ class InputText extends HTMLElement {
         const shadow = this.attachShadow({ mode: 'open' });
 
         const container = document.createElement('div');
-        container.style.width = '100%'
+        container.style.width = '100%';
+
+        const mainContainer = document.createElement('div');
+        mainContainer.style.width = '100%';
+        mainContainer.style.display = 'flex';
+        mainContainer.style.gap = '5px';
+
         const input = document.createElement('input');
         this.input = input;
         this.taskId = localStorage.getItem('maxId') || 0;
@@ -40,7 +46,7 @@ class InputText extends HTMLElement {
       }
   }
 `;
-container.appendChild(style);
+        container.appendChild(style);
 
         localStorage.setItem('mode', 'dark');
 
@@ -92,8 +98,8 @@ container.appendChild(style);
         const apps = [
             { command: "/sticky", description: 'Crea una sticky note', action: () => this.sticky(), quick: 'S' },
             { command: "/hub", description: 'Lanza el hub de aplicaciones', action: () => this.hub(), quick: 'H' },
-            { command: "/timer", description: 'Crea un temporizador', action: (time) => this.timer(time), quick: 'T' },
-            { command: "/test", description: 'Test de toast', action: (message) => this.toastTest(message) },
+            { command: "/timer", description: 'Crea un temporizador', action: (time) => this.timer(time), quick: 'T', composable: true },
+            { command: "/test", description: 'Test de toast', action: (message) => this.toastTest(message), composable: true },
             { command: "/counter", description: 'Crea un contador', action: () => this.counter(), quick: 'C' },
             { command: "/delete", description: 'Borra todas las tareas', action: () => this.deleteAll() },
             { command: "/update", description: 'Actualiza la aplicación', action: () => this.update(), quick: 'U' },
@@ -107,6 +113,8 @@ container.appendChild(style);
             { command: "/stats", description: 'Muestra estadísticas', action: () => this.stats() },
         ];
 
+
+
         apps.forEach(app => {
             const item = document.createElement('div');
             item.style.display = 'flex';
@@ -114,9 +122,11 @@ container.appendChild(style);
             item.style.justifyContent = 'space-between';
             const command = document.createElement('div');
             command.style.width = '80px';
+            command.style.fontWeight = '500';
             const description = document.createElement('div');
             command.innerHTML = app.command;
             description.style.color = '#9ca3af';
+
 
             description.innerHTML = app.description;
             description.style.fontSize = '10px';
@@ -148,25 +158,6 @@ container.appendChild(style);
             menu.appendChild(item);
         });
 
-
-        document.addEventListener('keydown', (event) => {
-            console.log(event)
-            if (event.altKey) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-
-
-            // if (event.altKey && event.keyCode === '32') {
-
-            //     console.log('llega')
-            //     event.preventDefault();
-            //     event.stopPropagation();
-            //     input.focus();
-            //     // Aquí puedes colocar cualquier acción que desees realizar
-            // }
-        })
-
         apps.forEach(app => {
             if (app.quick) {
                 document.addEventListener('keyup', (event) => {
@@ -174,7 +165,23 @@ container.appendChild(style);
                         event.preventDefault();
                         event.stopPropagation();
                         app.action()
-                        // Aquí puedes colocar cualquier acción que desees realizar
+                    }
+                })
+            }
+        });
+
+        input.addEventListener('keydown', (event) => {
+            if ((event.keyCode === 46 || event.which === 46 || event.keyCode === 8 || event.which === 8) && commandContainer.textContent && input.value.length === 0) {
+                commandContainer.style.display = 'none';
+                commandContainer.textContent = '';
+            }
+
+            if (commandContainer.textContent && event.keyCode === 13 && input.value.length) {
+                apps.filter(app => {
+                    if (app.command === commandContainer.textContent) {
+                        app.action(input.value);
+                        commandContainer.style.display = 'none';
+                        commandContainer.textContent = '';
                     }
                 })
             }
@@ -207,7 +214,16 @@ container.appendChild(style);
                 const command = spaceIndex === -1 ? inputText : inputText.slice(0, spaceIndex);
                 const param = spaceIndex === -1 ? '' : inputText.slice(spaceIndex + 1);
                 if (command.startsWith('/')) {
-                    apps.filter(app => app.command === command ? app.action(param) : false)
+                    apps.filter(app => {
+                        if (app.command === command) {
+                            if (app.composable) {
+                                commandContainer.textContent = app.command;
+                                commandContainer.style.display = 'block';
+                                input.value = '';
+                            }
+                            app.action(param);
+                        }
+                    })
                 } else {
                     if (text.startsWith('=')) {
                         inputText = `${inputText.slice(1)} = ${this.calculadora(inputText.slice(1))}`;
@@ -226,10 +242,27 @@ container.appendChild(style);
                 // input.value = '';
             } else if (text.startsWith('/')) {
                 // Mostrar menú de comandos que coinciden con el texto ingresado
+
+                const exactMatch = apps.filter(option => option.command === (text))[0]
+                if (exactMatch?.composable) {
+                    commandContainer.textContent = exactMatch.command;
+                    commandContainer.style.display = 'block';
+                    input.value = '';
+                    return;
+                }
+
+                if(exactMatch){
+                    exactMatch.action();
+                    input.value = '';
+                    menu.style.display = 'none';
+                    input.focus();
+                    return;
+                }
+
                 const matchedCommands = apps.filter(option => option.command.startsWith(text));
                 if (matchedCommands.length > 0) {
                     menu.innerHTML = '';
-                    matchedCommands.forEach((option, index) => {
+                    matchedCommands.forEach((option) => {
                         const item = document.createElement('div');
                         item.style.display = 'flex';
                         item.style.alignItems = 'center';
@@ -296,7 +329,6 @@ container.appendChild(style);
                             description.appendChild(hotKeys);
                         }
 
-
                         item.appendChild(command);
                         item.appendChild(description);
                         item.style.padding = '6px';
@@ -305,14 +337,15 @@ container.appendChild(style);
                         item.style.borderRadius = '8px';
                         item.style.fontSize = '13px';
 
-
-
-
-
                         item.addEventListener('click', () => {
-                            // Lógica para ejecutar acción según opción seleccionada
-                            // this.executeOption(option)
-                            option.action()
+                            if (option.composable) {
+                                commandContainer.textContent = option.command;
+                                commandContainer.style.display = 'block';
+                                input.value = '';
+                            } else {
+                                option.action();
+                            }
+
                             //input.value = '';
                             menu.style.display = 'none';
                             input.focus();
@@ -347,7 +380,28 @@ container.appendChild(style);
             // }
 
         });
-        container.appendChild(input);
+
+
+        const commandContainer = document.createElement('div');
+        this.commandContainer = commandContainer;
+        commandContainer.textContent = '';
+        commandContainer.style.width = '50px';
+        commandContainer.style.display = 'none';
+        commandContainer.style.border = 'none';
+        commandContainer.style.backgroundColor = '#e5e7eb';
+        commandContainer.style.color = '#4b5563';
+        if (prefersDarkScheme.matches) {
+            commandContainer.style.backgroundColor = '#374151';
+            commandContainer.style.color = '#f9fafb';
+        }
+        commandContainer.style.borderRadius = '5px';
+        commandContainer.style.padding = '12px';
+        commandContainer.style.fontWeight = '500';
+        commandContainer.style.fontSize = '18px';
+        mainContainer.appendChild(commandContainer);
+        mainContainer.appendChild(input);
+
+        container.appendChild(mainContainer);
         container.appendChild(menu);
         shadow.appendChild(container);
     }
@@ -375,7 +429,9 @@ container.appendChild(style);
 
     timer(time) {
         if (!time) {
-            this.input.value = '/timer ';
+            // this.input.value = '/timer ';
+            this.commandContainer.textContent = '/timer';
+            this.commandContainer.style.display = 'block';
             return;
         }
         const timerComponent = document.querySelectorAll('timer-component');
