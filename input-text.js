@@ -108,18 +108,19 @@ class InputText extends HTMLElement {
             { command: "/sticky", description: 'Crea una sticky note', action: () => this.sticky(), quick: 'S' },
             { command: "/hub", description: 'Lanza el hub de aplicaciones', action: () => this.hub(), quick: 'H' },
             { command: "/timer", description: 'Crea un temporizador', action: (time) => this.timer(time), quick: 'T', composable: true },
-            { command: "/test", description: 'Test de toast', action: (message) => this.toastTest(message), composable: true },
-            { command: "/counter", description: 'Crea un contador', action: () => this.counter(), quick: 'C' },
+            // { command: "/test", description: 'Test de toast', action: (message) => this.toastTest(message), composable: true },
+            { command: "/counter", description: 'Crea un contador', action: () => this.counter() },
+            { command: "/calendar", description: 'Muestra el calendario', action: () => this.calendar(), quick: 'C' },
             { command: "/delete", description: 'Borra todas las tareas', action: () => this.deleteAll() },
             { command: "/update", description: 'Actualiza la aplicación', action: () => this.update(), quick: 'U' },
-            { command: "/version", description: 'Consulta la versión de la aplicación', action: () => this.toastTest('Version: 1.3') },
+            // { command: "/version", description: 'Consulta la versión de la aplicación', action: () => this.toastTest('Version: 1.3') },
             { command: "/export", description: 'Exporta las tareas en json', action: () => this.export(), quick: 'E' },
             { command: "/import", description: 'Importa las tareas desde json', action: () => this.import() },
             { command: "/text", description: 'Exporta a txt', action: () => this.exportText() },
             { command: "/md", description: 'Exporta a md', action: () => this.exportMD() },
             { command: "/clock", description: 'Muestra la hora', action: () => this.clock() },
-            { command: "/sidebar", description: 'Muestra sidebar', action: () => this.sidebar() },
-            { command: "/stats", description: 'Muestra estadísticas', action: () => this.stats() },
+            // { command: "/sidebar", description: 'Muestra sidebar', action: () => this.sidebar() },
+            // { command: "/stats", description: 'Muestra estadísticas', action: () => this.stats() },
         ];
 
 
@@ -135,8 +136,6 @@ class InputText extends HTMLElement {
             const description = document.createElement('div');
             command.innerHTML = app.command;
             description.style.color = '#9ca3af';
-
-
             description.innerHTML = app.description;
             description.style.fontSize = '10px';
             item.appendChild(command);
@@ -343,7 +342,7 @@ class InputText extends HTMLElement {
                         item.style.padding = '6px';
                         item.style.paddingLeft = '12px'
                         item.style.paddingRight = '12px'
-                        item.style.borderRadius = '8px';
+                        item.style.borderRadius = '5px';
                         item.style.fontSize = '13px';
 
                         item.addEventListener('click', () => {
@@ -360,6 +359,8 @@ class InputText extends HTMLElement {
                             input.focus();
                         });
                         item.addEventListener('mouseenter', () => {
+
+                            item.style.backgroundColor = '#e5e7eb';
                             if (prefersDarkScheme.matches) item.style.backgroundColor = '#4b5563';
                             item.style.cursor = 'pointer';
                         });
@@ -449,6 +450,13 @@ class InputText extends HTMLElement {
             timerComponent.forEach(timer => timer.setAttribute('time', time));
         }
         this.input.value = '';
+    }
+
+    calendar(){
+        const container = document.querySelector('.app-hub');
+        container.appendChild(document.createElement('calendar-view'));
+        this.input.value = '';
+
     }
 
     counter() {

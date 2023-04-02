@@ -237,6 +237,7 @@ class TaskList extends HTMLElement {
   </div>
   <slot name="status" style="display: none"></slot>
   <slot name="due" style="display: none"></slot>
+  <slot name="description" style="display: none"></slot>
   <div class="task-date">
   <slot name="date"></slot>
 </div>
@@ -270,21 +271,10 @@ class TaskList extends HTMLElement {
 
     // Escuchar los cambios en el estado del checkbox
     checkbox.addEventListener('click', (event) => {
-      const { taskTitle, taskRaw, taskText, taskDate, taskId } = this;
-      if (checkbox.checked) {
-        removeOpenTask(taskId);
-        addClosedTask(taskTitle, taskRaw, taskText, taskDate, taskId);
-        saveTasksToLocalStorage();
-      } else {
-        removeClosedTask(taskId);
-        addOpenTask(taskTitle, taskRaw, taskText, taskDate, taskId);
-        saveTasksToLocalStorage();
-      }
+      // const { taskId } = this;
+      changeStateTask(this.taskId);
+      saveTasksToLocalStorage();
     })
-
-
-
-
   }
   connectedCallback() {
     const slot = this.shadowRoot.querySelector('slot[name="title"]');
@@ -305,6 +295,9 @@ class TaskList extends HTMLElement {
     const slotDue = this.shadowRoot.querySelector('slot[name="due"]');
     const assignedNodesDue = slotDue.assignedNodes()[0]?.textContent;
     this.taskDue = assignedNodesDue;
+    const slotDescription = this.shadowRoot.querySelector('slot[name="description"]');
+    const assignedNodesDescription = slotDescription.assignedNodes()[0]?.textContent;
+    this.taskDescription = assignedNodesDescription;
 
     const contenedor = this.shadowRoot.querySelector('div[name="status"]');
 
