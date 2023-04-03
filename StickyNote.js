@@ -198,12 +198,23 @@ class StickyNote extends HTMLElement {
   }
 
   connectedCallback() {
-
-    this.initialX = null;
-    this.initialY = null;
+    const x = this.getAttribute('x');
+    let newId = JSON.parse(localStorage.getItem('stickyNotes'))?.length || 0;
+    this.id = this.getAttribute('id') || ++newId;
+    const y = this.getAttribute('y');
+    const content = this.getAttribute('content');
+    this.shadowRoot.querySelector('.content').textContent = content || '';
+    this.initialX = x || null;
+    this.initialY = y || null;
+    this.style.left = x;
+    this.style.top = y;
     this.dragging = false;
     this.style.position = 'absolute';
     this.style.zIndex = 99;
+
+    this.shadowRoot.querySelector('.content').addEventListener('input', () => {
+      this.saveSticky();
+    })
   }
 
   convert() {
@@ -249,6 +260,22 @@ class StickyNote extends HTMLElement {
 
   onTouchEnd() {
     this.dragging = false;
+  }
+
+  saveSticky() {
+    const stickyNotes = JSON.parse(localStorage.getItem('stickyNotes')) || [];
+    let thisNote = stickyNotes.filter(sticky => sticky.id === this.id)[0];
+    if (thisNote) {
+      thisNote.x = this.style.left;
+      thisNote.y = this.style.top;
+      thisNote.content = this.shadowRoot.querySelector('.content').textContent;
+      localStorage.setItem('stickyNotes', JSON.stringify(stickyNotes));
+    } else {
+      thisNote = { id: this.id, x: this.style.left, y: this.style.top, content: this.shadowRoot.querySelector('.content').textContent };
+      stickyNotes.push(thisNote);
+      localStorage.setItem('stickyNotes', JSON.stringify(stickyNotes))
+    }
+
   }
 }
 

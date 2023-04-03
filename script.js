@@ -1,6 +1,7 @@
 // Obtiene las tareas desde el localStorage (si existen)
 let openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
 let closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
+let stickyNotes = JSON.parse(localStorage.getItem('stickyNotes')) || [];
 
 const createTasks = () => {
     document.querySelector('.open').innerHTML = '';
@@ -59,6 +60,18 @@ const createTasks = () => {
         taskList.appendChild(title);
         taskList.appendChild(date);
         document.querySelector('.closed').prepend(taskList);
+    });
+
+
+    const stickyNotescontainer = document.querySelector('.sticky-notes');
+    stickyNotescontainer.innerHTML = '';
+    stickyNotes.forEach(sticky => {
+        const stickyNote = document.createElement('sticky-note');
+        stickyNote.setAttribute('id', sticky.id);
+        stickyNote.setAttribute('x', sticky.x);
+        stickyNote.setAttribute('y', sticky.y);
+        stickyNote.setAttribute('content', sticky.content);
+        stickyNotescontainer.appendChild(stickyNote);
     });
 }
 createTasks();
@@ -146,7 +159,7 @@ const createOpenTask = (title, raw, text, date, id) => {
 
 // Función para agregar una nueva tarea cerrada
 const addClosedTask = (title, raw, text, date, id) => {
-    closedTasks.push({ title, raw, text, date, id, completed: true, closed: new Date().toLocaleDateString('es-ES')});
+    closedTasks.push({ title, raw, text, date, id, completed: true, closed: new Date().toLocaleDateString('es-ES') });
     logTaskEvent('TO_CLOSE', id)
     // saveTasksToLocalStorage();
 };
