@@ -232,6 +232,7 @@ class TaskList extends HTMLElement {
 <div class="task" id="">
   <input type="checkbox" id="myCheckbox">
   <label for="myCheckbox"></label>
+  <slot name="priority"></slot>
   <div class="task-text">
     <slot name="title"></slot>
   </div>
@@ -292,6 +293,15 @@ class TaskList extends HTMLElement {
     this.taskStatus = assignedNodesStatus;
     this.statusContainer;
 
+    const slotPriority = this.shadowRoot.querySelector('slot[name="priority"]');
+    const assignedNodesPriority = slotPriority.assignedNodes()[0]?.textContent;
+    this.taskPriority = assignedNodesPriority;
+    if (this.taskPriority === 'null' || this.taskPriority === 'undefined') {
+      slotPriority.assignedNodes()[0].textContent = ''
+    }
+
+
+
     const slotDue = this.shadowRoot.querySelector('slot[name="due"]');
     const assignedNodesDue = slotDue.assignedNodes()[0]?.textContent;
     this.taskDue = assignedNodesDue;
@@ -306,7 +316,6 @@ class TaskList extends HTMLElement {
       contenedor.innerHTML = `<div class="point yellow"></div>
       <div class="task-status-desc">Pending</div>`;
       this.statusContainer = contenedor.innerHTML;
-
     }
     if (this.taskStatus === 'stopped') {
       contenedor.style.display = 'flex';

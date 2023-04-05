@@ -12,11 +12,10 @@ class ContextualMenu extends HTMLElement {
     border: 1px solid #d1d5db;
     font-size: 14px;
     padding: 2px;
-    border-radius: 8px;
+    border-radius: 5px;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
     z-index: 9999;
     flex-direction: column;
-    border-radius: 10px;
     box-shadow: 0 10px 20px rgba(64, 64, 64, 0.15);
   }
 
@@ -32,15 +31,16 @@ class ContextualMenu extends HTMLElement {
 
   .menu-sub-list {
     display: none;
-    padding: 8px;
+    padding: 4px;
     background-color: #f9fafb;
-    border-radius: 10px;
+    border-radius: 5px;
+    border: 1px solid #d1d5db;
     box-shadow: 0 10px 20px rgba(64, 64, 64, 0.15);
     position: absolute;
     left: 100%;
     right: 0;
     z-index: 100;
-    width: 130px;
+    width: 140px;
     top: 0;
     flex-direction: column;
   }
@@ -57,10 +57,10 @@ class ContextualMenu extends HTMLElement {
   .menu-button {
     font: inherit;
     border: 0;
-    padding: 7px 5px;
+    padding: 5px;
     padding-right: 36px;
     width: 100%;
-    border-radius: 8px;
+    border-radius: 5px;
     text-align: left;
     display: flex;
     align-items: center;
@@ -110,6 +110,7 @@ class ContextualMenu extends HTMLElement {
     stroke: #ef4444;
     fill: #ef4444;
   }
+
   .menu-button--blue svg:first-of-type {
     stroke: #2563eb;
     fill: #2563eb;
@@ -235,8 +236,7 @@ class ContextualMenu extends HTMLElement {
             </svg>
             Pending
           </button></li>
-        <li class="menu-item"><button data-action="status" data-status="planned"
-            class="menu-button menu-button--blue">
+        <li class="menu-item"><button data-action="status" data-status="planned" class="menu-button menu-button--blue">
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M9.875 7.5C9.875 8.81168 8.81168 9.875 7.5 9.875C6.18832 9.875 5.125 8.81168 5.125 7.5C5.125 6.18832 6.18832 5.125 7.5 5.125C8.81168 5.125 9.875 6.18832 9.875 7.5Z"
@@ -261,6 +261,69 @@ class ContextualMenu extends HTMLElement {
         </li>
       </ul>
     </li>
+
+    <li class="menu-item"><button class="submenu menu-button menu-button--black">
+        <div style="display: flex; align-items: center; width: 100%;">
+          <svg xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+          </svg>
+
+          <div style="flex-grow: 1;">Priority</div>
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M6.18194 4.18185C6.35767 4.00611 6.6426 4.00611 6.81833 4.18185L9.81833 7.18185C9.90272 7.26624 9.95013 7.3807 9.95013 7.50005C9.95013 7.6194 9.90272 7.73386 9.81833 7.81825L6.81833 10.8182C6.6426 10.994 6.35767 10.994 6.18194 10.8182C6.0062 10.6425 6.0062 10.3576 6.18194 10.1819L8.86374 7.50005L6.18194 4.81825C6.0062 4.64251 6.0062 4.35759 6.18194 4.18185Z"
+              fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
+          </svg>
+        </div>
+
+      </button>
+      <ul class="menu-sub-list">
+        <li class="menu-item"><button data-action="priority" data-priority="blocker"
+            class="menu-button">
+            <svg xmlns="http://www.w3.org/2000/svg" style="stroke: #facc15;" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+            Blocker
+          </button></li>
+        <li class="menu-item"><button data-action="priority" data-priority="high"
+            class="menu-button">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l7.5-7.5 7.5 7.5m-15 6l7.5-7.5 7.5 7.5" />
+            </svg>
+            
+            Alta
+          </button></li>
+        <li class="menu-item"><button data-action="priority" data-priority="medium"
+            class="menu-button">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+            </svg>
+            
+            Media
+          </button></li>
+        <li class="menu-item"><button data-action="priority" data-priority="low"
+            class="menu-button">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 5.25l-7.5 7.5-7.5-7.5m15 6l-7.5 7.5-7.5-7.5" />
+            </svg>
+            
+            Baja</button></li>
+        <li class="menu-item"><button data-action="priority" data-priority="null"
+            class="menu-button menu-button--white menu-button--checked">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M9.875 7.5C9.875 8.81168 8.81168 9.875 7.5 9.875C6.18832 9.875 5.125 8.81168 5.125 7.5C5.125 6.18832 6.18832 5.125 7.5 5.125C8.81168 5.125 9.875 6.18832 9.875 7.5Z"
+                fill="#f9fafb"></path>
+            </svg>No priority</button>
+        </li>
+      </ul>
+    </li>
+
+
     <!-- <li class="menu-item"><button class="menu-button"><i data-feather="link"></i>Copy Link Address</button></li>
     <li class="menu-item"><button class="menu-button"><i data-feather="folder-plus"></i>Move to</button></li>
     <li class="menu-item"><button class="menu-button"><i data-feather="copy"></i>Copy to</button></li>
@@ -290,6 +353,7 @@ class ContextualMenu extends HTMLElement {
         if (item.dataset.action === 'due-date') this.dueDateTask();
         if (item.dataset.action === 'copy') this.copyTask();
         if (item.dataset.action === 'status') this.changeStatus(item.dataset.status);
+        if (item.dataset.action === 'priority') this.changePriority(item.dataset.priority);
       })
     })
 
@@ -365,6 +429,10 @@ class ContextualMenu extends HTMLElement {
 
   changeStatus(status) {
     changeTaskStatus(Number(this.lastTaskClicked.id), status);
+  }
+
+  changePriority(priority) {
+    changeTaskPriority(Number(this.lastTaskClicked.id), priority);
   }
 }
 customElements.define('contextual-menu', ContextualMenu);

@@ -185,7 +185,10 @@ class StickyNote extends HTMLElement {
 
 
     const closeButton = shadowRoot.querySelector('.close-btn');
-    closeButton.addEventListener('click', () => this.remove());
+    closeButton.addEventListener('click', () => {
+      this.removeSticky();
+      this.remove()
+    });
 
     const header = shadowRoot.querySelector('.header');
     header.addEventListener('mousedown', this.onMouseDown.bind(this));
@@ -199,8 +202,14 @@ class StickyNote extends HTMLElement {
 
   connectedCallback() {
     const x = this.getAttribute('x');
-    let newId = JSON.parse(localStorage.getItem('stickyNotes'))?.length || 0;
-    this.id = this.getAttribute('id') || ++newId;
+    this.id = this.getAttribute('id');
+
+    if (this.id === 'null') {
+      this.id = JSON.parse(localStorage.getItem('sticky-counter')) || 0;
+      this.id++;
+      localStorage.setItem('sticky-counter', this.id);
+    }
+
     const y = this.getAttribute('y');
     const content = this.getAttribute('content');
     this.shadowRoot.querySelector('.content').textContent = content || '';
@@ -219,7 +228,8 @@ class StickyNote extends HTMLElement {
 
   convert() {
     document.querySelector('input-text').shadowRoot.querySelector('input').value = this.shadowRoot.querySelector('.content').textContent;
-    this.remove();
+    this.removeSticky();
+
   }
 
   onMouseDown(event) {
@@ -265,6 +275,7 @@ class StickyNote extends HTMLElement {
   saveSticky() {
     const stickyNotes = JSON.parse(localStorage.getItem('stickyNotes')) || [];
     let thisNote = stickyNotes.filter(sticky => sticky.id === this.id)[0];
+    console.log(this.id)
     if (thisNote) {
       thisNote.x = this.style.left;
       thisNote.y = this.style.top;
@@ -275,7 +286,15 @@ class StickyNote extends HTMLElement {
       stickyNotes.push(thisNote);
       localStorage.setItem('stickyNotes', JSON.stringify(stickyNotes))
     }
+  }
 
+  removeSticky() {
+    let stickyNotes = JSON.parse(localStorage.getItem('stickyNotes')) || [];
+    stickyNotes = stickyNotes.filter(sticky => sticky.id !== this.id);
+    localStorage.setItem('stickyNotes', JSON.stringify(stickyNotes));
+    console.log('remove: ' + this.id)
+    this.remove();
+    // saveTasksToLocalStorage();
   }
 }
 

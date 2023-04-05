@@ -1,7 +1,6 @@
 // Obtiene las tareas desde el localStorage (si existen)
 let openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
 let closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
-let stickyNotes = JSON.parse(localStorage.getItem('stickyNotes')) || [];
 
 const createTasks = () => {
     document.querySelector('.open').innerHTML = '';
@@ -28,6 +27,9 @@ const createTasks = () => {
         const status = document.createElement('span');
         status.setAttribute('slot', 'status');
         status.innerHTML = task.status;
+        const priority = document.createElement('span');
+        priority.setAttribute('slot', 'priority');
+        priority.innerHTML = task.priority;
         const due = document.createElement('span');
         due.setAttribute('slot', 'due');
         due.innerHTML = task.due;
@@ -40,6 +42,7 @@ const createTasks = () => {
         taskList.appendChild(description);
         taskList.appendChild(date);
         taskList.appendChild(status);
+        taskList.appendChild(priority);
         taskList.appendChild(due);
         document.querySelector('.open').prepend(taskList);
     });
@@ -64,6 +67,7 @@ const createTasks = () => {
 
 
     const stickyNotescontainer = document.querySelector('.sticky-notes');
+    let stickyNotes = JSON.parse(localStorage.getItem('stickyNotes')) || [];
     stickyNotescontainer.innerHTML = '';
     stickyNotes.forEach(sticky => {
         const stickyNote = document.createElement('sticky-note');
@@ -114,7 +118,7 @@ const changeStateTask = (id, state) => {
 
 // Función para agregar una nueva tarea abierta
 const addOpenTask = (title, raw, text, date, id) => {
-    openTasks.push({ title, raw, text, date, id, completed: false, closed: null, status: null, description: null, due: null });
+    openTasks.push({ title, raw, text, date, id, completed: false, closed: null, status: null, description: null, due: null, priority: null });
     logTaskEvent('TO_OPEN', id)
     // saveTasksToLocalStorage();
 };
@@ -148,6 +152,11 @@ const taskEditDue = (id, value) => {
 const changeTaskStatus = (id, status) => {
     const task = getTask(id);
     task.status = status;
+    saveTasksToLocalStorage();
+}
+const changeTaskPriority = (id, priority) => {
+    const task = getTask(id);
+    task.priority = priority;
     saveTasksToLocalStorage();
 }
 
