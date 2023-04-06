@@ -139,7 +139,11 @@ class TaskDueDate extends HTMLElement {
     }
 
     .modal-title {
-      color: #e5e7eb;
+      color: #f9fafb;
+    }
+
+    .date, .date-picker, .remove-date {
+      color: #d1d5db;
     }
 
     .date:hover, .date-picker:hover {

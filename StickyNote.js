@@ -275,7 +275,6 @@ class StickyNote extends HTMLElement {
   saveSticky() {
     const stickyNotes = JSON.parse(localStorage.getItem('stickyNotes')) || [];
     let thisNote = stickyNotes.filter(sticky => sticky.id === this.id)[0];
-    console.log(this.id)
     if (thisNote) {
       thisNote.x = this.style.left;
       thisNote.y = this.style.top;
@@ -292,7 +291,6 @@ class StickyNote extends HTMLElement {
     let stickyNotes = JSON.parse(localStorage.getItem('stickyNotes')) || [];
     stickyNotes = stickyNotes.filter(sticky => sticky.id !== this.id);
     localStorage.setItem('stickyNotes', JSON.stringify(stickyNotes));
-    console.log('remove: ' + this.id)
     this.remove();
     // saveTasksToLocalStorage();
   }

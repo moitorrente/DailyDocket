@@ -23,7 +23,7 @@ class TaskList extends HTMLElement {
   .task {
     display: flex;
     align-items: center;
-    gap: .5rem;
+    gap: .3rem;
     border-radius: 5px;
     padding: 0 .5rem 0 .5rem;
     transition: background-color 0.4s ease;
@@ -213,6 +213,10 @@ class TaskList extends HTMLElement {
       background-color: var(--gray-800);
     }
 
+    .task-priority {
+      color: var(--gray-200);
+    }
+
     input[type="checkbox"]+label {
       background-color: var(--gray-600);
       border: 1px solid var(--gray-600);
@@ -232,7 +236,8 @@ class TaskList extends HTMLElement {
 <div class="task" id="">
   <input type="checkbox" id="myCheckbox">
   <label for="myCheckbox"></label>
-  <slot name="priority"></slot>
+  <div name="priority" class="task-priority" style="visibility: hidden"></div>
+  <slot name="priority" style="display: none"></slot>
   <div class="task-text">
     <slot name="title"></slot>
   </div>
@@ -296,9 +301,7 @@ class TaskList extends HTMLElement {
     const slotPriority = this.shadowRoot.querySelector('slot[name="priority"]');
     const assignedNodesPriority = slotPriority.assignedNodes()[0]?.textContent;
     this.taskPriority = assignedNodesPriority;
-    if (this.taskPriority === 'null' || this.taskPriority === 'undefined') {
-      slotPriority.assignedNodes()[0].textContent = ''
-    }
+
 
 
 
@@ -310,6 +313,7 @@ class TaskList extends HTMLElement {
     this.taskDescription = assignedNodesDescription;
 
     const contenedor = this.shadowRoot.querySelector('div[name="status"]');
+    const contenedorPriority = this.shadowRoot.querySelector('div[name="priority"]');
 
     if (this.taskStatus === 'pending') {
       contenedor.style.display = 'flex';
@@ -340,7 +344,59 @@ class TaskList extends HTMLElement {
     if (this.taskDue !== 'undefined' && this.taskDue) {
       contenedor.style.display = 'flex';
       const { texto, dias } = calculateDateDifferenceText(new Date().toLocaleDateString('es-ES'), this.taskDue);
-      contenedor.innerHTML += `<popup-info img="" data-number-days="${dias}" data-task-id="${this.taskId}" data-text="Fecha planificada: ${this.taskDue}<div class='due-translated'>${texto}</div>"></popup-info>`;
+      const icon = `<svg width='10' height='10' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M4.5 1C4.77614 1 5 1.22386 5 1.5V2H10V1.5C10 1.22386 10.2239 1 10.5 1C10.7761 1 11 1.22386 11 1.5V2H12.5C13.3284 2 14 2.67157 14 3.5V12.5C14 13.3284 13.3284 14 12.5 14H2.5C1.67157 14 1 13.3284 1 12.5V3.5C1 2.67157 1.67157 2 2.5 2H4V1.5C4 1.22386 4.22386 1 4.5 1ZM10 3V3.5C10 3.77614 10.2239 4 10.5 4C10.7761 4 11 3.77614 11 3.5V3H12.5C12.7761 3 13 3.22386 13 3.5V5H2V3.5C2 3.22386 2.22386 3 2.5 3H4V3.5C4 3.77614 4.22386 4 4.5 4C4.77614 4 5 3.77614 5 3.5V3H10ZM2 6V12.5C2 12.7761 2.22386 13 2.5 13H12.5C12.7761 13 13 12.7761 13 12.5V6H2ZM7 7.5C7 7.22386 7.22386 7 7.5 7C7.77614 7 8 7.22386 8 7.5C8 7.77614 7.77614 8 7.5 8C7.22386 8 7 7.77614 7 7.5ZM9.5 7C9.22386 7 9 7.22386 9 7.5C9 7.77614 9.22386 8 9.5 8C9.77614 8 10 7.77614 10 7.5C10 7.22386 9.77614 7 9.5 7ZM11 7.5C11 7.22386 11.2239 7 11.5 7C11.7761 7 12 7.22386 12 7.5C12 7.77614 11.7761 8 11.5 8C11.2239 8 11 7.77614 11 7.5ZM11.5 9C11.2239 9 11 9.22386 11 9.5C11 9.77614 11.2239 10 11.5 10C11.7761 10 12 9.77614 12 9.5C12 9.22386 11.7761 9 11.5 9ZM9 9.5C9 9.22386 9.22386 9 9.5 9C9.77614 9 10 9.22386 10 9.5C10 9.77614 9.77614 10 9.5 10C9.22386 10 9 9.77614 9 9.5ZM7.5 9C7.22386 9 7 9.22386 7 9.5C7 9.77614 7.22386 10 7.5 10C7.77614 10 8 9.77614 8 9.5C8 9.22386 7.77614 9 7.5 9ZM5 9.5C5 9.22386 5.22386 9 5.5 9C5.77614 9 6 9.22386 6 9.5C6 9.77614 5.77614 10 5.5 10C5.22386 10 5 9.77614 5 9.5ZM3.5 9C3.22386 9 3 9.22386 3 9.5C3 9.77614 3.22386 10 3.5 10C3.77614 10 4 9.77614 4 9.5C4 9.22386 3.77614 9 3.5 9ZM3 11.5C3 11.2239 3.22386 11 3.5 11C3.77614 11 4 11.2239 4 11.5C4 11.7761 3.77614 12 3.5 12C3.22386 12 3 11.7761 3 11.5ZM5.5 11C5.22386 11 5 11.2239 5 11.5C5 11.7761 5.22386 12 5.5 12C5.77614 12 6 11.7761 6 11.5C6 11.2239 5.77614 11 5.5 11ZM7 11.5C7 11.2239 7.22386 11 7.5 11C7.77614 11 8 11.2239 8 11.5C8 11.7761 7.77614 12 7.5 12C7.22386 12 7 11.7761 7 11.5ZM9.5 11C9.22386 11 9 11.2239 9 11.5C9 11.7761 9.22386 12 9.5 12C9.77614 12 10 11.7761 10 11.5C10 11.2239 9.77614 11 9.5 11Z' fill='currentColor' fill-rule='evenodd' clip-rule='evenodd'></path></svg>`;
+      contenedor.innerHTML += `<popup-info data-icon="${icon}" data-type="date" data-number-days="${dias}" data-task-id="${this.taskId}" data-text="Fecha planificada: ${this.taskDue}<div class='due-translated'>${texto}</div>"></popup-info>`;
+    }
+
+    let priorityIcon = `<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'>
+    <path stroke-linecap='round' stroke-linejoin='round' d='M3.75 9h16.5m-16.5 6.75h16.5' />
+  </svg>`;
+
+    if (this.taskPriority === 'null' || this.taskPriority === 'undefined') {
+      contenedorPriority.style.visibility = 'hidden';
+      contenedorPriority.style.width = '12px';
+      contenedorPriority.style.flexShrink = '0';
+    } else {
+
+      if (this.taskPriority === 'blocker') {
+        contenedorPriority.style.visibility = 'visible';
+
+
+        priorityIcon = `<svg width='12' height='12' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' class='w-6 h-6'>
+        <path stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z' />
+      </svg>
+      `;
+      }
+      if (this.taskPriority === 'high') {
+        contenedorPriority.style.visibility = 'visible';
+        contenedorPriority.style.width = '12px';
+
+        priorityIcon = `<svg width='12' height='12' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' class='w-6 h-6'>
+        <path stroke-linecap='round' stroke-linejoin='round' d='M4.5 12.75l7.5-7.5 7.5 7.5m-15 6l7.5-7.5 7.5 7.5' />
+      </svg>
+      `
+
+      }
+      if (this.taskPriority === 'medium') {
+        contenedorPriority.style.visibility = 'visible';
+        contenedorPriority.style.width = '12px';
+
+        priorityIcon = `<svg width='12' height='12' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' class='w-6 h-6'>
+        <path stroke-linecap='round' stroke-linejoin='round' d='M3.75 9h16.5m-16.5 6.75h16.5' />
+      </svg>
+      `
+      }
+      if (this.taskPriority === 'low') {
+        contenedorPriority.style.visibility = 'visible';
+        contenedorPriority.style.width = '12px';
+
+        priorityIcon = `<svg width='12' height='12' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' class='w-6 h-6'>
+        <path stroke-linecap='round' stroke-linejoin='round' d='M19.5 5.25l-7.5 7.5-7.5-7.5m15 6l-7.5 7.5-7.5-7.5' />
+      </svg>
+      `
+      }
+
+      contenedorPriority.innerHTML += `<popup-info data-icon="${priorityIcon}" data-number-days="2" data-text="Prioridad: ${this.taskPriority}"></popup-info>`
     }
   }
 }
