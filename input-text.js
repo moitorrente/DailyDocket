@@ -2,7 +2,7 @@ class InputText extends HTMLElement {
     constructor() {
         super();
         const shadow = this.attachShadow({ mode: 'open' });
-
+        this.today = new Date().toLocaleDateString('es-ES');
         const container = document.createElement('div');
         container.style.width = '100%';
 
@@ -116,13 +116,17 @@ class InputText extends HTMLElement {
             { command: "/calendar", description: 'Muestra el calendario', action: () => this.calendar(), quick: 'C' },
             { command: "/delete", description: 'Borra todas las tareas', action: () => this.deleteAll() },
             { command: "/update", description: 'Actualiza la aplicación', action: () => this.update(), quick: 'U' },
+            { command: "/len", description: 'Devuelve la longitud del texto', action: (text) => this.len(text), composable: true },
             // { command: "/version", description: 'Consulta la versión de la aplicación', action: () => this.toastTest('Version: 1.3') },
             { command: "/export", description: 'Exporta las tareas en json', action: () => this.export(), quick: 'E' },
             { command: "/import", description: 'Importa las tareas desde json', action: () => this.import() },
             { command: "/text", description: 'Exporta a txt', action: () => this.exportText() },
             { command: "/md", description: 'Exporta a md', action: () => this.exportMD() },
+            { command: "/upper", description: 'Convierte texto a mayúsculas', action: (text) => this.toUpper(text), composable: true },
+            { command: "/lower", description: 'Convierte texto a minúsculas', action: (text) => this.toLower(text), composable: true },
             { command: "/clock", description: 'Muestra la hora', action: () => this.clock() },
             { command: "/search", description: 'Busca en Google', action: (text) => this.search(text), composable: true, icon: `<svg width="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48"><defs><path id="a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></defs><clipPath id="b"><use xlink:href="#a" overflow="visible"/></clipPath><path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z"/><path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"/><path clip-path="url(#b)" fill="#34A853" d="M0 37l30-23 7.9 1L48 0v48H0z"/><path clip-path="url(#b)" fill="#4285F4" d="M48 48L17 24l-4-3 35-10z"/></svg>` },
+            { command: "=", description: 'Busca en Google', action: (input) => this.calculadora(input), composable: true, icon: `<svg width="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48"><defs><path id="a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></defs><clipPath id="b"><use xlink:href="#a" overflow="visible"/></clipPath><path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z"/><path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"/><path clip-path="url(#b)" fill="#34A853" d="M0 37l30-23 7.9 1L48 0v48H0z"/><path clip-path="url(#b)" fill="#4285F4" d="M48 48L17 24l-4-3 35-10z"/></svg>` },
             // { command: "/sidebar", description: 'Muestra sidebar', action: () => this.sidebar() },
             // { command: "/stats", description: 'Muestra estadísticas', action: () => this.stats() },
         ];
@@ -168,18 +172,18 @@ class InputText extends HTMLElement {
             menu.appendChild(item);
         });
 
-        const quickApp = apps.find(app => app.quick);
-        if (quickApp) {
-            document.addEventListener('keyup', (event) => {
-                const pressedKey = event.key.toUpperCase();
-                const pressedKeyIsAlt = event.altKey;
-                if (pressedKeyIsAlt && quickApp.quick.toUpperCase() === pressedKey) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    quickApp.action();
-                }
-            });
-        }
+
+        apps.forEach(app => {
+            if (app.quick) {
+                document.addEventListener('keyup', (event) => {
+                    if (event.altKey && (event.key.toUpperCase() === app.quick)) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        app.action();
+                    }
+                })
+            }
+        });
 
         input.addEventListener('keydown', (event) => {
             if ((event.keyCode === 46 || event.which === 46 || event.keyCode === 8 || event.which === 8) && commandContainer.innerHTML && input.value.length === 0) {
@@ -195,7 +199,6 @@ class InputText extends HTMLElement {
                     commandContainer.textContent = '';
                 }
             }
-
         });
 
         input.addEventListener('keyup', (event) => {
@@ -222,26 +225,20 @@ class InputText extends HTMLElement {
 
                 let inputText = input.value.trim();
                 const param = inputText;
-
                 const command = commandContainer.getAttribute('command');
 
-                if (command.startsWith('/')) {
-                    const app = apps.find(app => app.command === command);
-                    if (app) app.action(param)
+                if (command) {
+                    if (command.startsWith('/')) {
+                        const app = apps.find(app => app.command === command);
+                        if (app) app.action(param)
+                    }
                 } else {
                     if (text.startsWith('=')) {
                         inputText = `${inputText.slice(1)} = ${this.calculadora(inputText.slice(1))}`;
                     }
-                    const htmlToShow = this.transformMDtoHTML(inputText);
-                    const onlyText = this.removeMarkdown(inputText);
-                    if (this.editing) {
-                        editTask(this.editing, htmlToShow, inputText, onlyText, date.innerHTML);
-                        saveTasksToLocalStorage();
-                        this.editing = false;
-                    } else {
-                        createOpenTask(htmlToShow, inputText, onlyText, date.innerHTML, this.taskId);
-                        saveTasksToLocalStorage();
-                    }
+
+                    this.gestionaTask(this.editing, inputText, date.innerHTML)
+
                 }
                 // input.value = '';
             } else if (text.startsWith('/')) {
@@ -285,7 +282,6 @@ class InputText extends HTMLElement {
                         description.style.gap = '10px';
 
                         if (option.quick) {
-
                             const hotKeys = document.createElement('div');
                             hotKeys.style.display = 'flex';
                             hotKeys.style.alignItems = 'center';
@@ -418,6 +414,7 @@ class InputText extends HTMLElement {
         const googleSearchUrl = `https://www.google.com/search?q=${encodedText}`;
         window.open(googleSearchUrl, '_blank');
         this.commandContainer.textContent = '';
+        this.commandContainer.setAttribute('command', '');
         this.commandContainer.style.display = 'none';
         this.input.value = '';
     }
@@ -521,8 +518,57 @@ class InputText extends HTMLElement {
     }
 
     update() {
-        this.input.value = '';
         forceReload();
+    }
+
+    len(text) {
+        if (!text) return;
+        this.taskId++;
+
+        this.gestionaTask(false, `${text} -> == \` Longitud: ${text.trim().length} \` ==`, this.today);
+        this.commandContainer.textContent = '';
+        this.commandContainer.setAttribute('command', '');
+        this.commandContainer.style.display = 'none';
+        this.input.value = '';
+    }
+
+    toUpper(text) {
+        if (!text) return;
+        this.taskId++;
+
+        this.gestionaTask(false, `${text} -> == ${text.trim().toUpperCase()} ==`, this.today);
+        this.commandContainer.textContent = '';
+        this.commandContainer.setAttribute('command', '');
+        this.commandContainer.style.display = 'none';
+        this.input.value = '';
+    }
+
+    toLower(text) {
+        if (!text) return;
+        this.taskId++;
+
+        this.gestionaTask(false, `${text} -> == ${text.trim().toLowerCase()} ==`, this.today);
+        this.commandContainer.textContent = '';
+        this.commandContainer.setAttribute('command', '');
+        this.commandContainer.style.display = 'none';
+        this.input.value = '';
+    }
+
+    gestionaTask(id, inputText, date) {
+        const htmlToShow = this.transformMDtoHTML(inputText);
+        const onlyText = this.removeMarkdown(inputText);
+        if (id) {
+            editTask(id, htmlToShow, inputText, onlyText, date);
+            saveTasksToLocalStorage();
+            this.editing = false;
+        } else {
+            createOpenTask(htmlToShow, inputText, onlyText, date, this.taskId);
+            saveTasksToLocalStorage();
+        }
+        this.commandContainer.textContent = '';
+        this.commandContainer.setAttribute('command', '');
+        this.commandContainer.style.display = 'none';
+        this.input.value = '';
     }
 
     import() {
@@ -600,7 +646,7 @@ class InputText extends HTMLElement {
             .replace(/\*([^*]+)\*/g, '<i>$1</i>')
             .replace(/->/g, '<svg style="vertical-align: middle" width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>')
             .replace(/<-/g, '<svg style="vertical-align: middle" width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.85355 3.14645C7.04882 3.34171 7.04882 3.65829 6.85355 3.85355L3.70711 7H12.5C12.7761 7 13 7.22386 13 7.5C13 7.77614 12.7761 8 12.5 8H3.70711L6.85355 11.1464C7.04882 11.3417 7.04882 11.6583 6.85355 11.8536C6.65829 12.0488 6.34171 12.0488 6.14645 11.8536L2.14645 7.85355C1.95118 7.65829 1.95118 7.34171 2.14645 7.14645L6.14645 3.14645C6.34171 2.95118 6.65829 2.95118 6.85355 3.14645Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>')
-            .replace(/==([^*]+)==/g, '<span style="color: #2142b0; background-color: #dbeafe; border-radius: 5px; padding: 5px; padding-top: 2px; padding-bottom: 2px;">$1</span>')
+            .replace(/==([^*]+)==/g, '<span style="color: #2142b0; background-color: #dbeafe; border-radius: 5px; padding: 5px; padding-top: 2px;">$1</span>')
             .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\s+\"([^"]+)\"\)/g, '<a target="_blank" style="text-decoration: none; color: #2563eb;" href="$2" title="$3">$1</a>')
             .replace(/\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/g, '<a target="_blank" style="text-decoration: none; color: #2563eb;" href="$2">$1</a>')
             // .replace(/(#+) (.+)/g, (match, level, title) => `<h${level.length}>${title}</h${level.length}>`)

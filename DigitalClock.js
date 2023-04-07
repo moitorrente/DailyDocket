@@ -23,7 +23,7 @@ class DigitalClock extends HTMLElement {
     text-align: center;
   }
 
-  .close{
+  .close {
     margin-left: auto;
   }
 
@@ -39,7 +39,7 @@ class DigitalClock extends HTMLElement {
     transition: background-color .3s ease;
   }
 
-   .display {
+  .display {
     flex-grow: 1;
     padding: 6px;
     display: flex;

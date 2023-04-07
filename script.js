@@ -189,7 +189,6 @@ const removeClosedTask = (id) => {
 const removeAllTasks = () => {
     openTasks = [];
     closedTasks = [];
-    localStorage.setItem('stickyNotes', [])
     saveTasksToLocalStorage();
 }
 
