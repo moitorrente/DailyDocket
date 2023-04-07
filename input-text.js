@@ -16,48 +16,52 @@ class InputText extends HTMLElement {
         this.taskId = localStorage.getItem('maxId') || 0;
 
         const style = document.createElement('style');
-        style.innerHTML = `
-        input::selection {
-            background-color: #64748b;
-            color: white;
-          }
-
-  ::-webkit-scrollbar {
-    width: 4px; /* Ancho de la barra de desplazamiento */
+        style.innerHTML = `input::selection {
+  background-color: #64748b;
+  color: white;
 }
 
+::-webkit-scrollbar {
+  width: 4px;
+  /* Ancho de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  /* Color del fondo de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  /* Color de la barra de desplazamiento */
+  border-radius: 20px;
+  /* Radio de la esquina de la barra de desplazamiento */
+}
+
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar {
+    width: 2px;
+    /* Ancho de la barra de desplazamiento */
+    background-color: transparent;
+  }
+
   ::-webkit-scrollbar-track {
-    background-color: transparent; /* Color del fondo de la barra de desplazamiento */
+    background-color: transparent;
+    /* Color del fondo de la barra de desplazamiento */
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: #d1d5db; /* Color de la barra de desplazamiento */
-    border-radius: 20px; /* Radio de la esquina de la barra de desplazamiento */
+    background-color: #6b7280;
+    /* Color de la barra de desplazamiento */
+    border-radius: 20px;
+    /* Radio de la esquina de la barra de desplazamiento */
   }
 
-  @media (prefers-color-scheme: dark) {
-    ::-webkit-scrollbar {
-        width: 2px; /* Ancho de la barra de desplazamiento */
-        background-color: transparent;
-      }
-    
-      ::-webkit-scrollbar-track {
-        background-color: transparent; /* Color del fondo de la barra de desplazamiento */
-      }
-    
-      ::-webkit-scrollbar-thumb {
-        background-color: #6b7280; /* Color de la barra de desplazamiento */
-        border-radius: 20px; /* Radio de la esquina de la barra de desplazamiento */
-      }
-
-      input::selection {
-        background-color: #64748b;
-      }
+  input::selection {
+    background-color: #64748b;
   }
-`;
+}`;
         container.appendChild(style);
-
-        localStorage.setItem('mode', 'dark');
 
         input.type = 'text';
         input.style.border = 'none';
@@ -70,7 +74,6 @@ class InputText extends HTMLElement {
 
         this.editing = false;
         const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
-
 
         input.style.width = '100%';
         input.style.outline = 'none';
@@ -119,6 +122,7 @@ class InputText extends HTMLElement {
             { command: "/text", description: 'Exporta a txt', action: () => this.exportText() },
             { command: "/md", description: 'Exporta a md', action: () => this.exportMD() },
             { command: "/clock", description: 'Muestra la hora', action: () => this.clock() },
+            { command: "/search", description: 'Busca en google', action: (text) => this.search(text), composable: true, icon: `<svg width="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48"><defs><path id="a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></defs><clipPath id="b"><use xlink:href="#a" overflow="visible"/></clipPath><path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z"/><path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"/><path clip-path="url(#b)" fill="#34A853" d="M0 37l30-23 7.9 1L48 0v48H0z"/><path clip-path="url(#b)" fill="#4285F4" d="M48 48L17 24l-4-3 35-10z"/></svg>` },
             // { command: "/sidebar", description: 'Muestra sidebar', action: () => this.sidebar() },
             // { command: "/stats", description: 'Muestra estadísticas', action: () => this.stats() },
         ];
@@ -166,33 +170,34 @@ class InputText extends HTMLElement {
             menu.appendChild(item);
         });
 
-        apps.forEach(app => {
-            if (app.quick) {
-                document.addEventListener('keyup', (event) => {
-                    if (event.altKey && (event.key.toUpperCase() === app.quick)) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        app.action()
-                    }
-                })
-            }
-        });
+        const quickApp = apps.find(app => app.quick);
+        if (quickApp) {
+            document.addEventListener('keyup', (event) => {
+                const pressedKey = event.key.toUpperCase();
+                const pressedKeyIsAlt = event.altKey;
+                if (pressedKeyIsAlt && quickApp.quick.toUpperCase() === pressedKey) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    quickApp.action();
+                }
+            });
+        }
 
         input.addEventListener('keydown', (event) => {
-            if ((event.keyCode === 46 || event.which === 46 || event.keyCode === 8 || event.which === 8) && commandContainer.textContent && input.value.length === 0) {
+            if ((event.keyCode === 46 || event.which === 46 || event.keyCode === 8 || event.which === 8) && commandContainer.innerHTML && input.value.length === 0) {
                 commandContainer.style.display = 'none';
                 commandContainer.textContent = '';
             }
 
             if (commandContainer.textContent && event.keyCode === 13 && input.value.length) {
-                apps.filter(app => {
-                    if (app.command === commandContainer.textContent) {
-                        app.action(input.value);
-                        commandContainer.style.display = 'none';
-                        commandContainer.textContent = '';
-                    }
-                })
+                const app = apps.find(app => app.command === commandContainer.textContent);
+                if (app) {
+                    app.action(input.value);
+                    commandContainer.style.display = 'none';
+                    commandContainer.textContent = '';
+                }
             }
+
         });
 
         input.addEventListener('keyup', (event) => {
@@ -218,20 +223,13 @@ class InputText extends HTMLElement {
                 localStorage.setItem('maxId', this.taskId)
 
                 let inputText = input.value.trim();
-                const spaceIndex = inputText.indexOf(' ');
-                const command = spaceIndex === -1 ? inputText : inputText.slice(0, spaceIndex);
-                const param = spaceIndex === -1 ? '' : inputText.slice(spaceIndex + 1);
+                const param = inputText;
+
+                const command = commandContainer.getAttribute('command');
+
                 if (command.startsWith('/')) {
-                    apps.filter(app => {
-                        if (app.command === command) {
-                            if (app.composable) {
-                                commandContainer.textContent = app.command;
-                                commandContainer.style.display = 'block';
-                                input.value = '';
-                            }
-                            app.action(param);
-                        }
-                    })
+                    const app = apps.find(app => app.command === command);
+                    if (app) app.action(param)
                 } else {
                     if (text.startsWith('=')) {
                         inputText = `${inputText.slice(1)} = ${this.calculadora(inputText.slice(1))}`;
@@ -254,7 +252,9 @@ class InputText extends HTMLElement {
                 const exactMatch = apps.filter(option => option.command === (text))[0]
                 if (exactMatch?.composable) {
                     commandContainer.textContent = exactMatch.command;
-                    commandContainer.style.display = 'block';
+                    commandContainer.setAttribute('command', exactMatch.command);
+                    if (exactMatch.icon) commandContainer.innerHTML = exactMatch.icon;
+                    commandContainer.style.display = 'flex';
                     input.value = '';
                     return;
                 }
@@ -338,7 +338,8 @@ class InputText extends HTMLElement {
                         item.addEventListener('click', () => {
                             if (option.composable) {
                                 commandContainer.textContent = option.command;
-                                commandContainer.style.display = 'block';
+                                if (option.icon) commandContainer.innerHTML = option.icon;
+                                commandContainer.style.display = 'flex';
                                 input.value = '';
                             } else {
                                 option.action();
@@ -349,7 +350,6 @@ class InputText extends HTMLElement {
                             input.focus();
                         });
                         item.addEventListener('mouseenter', () => {
-
                             item.style.backgroundColor = '#e5e7eb';
                             if (prefersDarkScheme.matches) item.style.backgroundColor = '#4b5563';
                             item.style.cursor = 'pointer';
@@ -385,6 +385,7 @@ class InputText extends HTMLElement {
         this.commandContainer = commandContainer;
         commandContainer.textContent = '';
         commandContainer.style.width = '50px';
+        commandContainer.style.justifyContent = 'center';
         commandContainer.style.display = 'none';
         commandContainer.style.border = 'none';
         commandContainer.style.backgroundColor = '#e5e7eb';
@@ -412,6 +413,17 @@ class InputText extends HTMLElement {
         });
     }
 
+    search(text) {
+        if (!text) return;
+        const encodedText = encodeURIComponent(text);
+        const googleSearchUrl = `https://www.google.com/search?q=${encodedText}`;
+        window.open(googleSearchUrl, '_blank');
+        this.commandContainer.textContent = '';
+        this.commandContainer.style.display = 'none';
+        this.input.value = '';
+    }
+
+
     sticky() {
         const container = document.querySelector('.sticky-notes');
         const sticky = document.createElement('sticky-note');
@@ -428,25 +440,24 @@ class InputText extends HTMLElement {
 
     timer(time) {
         if (!time) {
-            // this.input.value = '/timer ';
             this.commandContainer.textContent = '/timer';
-            this.commandContainer.style.display = 'block';
+            this.commandContainer.style.display = 'flex';
             return;
         }
-        const timerComponent = document.querySelectorAll('timer-component');
-        if (isNaN(time)) {
-            this.toastTest(`Número de minutos no válido: ${time}`)
-        } else {
-            timerComponent.forEach(timer => timer.setAttribute('time', time));
+        const timerComponents = document.querySelectorAll('timer-component');
+        if (isNaN(time) || time <= 0) {
+            this.toastTest(`Número de minutos no válido: ${time}`);
+            return;
         }
+        timerComponents.forEach(timer => timer.setAttribute('time', time));
         this.input.value = '';
     }
 
-    calendar(){
+
+    calendar() {
         const container = document.querySelector('.app-hub');
         container.appendChild(document.createElement('calendar-view'));
         this.input.value = '';
-
     }
 
     counter() {
@@ -460,7 +471,6 @@ class InputText extends HTMLElement {
         const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
         console.log(`Tareas abiertas: ${openTasks.length} \r\nTareas cerradas: ${closedTasks.length}\r\nPorcentaje tareas completadas: ${Math.round(closedTasks.length / (closedTasks.length + openTasks.length) * 100, 2)}%`)
         this.input.value = '';
-
     }
 
     deleteAll() {
@@ -469,18 +479,18 @@ class InputText extends HTMLElement {
         if (acc) {
             removeAllTasks();
             localStorage.setItem('maxId', 0);
+            localStorage.setItem('sticky-counter', 0);
             this.taskId = 0;
 
             document.querySelector('.open').innerHTML = '';
             document.querySelector('.closed').innerHTML = '';
+            document.querySelector('.sticky-notes').innerHTML = '';
             const event = new CustomEvent('toast-message', {
                 detail: ' Todas las tareas han sido borradas'
             });
             document.dispatchEvent(event);
         }
-
         this.input.value = '';
-
     }
 
     toastTest(text = 'Test de toast') {
@@ -529,7 +539,7 @@ class InputText extends HTMLElement {
                     //TODO validar el fichero
                     const acc = confirm('Si continuas se borrará las tareas actuales');
                     if (acc) {
-                        rewriteTasksToLocalStorage(tasks.openTasks, tasks.closedTasks);
+                        rewriteTasksToLocalStorage(tasks.openTasks, tasks.closedTasks, tasks.stickyNotes);
                     }
                 };
                 reader.onerror = function () {
@@ -566,10 +576,12 @@ class InputText extends HTMLElement {
     export() {
         const openTasks = JSON.parse(localStorage.getItem('openTasks')) || [];
         const closedTasks = JSON.parse(localStorage.getItem('closedTasks')) || [];
+        const stickyNotes = JSON.parse(localStorage.getItem('stickyNotes')) || [];
 
         const data = JSON.stringify({
             openTasks: openTasks,
-            closedTasks: closedTasks
+            closedTasks: closedTasks,
+            stickyNotes: stickyNotes
         }, null, 2)
 
         downloadFile(data, `DailyDocketExport ${new Date().toLocaleString()}.json`);
@@ -647,13 +659,9 @@ class InputText extends HTMLElement {
         if (parens !== 0) {
             throw new Error('Los paréntesis no están balanceados');
         }
-
         // Si la entrada es segura, evaluar la expresión y devolver el resultado
         return eval(str);
     }
-
-
-
 }
 
 function downloadFile(texto, nombreArchivo) {
@@ -662,10 +670,6 @@ function downloadFile(texto, nombreArchivo) {
     enlaceDescarga.href = window.URL.createObjectURL(archivo);
     enlaceDescarga.download = nombreArchivo;
     enlaceDescarga.click();
-    // const event = new CustomEvent('toast-message', {
-    //     detail: 'Tareas descargadas'
-    // });
-    // document.dispatchEvent(event);
 }
 
 async function forceReload() {

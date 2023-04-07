@@ -91,9 +91,10 @@ const saveTasksToLocalStorage = () => {
     createTasks();
 };
 
-const rewriteTasksToLocalStorage = (openTasks, closedTasks) => {
+const rewriteTasksToLocalStorage = (openTasks, closedTasks, stickyNotes) => {
     localStorage.setItem('openTasks', JSON.stringify(openTasks));
     localStorage.setItem('closedTasks', JSON.stringify(closedTasks));
+    localStorage.setItem('stickyNotes', JSON.stringify(stickyNotes));
     const event = new CustomEvent('updated-storage', {
         detail: 'updates'
     });
@@ -188,6 +189,7 @@ const removeClosedTask = (id) => {
 const removeAllTasks = () => {
     openTasks = [];
     closedTasks = [];
+    localStorage.setItem('stickyNotes', [])
     saveTasksToLocalStorage();
 }
 

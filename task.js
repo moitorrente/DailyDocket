@@ -354,6 +354,7 @@ class TaskList extends HTMLElement {
 
     if (this.taskPriority === 'null' || this.taskPriority === 'undefined') {
       contenedorPriority.style.visibility = 'hidden';
+      contenedorPriority.style.display = 'none';
       contenedorPriority.style.width = '12px';
       contenedorPriority.style.flexShrink = '0';
     } else {
@@ -362,7 +363,7 @@ class TaskList extends HTMLElement {
         contenedorPriority.style.visibility = 'visible';
 
 
-        priorityIcon = `<svg width='12' height='12' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' class='w-6 h-6'>
+        priorityIcon = `<svg width='12' height='12' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='#facc15' class='w-6 h-6'>
         <path stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z' />
       </svg>
       `;
@@ -371,7 +372,7 @@ class TaskList extends HTMLElement {
         contenedorPriority.style.visibility = 'visible';
         contenedorPriority.style.width = '12px';
 
-        priorityIcon = `<svg width='12' height='12' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' class='w-6 h-6'>
+        priorityIcon = `<svg width='12' height='12' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='#ef4444' class='w-6 h-6'>
         <path stroke-linecap='round' stroke-linejoin='round' d='M4.5 12.75l7.5-7.5 7.5 7.5m-15 6l7.5-7.5 7.5 7.5' />
       </svg>
       `
@@ -381,7 +382,7 @@ class TaskList extends HTMLElement {
         contenedorPriority.style.visibility = 'visible';
         contenedorPriority.style.width = '12px';
 
-        priorityIcon = `<svg width='12' height='12' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' class='w-6 h-6'>
+        priorityIcon = `<svg width='12' height='12' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='#16a34a' class='w-6 h-6'>
         <path stroke-linecap='round' stroke-linejoin='round' d='M3.75 9h16.5m-16.5 6.75h16.5' />
       </svg>
       `
@@ -390,7 +391,7 @@ class TaskList extends HTMLElement {
         contenedorPriority.style.visibility = 'visible';
         contenedorPriority.style.width = '12px';
 
-        priorityIcon = `<svg width='12' height='12' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' class='w-6 h-6'>
+        priorityIcon = `<svg width='12' height='12' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='#2563eb' class='w-6 h-6'>
         <path stroke-linecap='round' stroke-linejoin='round' d='M19.5 5.25l-7.5 7.5-7.5-7.5m15 6l-7.5 7.5-7.5-7.5' />
       </svg>
       `
