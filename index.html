@@ -12,6 +12,7 @@
     <script defer src="task.js"></script>
     <script defer src="timer.js"></script>
     <script defer src="AppHub.js"></script>
+    <script defer src="CalculatorOverlay.js"></script>
     <script defer src="MyCounter.js"></script>
     <script defer src="MovableElement.js"></script>
     <script defer src="StickyNote.js"></script>
@@ -42,7 +43,6 @@
                 <img style="background-color: #f8fafc;
                 border-radius: 10px;" src="icon.svg" width="30px" alt="">
                 <alert-component></alert-component>
-
             </header>
             <div class="container">
                 <section
@@ -54,6 +54,8 @@
                     </task-counter>
                 </section>
                 <input-text></input-text>
+                <div class="calculator-overlay"></div>
+
                 <div class="sticky-notes"></div>
                 <div class="lateral-container" style="display: none; justify-content: center; margin-top: 1rem;">
                     <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
@@ -65,7 +67,7 @@
                 </div>
                 <div id="open" class="open" style="margin-top: 1rem; padding: 0 0rem 1rem;"></div>
                 <input style="display: none;" type="file" id="json_file_input">
-                
+
                 <details>
                     <summary
                         style="display: flex; align-items: center; justify-content: end; cursor: pointer; color: #9ca3af">

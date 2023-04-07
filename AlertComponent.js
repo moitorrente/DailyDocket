@@ -1,9 +1,6 @@
 class AlertComponent extends HTMLElement {
     constructor() {
         super();
-
-
-
         const template = `<style>
   :host {
     display: flex;

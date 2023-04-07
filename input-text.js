@@ -97,7 +97,7 @@ class InputText extends HTMLElement {
         menu.style.backgroundColor = '#f3f4f6';
         menu.style.display = 'none';
         menu.style.borderRadius = '5px';
-        menu.style.boxShadow = 'rgb(0 0 0 / 7%) 10px 10px 10px 0px';
+        // menu.style.boxShadow = 'rgb(0 0 0 / 7%) 10px 10px 10px 0px';
         menu.style.zIndex = 999;
 
         if (prefersDarkScheme.matches) {
@@ -205,6 +205,10 @@ class InputText extends HTMLElement {
             menu.style.display = 'none';
             const text = event.target.value.trim();
 
+            if (!input.value.startsWith('=')) {
+                document.querySelector('.calculator-overlay').innerHTML = '';
+            }
+
             if (event.keyCode === 38 && input.value === '') {
                 const lastCommand = localStorage.getItem('last-command');
                 if (lastCommand) input.value = lastCommand;
@@ -234,11 +238,9 @@ class InputText extends HTMLElement {
                     }
                 } else {
                     if (text.startsWith('=')) {
-                        inputText = `${inputText.slice(1)} = ${this.calculadora(inputText.slice(1))}`;
+                        inputText = `\`${inputText.slice(1)} = == ${this.calculadora(inputText.slice(1))} ==\``;
                     }
-
                     this.gestionaTask(this.editing, inputText, date.innerHTML)
-
                 }
                 // input.value = '';
             } else if (text.startsWith('/')) {
@@ -357,6 +359,16 @@ class InputText extends HTMLElement {
                     });
                     menu.style.display = 'block';
                 }
+            } else if (text.startsWith('=')) {
+                const calculatorOverlayContainer = document.querySelector('.calculator-overlay');
+                if (!calculatorOverlayContainer.innerHTML) calculatorOverlayContainer.appendChild(document.createElement('calculator-overlay'))
+                const event = new CustomEvent('change-calculator-overlay', {
+                    detail: {
+                        input: text.slice(1),
+                        output: this.calculadora(text.slice(1))
+                    }
+                });
+                document.dispatchEvent(event);
             } else {
                 // Ocultar menú si no hay coincidencias
                 menu.style.display = 'none';
@@ -685,7 +697,7 @@ class InputText extends HTMLElement {
                 detail: ' La entrada contiene caracteres no permitidos'
             });
             document.dispatchEvent(event);
-            throw new Error('La entrada contiene caracteres no permitidos');
+            // throw new Error('La entrada contiene caracteres no permitidos');
 
         }
 
@@ -698,14 +710,20 @@ class InputText extends HTMLElement {
                 parens--;
             }
             if (parens < 0) {
-                throw new Error('Los paréntesis no están balanceados');
+                // throw new Error('Los paréntesis no están balanceados');
             }
         }
         if (parens !== 0) {
-            throw new Error('Los paréntesis no están balanceados');
+            // throw new Error('Los paréntesis no están balanceados');
         }
         // Si la entrada es segura, evaluar la expresión y devolver el resultado
-        return eval(str);
+
+        try {
+            return eval(str)
+        } catch (e) {
+
+        }
+        return;
     }
 }
 
