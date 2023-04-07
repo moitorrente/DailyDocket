@@ -380,7 +380,7 @@ class InputText extends HTMLElement {
             const x = event.clientX;
             const y = event.clientY;
             const targetElement = document.elementFromPoint(x, y);
-            const sidebar = targetElement.closest('input-text');
+            // const sidebar = targetElement.closest('input-text');
             // if (event.target != 'input-text') {
             //     const sidebarNavigation = document.querySelector("sidebar-navigation");
             //     sidebarNavigation.hideSidebar();
