@@ -338,6 +338,7 @@ class InputText extends HTMLElement {
                         item.addEventListener('click', () => {
                             if (option.composable) {
                                 commandContainer.textContent = option.command;
+                                commandContainer.setAttribute('command', option.command)
                                 if (option.icon) commandContainer.innerHTML = option.icon;
                                 commandContainer.style.display = 'flex';
                                 input.value = '';
