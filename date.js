@@ -3,23 +3,23 @@ class MyDate extends HTMLElement {
         super();
         const shadowRoot = this.attachShadow({ mode: 'open' });
         const template = `
-        <style>
-          div {
-            color: #6b7280; 
-            font-weight: 400; 
-            font-size: large;;
-          }
-          @media (prefers-color-scheme: dark) {
-            div {
-              color: #e5e7eb; 
-            }
-          }
+<style>
+  div {
+    color: #6b7280;
+    font-weight: 400;
+    font-size: large;
+    ;
+  }
 
-        </style>
-        <div>
-          <span></span>
-        </div>
-      `;
+  @media (prefers-color-scheme: dark) {
+    div {
+      color: #e5e7eb;
+    }
+  }
+</style>
+<div>
+  <span></span>
+</div>`;
 
         shadowRoot.innerHTML = template;
     }

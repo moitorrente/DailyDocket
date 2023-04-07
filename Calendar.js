@@ -16,7 +16,8 @@ class MyCalendar extends HTMLElement {
     const monthYear = `${this.monthNames[this.currentMonth]} ${this.currentYear}`;
     const days = this.getDaysOfMonth(this.currentMonth, this.currentYear);
 
-    const style = `:host {
+    const style = `
+:host {
   display: block;
   font-family: sans-serif;
 }

@@ -34,8 +34,6 @@ class AlertComponent extends HTMLElement {
     display: none;
   }
   
-
-
   .counter {
     position: absolute;
     top: -5px;
@@ -140,7 +138,4 @@ function checkDueToday() {
     return openTasks.map(task => {
         return task.due ? compareDate(task.due) ? task : '' : false;
     }).filter(x => x);
-
-
-
 }
