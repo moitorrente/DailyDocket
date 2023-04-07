@@ -91,7 +91,7 @@ class CalculatorOverlay extends HTMLElement {
             background-color: #1f2937;
             left: 50%;
             transform: translateX(-50%);
-            color: #9ca3af;
+            color: #f3f4f6;
         }
     }
 </style>
@@ -127,8 +127,9 @@ class CalculatorOverlay extends HTMLElement {
 
     changeOverlay(event) {
         const { input, output } = event.detail;
-        this.input.textContent = separateNumbersAndCharacters(input);;
-        this.output.textContent = output;
+        console.log(output)
+        this.input.textContent = separateNumbersAndCharacters(input);
+        if (output) this.output.textContent = output;
     }
 
     connectedCallback() {
