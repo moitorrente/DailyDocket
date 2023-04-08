@@ -96,7 +96,7 @@ class CalculatorOverlay extends HTMLElement {
     }
 </style>
 <div class="wrapper">
-    <span class="title">Calculadora</span>
+    <span class="title"></span>
     <div class="container">
         <div class="card border-right">
             <div class="input" style="font-size: x-large; font-weight: 600;"></div>
@@ -123,17 +123,19 @@ class CalculatorOverlay extends HTMLElement {
         this.input = this.shadowRoot.querySelector('.input');
         this.output = this.shadowRoot.querySelector('.output');
         this.changeOverlay = this.changeOverlay.bind(this);
+
     }
 
     changeOverlay(event) {
         const { input, output } = event.detail;
-        console.log(output)
-        this.input.textContent = separateNumbersAndCharacters(input);
+        this.input.textContent = input;
         if (output) this.output.textContent = output;
     }
 
     connectedCallback() {
-        document.addEventListener('change-calculator-overlay', this.changeOverlay)
+        document.addEventListener('change-calculator-overlay', this.changeOverlay);
+        const title = this.getAttribute('title');
+        this.shadowRoot.querySelector('.title').textContent = title;
     }
 
     disconnectedCallback() {
@@ -142,9 +144,4 @@ class CalculatorOverlay extends HTMLElement {
 }
 customElements.define('calculator-overlay', CalculatorOverlay);
 
-const separateNumbersAndCharacters = str => {
-    if (typeof str !== 'string' || str.trim().length === 0) {
-        return '';
-    }
-    return str.replace(/([+*\/·\-])/g, ' $1 ').replace(/\*+/g, '·').replace(/\s+/g, ' ').trim();
-}
+

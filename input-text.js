@@ -361,10 +361,12 @@ class InputText extends HTMLElement {
                 }
             } else if (text.startsWith('=')) {
                 const calculatorOverlayContainer = document.querySelector('.calculator-overlay');
-                if (!calculatorOverlayContainer.innerHTML) calculatorOverlayContainer.appendChild(document.createElement('calculator-overlay'))
+                const overlayComponent = document.createElement('calculator-overlay');
+                overlayComponent.setAttribute('title', 'Calculadora');
+                if (!calculatorOverlayContainer.innerHTML) calculatorOverlayContainer.appendChild(overlayComponent);
                 const event = new CustomEvent('change-calculator-overlay', {
                     detail: {
-                        input: text.slice(1),
+                        input: separateNumbersAndCharacters(text.slice(1)),
                         output: this.calculadora(text.slice(1))
                     }
                 });
@@ -748,3 +750,9 @@ async function forceReload() {
 }
 
 customElements.define('input-text', InputText);
+const separateNumbersAndCharacters = str => {
+    if (typeof str !== 'string' || str.trim().length === 0) {
+        return '';
+    }
+    return str.replace(/([+*\/·\-])/g, ' $1 ').replace(/\*+/g, '·').replace(/\s+/g, ' ').trim();
+}
