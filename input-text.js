@@ -93,7 +93,6 @@ class InputText extends HTMLElement {
         menu.style.padding = '6px';
         menu.style.width = '100%';
         menu.style.marginTop = '5px'
-        // menu.style.maxWidth = '300px';
         menu.style.outline = 'none';
         menu.style.boxSizing = 'border-box';
         menu.style.maxHeight = '40vh';
@@ -101,7 +100,6 @@ class InputText extends HTMLElement {
         menu.style.backgroundColor = '#f3f4f6';
         menu.style.display = 'none';
         menu.style.borderRadius = '5px';
-        // menu.style.boxShadow = 'rgb(0 0 0 / 7%) 10px 10px 10px 0px';
         menu.style.zIndex = 999;
 
         if (prefersDarkScheme.matches) {
@@ -160,7 +158,6 @@ class InputText extends HTMLElement {
 
             item.addEventListener('click', () => {
                 app.action();
-                // input.value = '';
                 menu.style.display = 'none';
                 input.focus();
             });
@@ -173,8 +170,6 @@ class InputText extends HTMLElement {
             item.addEventListener('mouseleave', () => {
                 item.style.backgroundColor = 'transparent';
             });
-
-
             menu.appendChild(item);
         });
 
@@ -248,7 +243,7 @@ class InputText extends HTMLElement {
                 const openDate = new Date().toLocaleDateString('es-ES').toString();
 
                 // if (this.editing) {
-                    this.gestionaTask(this.editing, text, openDate);
+                this.gestionaTask(this.editing, text, openDate);
                 // } else {
                 //     this.createTask(this.taskId++, input.value, openDate);
                 // }
@@ -284,10 +279,9 @@ class InputText extends HTMLElement {
                     //Si el comando es composable
                     if (exactMatch?.composable) {
                         commandContainer.textContent = exactMatch.command;
-                        commandContainer.setAttribute('command', exactMatch.command);
+                        // commandContainer.setAttribute('command', exactMatch.command);
                         if (exactMatch.icon) commandContainer.innerHTML = exactMatch.icon;
-                        this.setState('command')
-                        this.command = exactMatch.command;
+                        this.setState('command', exactMatch.command)
 
                         if (exactMatch.overlay) {
                             console.log('deberia salir el overlay')
@@ -353,7 +347,7 @@ class InputText extends HTMLElement {
         });
     }
 
-    setState(state) {
+    setState(state, command) {
         this.state = state;
         if (state === 'initial') {
             document.querySelector('.calculator-overlay').innerHTML = '';
@@ -361,21 +355,17 @@ class InputText extends HTMLElement {
             this.input.value = '';
             this.menu.style.display = 'none';
             this.commandContainer.style.display = 'none';
-
             this.input.focus();
-            console.log('Se pasa a initial')
         }
 
         if (state === 'command') {
-            console.log('Se pasa a command')
+            this.command = command;
             this.input.value = '';
             this.menu.style.display = 'none';
             this.commandContainer.style.display = 'flex';
-
             this.input.focus();
         }
     }
-
 
     showCommandList(text) {
         const matchedCommands = this.apps.filter(option => option.command.startsWith(text));
@@ -447,16 +437,28 @@ class InputText extends HTMLElement {
 
                 item.addEventListener('click', () => {
                     if (option.composable) {
-                        commandContainer.textContent = option.command;
-                        commandContainer.setAttribute('command', option.command)
-                        if (option.icon) commandContainer.innerHTML = option.icon;
-                        commandContainer.style.display = 'flex';
-                        input.value = '';
+                        this.commandContainer.textContent = option.command;
+                        this.setState('command', option.command)
+
+                        if (option.icon) this.commandContainer.innerHTML = option.icon;
+                        if (option.overlay) {
+                            this.setState('overlay');
+
+                            const calculatorOverlayContainer = document.querySelector('.calculator-overlay');
+                            const overlayComponent = document.createElement('calculator-overlay');
+                            overlayComponent.setAttribute('title', option.description);
+                            if (!calculatorOverlayContainer.innerHTML) calculatorOverlayContainer.appendChild(overlayComponent);
+                            const event = new CustomEvent('change-calculator-overlay', {
+                                detail: {
+                                    input: '',
+                                    output: ''
+                                }
+                            });
+                            document.dispatchEvent(event);
+                        }
                     } else {
                         option.action();
                     }
-
-                    //input.value = '';
                     this.menu.style.display = 'none';
                     this.input.focus();
                 });
