@@ -15,6 +15,8 @@ class InputText extends HTMLElement {
         this.input = input;
         this.taskId = localStorage.getItem('maxId') || 0;
 
+        this.state = 'initial';
+
         const style = document.createElement('style');
         style.innerHTML = `input::selection {
   background-color: #64748b;
@@ -74,6 +76,7 @@ class InputText extends HTMLElement {
 
         this.editing = false;
         const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+        this.prefersDarkScheme = prefersDarkScheme;
 
         input.style.width = '100%';
         input.style.outline = 'none';
@@ -82,6 +85,7 @@ class InputText extends HTMLElement {
         input.style.placeholder = 'white'
 
         const menu = document.createElement('div');
+        this.menu = menu;
         menu.id = 'menu';
         menu.style.fontSize = '13px';
         menu.style.top = '175px';
@@ -116,20 +120,22 @@ class InputText extends HTMLElement {
             { command: "/calendar", description: 'Muestra el calendario', action: () => this.calendar(), quick: 'C' },
             { command: "/delete", description: 'Borra todas las tareas', action: () => this.deleteAll() },
             { command: "/update", description: 'Actualiza la aplicación', action: () => this.update(), quick: 'U' },
-            { command: "/len", description: 'Devuelve la longitud del texto', action: (text) => this.len(text), composable: true },
+            { command: "/len", description: 'Devuelve la longitud del texto', action: (text) => this.len(text), composable: true, overlay: true },
             // { command: "/version", description: 'Consulta la versión de la aplicación', action: () => this.toastTest('Version: 1.3') },
             { command: "/export", description: 'Exporta las tareas en json', action: () => this.export(), quick: 'E' },
             { command: "/import", description: 'Importa las tareas desde json', action: () => this.import() },
             { command: "/text", description: 'Exporta a txt', action: () => this.exportText() },
             { command: "/md", description: 'Exporta a md', action: () => this.exportMD() },
-            { command: "/upper", description: 'Convierte texto a mayúsculas', action: (text) => this.toUpper(text), composable: true },
-            { command: "/lower", description: 'Convierte texto a minúsculas', action: (text) => this.toLower(text), composable: true },
+            { command: "/upper", description: 'Convierte texto a mayúsculas', action: (text) => this.toUpper(text), composable: true, overlay: true },
+            { command: "/lower", description: 'Convierte texto a minúsculas', action: (text) => this.toLower(text), composable: true, overlay: true },
             { command: "/clock", description: 'Muestra la hora', action: () => this.clock() },
             { command: "/search", description: 'Busca en Google', action: (text) => this.search(text), composable: true, icon: `<svg width="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48"><defs><path id="a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></defs><clipPath id="b"><use xlink:href="#a" overflow="visible"/></clipPath><path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z"/><path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"/><path clip-path="url(#b)" fill="#34A853" d="M0 37l30-23 7.9 1L48 0v48H0z"/><path clip-path="url(#b)" fill="#4285F4" d="M48 48L17 24l-4-3 35-10z"/></svg>` },
             { command: "=", description: 'Busca en Google', action: (input) => this.calculadora(input), composable: true, icon: `<svg width="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48"><defs><path id="a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></defs><clipPath id="b"><use xlink:href="#a" overflow="visible"/></clipPath><path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z"/><path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"/><path clip-path="url(#b)" fill="#34A853" d="M0 37l30-23 7.9 1L48 0v48H0z"/><path clip-path="url(#b)" fill="#4285F4" d="M48 48L17 24l-4-3 35-10z"/></svg>` },
             // { command: "/sidebar", description: 'Muestra sidebar', action: () => this.sidebar() },
             // { command: "/stats", description: 'Muestra estadísticas', action: () => this.stats() },
         ];
+
+        this.apps = apps;
 
         apps.forEach(app => {
             const item = document.createElement('div');
@@ -187,179 +193,29 @@ class InputText extends HTMLElement {
 
         input.addEventListener('keydown', (event) => {
             if ((event.keyCode === 46 || event.which === 46 || event.keyCode === 8 || event.which === 8) && commandContainer.innerHTML && input.value.length === 0) {
-                commandContainer.style.display = 'none';
-                commandContainer.textContent = '';
-            }
-
-            if (commandContainer.textContent && event.keyCode === 13 && input.value.length) {
-                const app = apps.find(app => app.command === commandContainer.textContent);
-                if (app) {
-                    app.action(input.value);
-                    commandContainer.style.display = 'none';
-                    commandContainer.textContent = '';
-                }
+                this.setState('initial')
             }
         });
 
         input.addEventListener('keyup', (event) => {
-            menu.style.display = 'none';
             const text = event.target.value.trim();
+            const firstChar = text.charAt(0);
 
-            if (!input.value.startsWith('=')) {
-                document.querySelector('.calculator-overlay').innerHTML = '';
+            if (this.state === 'command' || this.state === 'overlay') {
+
+            } else {
+                if (text.length === 0) {
+                    this.setState('initial')
+                } else if (firstChar === '/') {
+                    this.state = 'input-command';
+                } else if (firstChar === '=') {
+                    this.state = 'input-calculator';
+                } else {
+                    this.state = 'input-text';
+                }
             }
 
-            if (event.keyCode === 38 && input.value === '') {
-                const lastCommand = localStorage.getItem('last-command');
-                if (lastCommand) input.value = lastCommand;
-            } else if (event.keyCode === 13 && text.length) {
-                this.taskId++;
-                const taskList = document.createElement('task-list');
-                taskList.setAttribute('id', this.taskId);
-                const title = document.createElement('span');
-                title.setAttribute('slot', 'title');
-                title.innerHTML = input.value;
-                const date = document.createElement('span');
-                date.setAttribute('slot', 'date');
-                date.setAttribute('rawDate', new Date().toLocaleDateString('es-ES'));
-                date.innerHTML = new Date().toLocaleDateString('es-ES');
-                taskList.appendChild(title);
-                taskList.appendChild(date);
-                localStorage.setItem('maxId', this.taskId)
-
-                let inputText = input.value.trim();
-                const param = inputText;
-                const command = commandContainer.getAttribute('command');
-
-                if (command) {
-                    if (command.startsWith('/')) {
-                        const app = apps.find(app => app.command === command);
-                        if (app) app.action(param)
-                    }
-                } else {
-                    if (text.startsWith('=')) {
-                        inputText = `\`${inputText.slice(1)} = == ${this.calculadora(inputText.slice(1))} ==\``;
-                    }
-                    this.gestionaTask(this.editing, inputText, date.innerHTML)
-                }
-                // input.value = '';
-            } else if (text.startsWith('/')) {
-                // Mostrar menú de comandos que coinciden con el texto ingresado
-
-                const exactMatch = apps.filter(option => option.command === (text))[0]
-                if (exactMatch?.composable) {
-                    commandContainer.textContent = exactMatch.command;
-                    commandContainer.setAttribute('command', exactMatch.command);
-                    if (exactMatch.icon) commandContainer.innerHTML = exactMatch.icon;
-                    commandContainer.style.display = 'flex';
-                    input.value = '';
-                    return;
-                }
-
-                if (exactMatch) {
-                    exactMatch.action();
-                    input.value = '';
-                    menu.style.display = 'none';
-                    input.focus();
-                    return;
-                }
-
-                const matchedCommands = apps.filter(option => option.command.startsWith(text));
-                if (matchedCommands.length > 0) {
-                    menu.innerHTML = '';
-                    matchedCommands.forEach((option) => {
-                        const item = document.createElement('div');
-                        item.style.display = 'flex';
-                        item.style.alignItems = 'center';
-                        item.style.justifyContent = 'space-between';
-                        const command = document.createElement('div');
-                        command.style.width = '80px';
-                        const description = document.createElement('div');
-                        command.innerHTML = option.command;
-                        description.style.color = '#9ca3af';
-                        description.innerHTML = option.description;
-                        description.style.fontSize = '10px';
-                        description.style.display = 'flex';
-                        description.style.alignItems = 'center';
-                        description.style.gap = '10px';
-
-                        if (option.quick) {
-                            const hotKeys = document.createElement('div');
-                            hotKeys.style.display = 'flex';
-                            hotKeys.style.alignItems = 'center';
-                            hotKeys.style.justifyContent = 'center';
-                            hotKeys.style.gap = '3px';
-
-                            const alt = document.createElement('div');
-                            alt.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-command"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path></svg>`;
-                            alt.style.color = '#9ca3af';
-                            alt.style.fontSize = '10px';
-                            alt.style.backgroundColor = '#6b7280';
-                            alt.style.color = '#f9fafb';
-                            alt.style.padding = '3px';
-                            alt.style.width = '10px';
-                            alt.style.height = '10px';
-                            alt.style.borderRadius = '3px';
-                            alt.style.display = 'flex';
-                            alt.style.alignItems = 'center';
-                            alt.style.justifyContent = 'center';
-
-                            const quick = document.createElement('div');
-                            quick.innerHTML = option.quick;
-                            quick.style.color = '#9ca3af';
-                            quick.style.fontSize = '10px';
-                            quick.style.backgroundColor = '#6b7280';
-                            quick.style.color = '#f9fafb';
-                            quick.style.padding = '3px';
-                            quick.style.width = '10px';
-                            quick.style.height = '10px';
-                            quick.style.borderRadius = '3px';
-                            quick.style.display = 'flex';
-                            quick.style.alignItems = 'center';
-                            quick.style.justifyContent = 'center';
-
-                            hotKeys.appendChild(alt);
-                            hotKeys.appendChild(quick);
-                            description.appendChild(hotKeys);
-                        }
-
-                        item.appendChild(command);
-                        item.appendChild(description);
-                        item.style.padding = '6px';
-                        item.style.paddingLeft = '12px'
-                        item.style.paddingRight = '12px'
-                        item.style.borderRadius = '5px';
-                        item.style.fontSize = '13px';
-
-                        item.addEventListener('click', () => {
-                            if (option.composable) {
-                                commandContainer.textContent = option.command;
-                                commandContainer.setAttribute('command', option.command)
-                                if (option.icon) commandContainer.innerHTML = option.icon;
-                                commandContainer.style.display = 'flex';
-                                input.value = '';
-                            } else {
-                                option.action();
-                            }
-
-                            //input.value = '';
-                            menu.style.display = 'none';
-                            input.focus();
-                        });
-                        item.addEventListener('mouseenter', () => {
-                            item.style.backgroundColor = '#e5e7eb';
-                            if (prefersDarkScheme.matches) item.style.backgroundColor = '#4b5563';
-                            item.style.cursor = 'pointer';
-                        });
-
-                        item.addEventListener('mouseleave', () => {
-                            item.style.backgroundColor = 'transparent';
-                        });
-                        menu.appendChild(item);
-                    });
-                    menu.style.display = 'block';
-                }
-            } else if (text.startsWith('=')) {
+            if (this.state === 'input-calculator') {
                 const calculatorOverlayContainer = document.querySelector('.calculator-overlay');
                 const overlayComponent = document.createElement('calculator-overlay');
                 overlayComponent.setAttribute('title', 'Calculadora');
@@ -371,23 +227,98 @@ class InputText extends HTMLElement {
                     }
                 });
                 document.dispatchEvent(event);
-            } else {
-                // Ocultar menú si no hay coincidencias
-                menu.style.display = 'none';
             }
+
+            if (this.state === 'input-calculator' && event.keyCode === 13) {
+                const inputText = `\`${text.slice(1)} = == ${this.calculadora(text.slice(1))} ==\``;
+                const openDate = new Date().toLocaleDateString('es-ES').toString();
+                this.createTask(this.taskId++, inputText, openDate);
+                this.setState('initial');
+            }
+
+            //Si no hay ningún input y se pulsa la flecha hacía arriba
+            if (this.state === 'initial' && event.keyCode === 38) {
+                const lastCommand = localStorage.getItem('last-command');
+                if (lastCommand) input.value = lastCommand;
+                console.log('pasa por est otro', lastCommand)
+            }
+
+            //Si se pulsa enter y estamos en modo texto
+            if (this.state === 'input-text' && event.keyCode === 13) {
+                const openDate = new Date().toLocaleDateString('es-ES').toString();
+
+                // if (this.editing) {
+                    this.gestionaTask(this.editing, text, openDate);
+                // } else {
+                //     this.createTask(this.taskId++, input.value, openDate);
+                // }
+                this.setState('initial')
+            }
+
+
+            //Si estamos en modo comando y se pulsa enter
+            if ((this.state === 'command' || this.state === 'overlay') && event.keyCode === 13) {
+                const app = apps.find(app => app.command === this.command);
+                if (app) app.action(text);
+                this.setState('initial');
+            }
+
+            if (this.state === 'overlay') {
+                const app = apps.find(app => app.command === this.command);
+                const event = new CustomEvent('change-calculator-overlay', {
+                    detail: {
+                        input: text,
+                        output: app.action(text)
+                    }
+                });
+                document.dispatchEvent(event);
+            }
+
+            //Si estamos introduciendo el comando
+            if (this.state === 'input-command') {
+                const exactMatch = apps.find(option => option.command === (text));
+
+                this.showCommandList(text);
+                //Si hay un comando que es el entrado
+                if (exactMatch) {
+                    //Si el comando es composable
+                    if (exactMatch?.composable) {
+                        commandContainer.textContent = exactMatch.command;
+                        commandContainer.setAttribute('command', exactMatch.command);
+                        if (exactMatch.icon) commandContainer.innerHTML = exactMatch.icon;
+                        this.setState('command')
+                        this.command = exactMatch.command;
+
+                        if (exactMatch.overlay) {
+                            console.log('deberia salir el overlay')
+                            this.setState('overlay')
+
+                            const calculatorOverlayContainer = document.querySelector('.calculator-overlay');
+                            const overlayComponent = document.createElement('calculator-overlay');
+                            overlayComponent.setAttribute('title', exactMatch.description);
+                            if (!calculatorOverlayContainer.innerHTML) calculatorOverlayContainer.appendChild(overlayComponent);
+                            const event = new CustomEvent('change-calculator-overlay', {
+                                detail: {
+                                    input: '',
+                                    output: ''
+                                }
+                            });
+                            document.dispatchEvent(event);
+                        }
+                        return;
+                    } else {
+                        //Si el comando no es composable se ejecuta
+                        exactMatch.action();
+                        this.setState('initial');
+                        return;
+                    }
+                }
+            }
+
         });
 
         window.addEventListener('click', (event) => {
             menu.style.display = 'none';
-            const x = event.clientX;
-            const y = event.clientY;
-            const targetElement = document.elementFromPoint(x, y);
-            // const sidebar = targetElement.closest('input-text');
-            // if (event.target != 'input-text') {
-            //     const sidebarNavigation = document.querySelector("sidebar-navigation");
-            //     sidebarNavigation.hideSidebar();
-            // }
-
         });
 
         const commandContainer = document.createElement('div');
@@ -420,6 +351,138 @@ class InputText extends HTMLElement {
             this.editing = event.detail.id;
             this.input.value = event.detail.raw;
         });
+    }
+
+    setState(state) {
+        this.state = state;
+        if (state === 'initial') {
+            document.querySelector('.calculator-overlay').innerHTML = '';
+            this.command = null;
+            this.input.value = '';
+            this.menu.style.display = 'none';
+            this.commandContainer.style.display = 'none';
+
+            this.input.focus();
+            console.log('Se pasa a initial')
+        }
+
+        if (state === 'command') {
+            console.log('Se pasa a command')
+            this.input.value = '';
+            this.menu.style.display = 'none';
+            this.commandContainer.style.display = 'flex';
+
+            this.input.focus();
+        }
+    }
+
+
+    showCommandList(text) {
+        const matchedCommands = this.apps.filter(option => option.command.startsWith(text));
+        if (matchedCommands.length > 0) {
+            this.menu.innerHTML = '';
+            matchedCommands.forEach((option) => {
+                const item = document.createElement('div');
+                item.style.display = 'flex';
+                item.style.alignItems = 'center';
+                item.style.justifyContent = 'space-between';
+                const command = document.createElement('div');
+                command.style.width = '80px';
+                const description = document.createElement('div');
+                command.innerHTML = option.command;
+                description.style.color = '#9ca3af';
+                description.innerHTML = option.description;
+                description.style.fontSize = '10px';
+                description.style.display = 'flex';
+                description.style.alignItems = 'center';
+                description.style.gap = '10px';
+
+                if (option.quick) {
+                    const hotKeys = document.createElement('div');
+                    hotKeys.style.display = 'flex';
+                    hotKeys.style.alignItems = 'center';
+                    hotKeys.style.justifyContent = 'center';
+                    hotKeys.style.gap = '3px';
+
+                    const alt = document.createElement('div');
+                    alt.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-command"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path></svg>`;
+                    alt.style.color = '#9ca3af';
+                    alt.style.fontSize = '10px';
+                    alt.style.backgroundColor = '#6b7280';
+                    alt.style.color = '#f9fafb';
+                    alt.style.padding = '3px';
+                    alt.style.width = '10px';
+                    alt.style.height = '10px';
+                    alt.style.borderRadius = '3px';
+                    alt.style.display = 'flex';
+                    alt.style.alignItems = 'center';
+                    alt.style.justifyContent = 'center';
+
+                    const quick = document.createElement('div');
+                    quick.innerHTML = option.quick;
+                    quick.style.color = '#9ca3af';
+                    quick.style.fontSize = '10px';
+                    quick.style.backgroundColor = '#6b7280';
+                    quick.style.color = '#f9fafb';
+                    quick.style.padding = '3px';
+                    quick.style.width = '10px';
+                    quick.style.height = '10px';
+                    quick.style.borderRadius = '3px';
+                    quick.style.display = 'flex';
+                    quick.style.alignItems = 'center';
+                    quick.style.justifyContent = 'center';
+
+                    hotKeys.appendChild(alt);
+                    hotKeys.appendChild(quick);
+                    description.appendChild(hotKeys);
+                }
+
+                item.appendChild(command);
+                item.appendChild(description);
+                item.style.padding = '6px';
+                item.style.paddingLeft = '12px'
+                item.style.paddingRight = '12px'
+                item.style.borderRadius = '5px';
+                item.style.fontSize = '13px';
+
+                item.addEventListener('click', () => {
+                    if (option.composable) {
+                        commandContainer.textContent = option.command;
+                        commandContainer.setAttribute('command', option.command)
+                        if (option.icon) commandContainer.innerHTML = option.icon;
+                        commandContainer.style.display = 'flex';
+                        input.value = '';
+                    } else {
+                        option.action();
+                    }
+
+                    //input.value = '';
+                    this.menu.style.display = 'none';
+                    this.input.focus();
+                });
+                item.addEventListener('mouseenter', () => {
+                    item.style.backgroundColor = '#e5e7eb';
+                    if (this.prefersDarkScheme) item.style.backgroundColor = '#4b5563';
+                    item.style.cursor = 'pointer';
+                });
+
+                item.addEventListener('mouseleave', () => {
+                    item.style.backgroundColor = 'transparent';
+                });
+                this.menu.appendChild(item);
+            });
+            this.menu.style.display = 'block';
+        }
+    }
+
+
+    createTask(taskId, taskText, taskDate) {
+        localStorage.setItem('maxId', taskId);
+        const htmlToShow = this.transformMDtoHTML(taskText);
+        const onlyText = this.removeMarkdown(taskText);
+
+        createOpenTask(htmlToShow, taskText, onlyText, taskDate, taskId);
+        saveTasksToLocalStorage();
     }
 
     search(text) {
@@ -537,35 +600,17 @@ class InputText extends HTMLElement {
 
     len(text) {
         if (!text) return;
-        this.taskId++;
-
-        this.gestionaTask(false, `${text} -> == \` Longitud: ${text.trim().length} \` ==`, this.today);
-        this.commandContainer.textContent = '';
-        this.commandContainer.setAttribute('command', '');
-        this.commandContainer.style.display = 'none';
-        this.input.value = '';
+        return text.length;
     }
 
     toUpper(text) {
         if (!text) return;
-        this.taskId++;
-
-        this.gestionaTask(false, `${text} -> == ${text.trim().toUpperCase()} ==`, this.today);
-        this.commandContainer.textContent = '';
-        this.commandContainer.setAttribute('command', '');
-        this.commandContainer.style.display = 'none';
-        this.input.value = '';
+        return text.trim().toUpperCase();
     }
 
     toLower(text) {
         if (!text) return;
-        this.taskId++;
-
-        this.gestionaTask(false, `${text} -> == ${text.trim().toLowerCase()} ==`, this.today);
-        this.commandContainer.textContent = '';
-        this.commandContainer.setAttribute('command', '');
-        this.commandContainer.style.display = 'none';
-        this.input.value = '';
+        return text.trim().toLowerCase();
     }
 
     gestionaTask(id, inputText, date) {
@@ -576,13 +621,10 @@ class InputText extends HTMLElement {
             saveTasksToLocalStorage();
             this.editing = false;
         } else {
-            createOpenTask(htmlToShow, inputText, onlyText, date, this.taskId);
+            createOpenTask(htmlToShow, inputText, onlyText, date, this.taskId++);
+            localStorage.setItem('maxId', taskId);
             saveTasksToLocalStorage();
         }
-        this.commandContainer.textContent = '';
-        this.commandContainer.setAttribute('command', '');
-        this.commandContainer.style.display = 'none';
-        this.input.value = '';
     }
 
     import() {
