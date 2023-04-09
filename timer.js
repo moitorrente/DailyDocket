@@ -6,6 +6,7 @@ class TimerComponent extends HTMLElement {
     super();
 
     this.innerHTML = `<div class="timer-container hidden">
+    <div class="pie" style="--p:0;--c:#9ca3af;--b:3px"></div>
   <div class="timer">15:00</div>
   <div class="navigation">
 
@@ -20,7 +21,7 @@ class TimerComponent extends HTMLElement {
 </div>`;
 
     this.timerContainer = this.querySelector('.timer-container');
-
+    this.chart = this.querySelector('#chart')
     this.timerEl = this.querySelector('.timer');
     this.stopBtn = this.querySelector('#stop');
 
@@ -32,99 +33,157 @@ class TimerComponent extends HTMLElement {
   }
 
   connectedCallback() {
-    this.insertAdjacentHTML('beforeend', `
-<style>
-.timer-container {
-  font-family: 'Roboto Mono', monospace;
-  min-width: 130px;
-  max-width: 170px;
-  background-color: #f3f4f6;
-  color: #6b7280;
-  border-radius: 9px;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  padding: 3px;
-  gap: 3px;
-}
+    this.insertAdjacentHTML('beforeend', `<style>
+  @property --p {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0;
+  }
 
-.timer {
-  display: flex;
-  flex-grow: 1;
-  font-size: 22px;
-  border-radius: 7px;
-  font-weight: 500;
-  justify-content: center;
-  /* centra horizontalmente */
-  align-items: center;
-  /* centra verticalmente */
-  text-align: center;
-  /* centra el texto dentro del div */
-}
+  .pie {
+    --p: 20;
+    --b: 22px;
+    --c: darkred;
+    --w: 20px;
 
-.timer:hover {
-  background-color: #e5e7eb;
-  cursor: pointer;
-}
+    width: var(--w);
+    aspect-ratio: 1;
+    position: relative;
+    display: inline-grid;
+    place-content: center;
+  }
 
-.navigation {
-  display: flex;
-  justify-content: center;
-  gap: 3px;
-}
+  .pie:before,
+  .pie:after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+  }
 
-button {
-  align-items: center;
-  background-color: #f3f4f6;
-  color: #6b7280;
-  border: none;
-  border-radius: 7px;
-  font-size: 6px;
-  padding: 5px;
-  cursor: pointer;
-  transition: background-color .3s ease;
-}
+  .pie:before {
+    inset: 0;
+    background:
+      radial-gradient(farthest-side, var(--c) 98%, #0000) top/var(--b) var(--b) no-repeat,
+      conic-gradient(var(--c) calc(var(--p)*1%), #111827 0);
+    -webkit-mask: radial-gradient(farthest-side, #0000 calc(99% - var(--b)), #000 calc(100% - var(--b)));
+    mask: radial-gradient(farthest-side, #0000 calc(99% - var(--b)), #000 calc(100% - var(--b)));
+  }
 
-button:hover {
-  background-color: #e5e7eb;
-  color: #4b5563;
-}
+  .pie:after {
+    inset: calc(50% - var(--b)/2);
+    background: var(--c);
+    transform: rotate(calc(var(--p)*3.6deg)) translateY(calc(50% - var(--w)/2));
+  }
 
-.hidden {
-  display: none;
-}
+  .animate {
+    animation: p 1s .5s both;
+  }
 
-@media (prefers-color-scheme: dark) {
+  .no-round:before {
+    background-size: 0 0, auto;
+  }
+
+  .no-round:after {
+    content: none;
+  }
+
+  @keyframes p {
+    from {
+      --p: 0
+    }
+  }
+
+
   .timer-container {
-    background-color: #374151;
-    color: #9ca3af;
+    font-family: 'Roboto Mono', monospace;
+    max-width: 170px;
+    background-color: #f3f4f6;
+    color: #6b7280;
+    border-radius: 5px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    padding: 3px;
+    gap: 6px;
+  }
+
+  .timer {
+    display: flex;
+    flex-grow: 1;
+    font-size: 20px;
+    border-radius: 5px;
+    font-weight: 500;
+    justify-content: center;
+    /* centra horizontalmente */
+    align-items: center;
+    /* centra verticalmente */
+    text-align: center;
+    /* centra el texto dentro del div */
   }
 
   .timer:hover {
-    background-color: #4b5563;
+    background-color: #e5e7eb;
     cursor: pointer;
-    color: #e5e7eb;
+  }
+
+  .navigation {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
   }
 
   button {
-    background-color: #374151;
-    color: #9ca3af;
+    align-items: center;
+    background-color: #f3f4f6;
+    color: #6b7280;
+    border: none;
+    border-radius: 5px;
+    font-size: 6px;
+    padding: 3px;
+    cursor: pointer;
     transition: background-color .3s ease;
   }
 
   button:hover {
-    background-color: #4b5563;
-    color: #e5e7eb;
+    background-color: #e5e7eb;
+    color: #4b5563;
   }
-}
 
+  .hidden {
+    display: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .timer-container {
+      background-color: #374151;
+      color: #9ca3af;
+    }
+
+    .timer:hover {
+      background-color: #4b5563;
+      cursor: pointer;
+      color: #e5e7eb;
+    }
+
+    button {
+      background-color: #374151;
+      color: #9ca3af;
+      transition: background-color .3s ease;
+    }
+
+    button:hover {
+      background-color: #4b5563;
+      color: #e5e7eb;
+    }
+  }
 </style>`);
 
   }
 
   startTimer() {
+    const pie = document.querySelector('.pie');
     if (this.running) {
       clearInterval(this.intervalId);
     } else {
@@ -132,6 +191,9 @@ button:hover {
         if (this.time > 0) {
           this.time--;
           this.timerEl.textContent = secondsToTime(this.time);
+
+
+          pie.style.setProperty('--p', ((this.originalTime - this.time) / this.originalTime * 100));
         } else {
           clearInterval(this.intervalId);
           this.running = false;
@@ -169,6 +231,7 @@ button:hover {
       this.running = false;
       this.show();
       this.startTimer();
+      this.originalTime = this.time;
     }
   }
 
@@ -185,6 +248,7 @@ button:hover {
     this.timerContainer.classList.remove("hidden");
   }
 
+
 }
 
 function secondsToTime(seconds) {
@@ -198,6 +262,5 @@ function secondsToTime(seconds) {
 
   return `${formattedHours}${formattedMinutes}${formattedSeconds}`;
 }
-
 
 window.customElements.define('timer-component', TimerComponent);

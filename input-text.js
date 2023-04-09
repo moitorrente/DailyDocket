@@ -126,6 +126,8 @@ class InputText extends HTMLElement {
             { command: "/md", description: 'Exporta a md', action: () => this.exportMD() },
             { command: "/upper", description: 'Convierte texto a mayúsculas', action: (text) => this.toUpper(text), composable: true, overlay: true },
             { command: "/lower", description: 'Convierte texto a minúsculas', action: (text) => this.toLower(text), composable: true, overlay: true },
+            { command: "/words", description: 'Cuenta las palabras', action: (text) => this.countWords(text), composable: true, overlay: true },
+            { command: "/title", description: 'Convierte texto a title case', action: (text) => this.toTitleCase(text), composable: true, overlay: true },
             { command: "/clock", description: 'Muestra la hora', action: () => this.clock() },
             { command: "/search", description: 'Busca en Google', action: (text) => this.search(text), composable: true, icon: `<svg width="20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48"><defs><path id="a" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></defs><clipPath id="b"><use xlink:href="#a" overflow="visible"/></clipPath><path clip-path="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z"/><path clip-path="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z"/><path clip-path="url(#b)" fill="#34A853" d="M0 37l30-23 7.9 1L48 0v48H0z"/><path clip-path="url(#b)" fill="#4285F4" d="M48 48L17 24l-4-3 35-10z"/></svg>` },
             // { command: "/sidebar", description: 'Muestra sidebar', action: () => this.sidebar() },
@@ -199,22 +201,22 @@ class InputText extends HTMLElement {
 
             } else {
                 if (text.length === 0) {
-                    this.setState('initial')
+                    this.setState('initial');
                 } else if (firstChar === '/') {
-                    this.state = 'input-command';
+                    this.setState('input-command');
                 } else if (firstChar === '=') {
-                    this.state = 'input-calculator';
+                    this.setState('input-calculator');
                 } else {
-                    this.state = 'input-text';
+                    this.setState('input-text');
                 }
             }
 
             if (this.state === 'input-calculator') {
-                const calculatorOverlayContainer = document.querySelector('.calculator-overlay');
-                const overlayComponent = document.createElement('calculator-overlay');
+                const calculatorOverlayContainer = document.querySelector('.overlay-container');
+                const overlayComponent = document.createElement('overlay-component');
                 overlayComponent.setAttribute('title', 'Calculadora');
                 if (!calculatorOverlayContainer.innerHTML) calculatorOverlayContainer.appendChild(overlayComponent);
-                const event = new CustomEvent('change-calculator-overlay', {
+                const event = new CustomEvent('change-overlay', {
                     detail: {
                         input: separateNumbersAndCharacters(text.slice(1)),
                         output: this.calculadora(text.slice(1))
@@ -234,7 +236,6 @@ class InputText extends HTMLElement {
             if (this.state === 'initial' && event.keyCode === 38) {
                 const lastCommand = localStorage.getItem('last-command');
                 if (lastCommand) input.value = lastCommand;
-                console.log('pasa por est otro', lastCommand)
             }
 
             //Si se pulsa enter y estamos en modo texto
@@ -259,7 +260,7 @@ class InputText extends HTMLElement {
 
             if (this.state === 'overlay') {
                 const app = apps.find(app => app.command === this.command);
-                const event = new CustomEvent('change-calculator-overlay', {
+                const event = new CustomEvent('change-overlay', {
                     detail: {
                         input: text,
                         output: app.action(text)
@@ -283,14 +284,13 @@ class InputText extends HTMLElement {
                         this.setState('command', exactMatch.command)
 
                         if (exactMatch.overlay) {
-                            console.log('deberia salir el overlay')
                             this.setState('overlay')
 
-                            const calculatorOverlayContainer = document.querySelector('.calculator-overlay');
-                            const overlayComponent = document.createElement('calculator-overlay');
+                            const calculatorOverlayContainer = document.querySelector('.overlay-container');
+                            const overlayComponent = document.createElement('overlay-component');
                             overlayComponent.setAttribute('title', exactMatch.description);
                             if (!calculatorOverlayContainer.innerHTML) calculatorOverlayContainer.appendChild(overlayComponent);
-                            const event = new CustomEvent('change-calculator-overlay', {
+                            const event = new CustomEvent('change-overlay', {
                                 detail: {
                                     input: '',
                                     output: ''
@@ -318,6 +318,7 @@ class InputText extends HTMLElement {
         this.commandContainer = commandContainer;
         commandContainer.textContent = '';
         commandContainer.style.width = '50px';
+        commandContainer.style.alignItems = 'center';
         commandContainer.style.justifyContent = 'center';
         commandContainer.style.display = 'none';
         commandContainer.style.border = 'none';
@@ -348,8 +349,9 @@ class InputText extends HTMLElement {
 
     setState(state, command) {
         this.state = state;
+
         if (state === 'initial') {
-            document.querySelector('.calculator-overlay').innerHTML = '';
+            document.querySelector('.overlay-container').innerHTML = '';
             this.command = null;
             this.input.value = '';
             this.menu.style.display = 'none';
@@ -359,9 +361,17 @@ class InputText extends HTMLElement {
 
         if (state === 'command') {
             this.command = command;
+            document.querySelector('.overlay-container').innerHTML = '';
             this.input.value = '';
             this.menu.style.display = 'none';
             this.commandContainer.style.display = 'flex';
+            this.input.focus();
+        }
+
+        if (state === 'input-command') {
+            this.command = null;
+            document.querySelector('.overlay-container').innerHTML = '';
+            this.commandContainer.style.display = 'none';
             this.input.focus();
         }
     }
@@ -443,7 +453,7 @@ class InputText extends HTMLElement {
                         if (option.overlay) {
                             this.setState('overlay');
 
-                            const calculatorOverlayContainer = document.querySelector('.calculator-overlay');
+                            const calculatorOverlayContainer = document.querySelector('.overlay-container');
                             const overlayComponent = document.createElement('calculator-overlay');
                             overlayComponent.setAttribute('title', option.description);
                             if (!calculatorOverlayContainer.innerHTML) calculatorOverlayContainer.appendChild(overlayComponent);
@@ -473,6 +483,8 @@ class InputText extends HTMLElement {
                 this.menu.appendChild(item);
             });
             this.menu.style.display = 'block';
+        } else {
+            this.menu.style.display = 'none';
         }
     }
 
@@ -613,6 +625,17 @@ class InputText extends HTMLElement {
         if (!text) return;
         return text.trim().toLowerCase();
     }
+
+    toTitleCase(text) {
+        if (!text) return;
+        return text.toLowerCase().replace(/(?:^|\s)\w/g, (letra) => letra.toUpperCase())
+    }
+
+    countWords(text) {
+        if (!text) return 0;
+        return text.trim().split(/\s+/).length;
+    }
+
 
     gestionaTask(id, inputText, date) {
         const htmlToShow = this.transformMDtoHTML(inputText);
