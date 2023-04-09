@@ -84,9 +84,7 @@ class CalendarView extends HTMLElement {
       background-color: #111827;
     }
 
-    .modal {
-      background-color: #111827;
-    }
+
 
     .close:hover,
     .close:focus {

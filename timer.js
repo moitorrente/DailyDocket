@@ -6,7 +6,7 @@ class TimerComponent extends HTMLElement {
     super();
 
     this.innerHTML = `<div class="timer-container hidden">
-    <div class="pie" style="--p:0;--c:#9ca3af;--b:3px"></div>
+    <div class="pie" style="--p:0;--c:#9ca3af;--b:4px"></div>
   <div class="timer">15:00</div>
   <div class="navigation">
 
