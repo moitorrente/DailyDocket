@@ -646,7 +646,7 @@ class InputText extends HTMLElement {
             this.editing = false;
         } else {
             createOpenTask(htmlToShow, inputText, onlyText, date, this.taskId++);
-            localStorage.setItem('maxId', taskId);
+            localStorage.setItem('maxId', this.taskId);
             saveTasksToLocalStorage();
         }
     }
